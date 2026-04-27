@@ -1468,7 +1468,16 @@ const PRODUCTOS_INICIALES = [
   { id:"901N", familia:"Cobertores de Caja", proveedor:"Truckliner", nombre:"COBERTOR PROFORM DODGE RAM D/C B/P 2500", compat:"Dodge RAM D/C Bajo Perfil 2500", listaVenta:274887, specs:["Material: polipropileno de alta densidad — moldeado en una sola pieza, sin uniones", "Variante B/P (Bajo Perfil) — diseño de perfil bajo con protector de bordes superiores de la caja", "Superficie antideslizante exclusiva con ranuras moldeadas — mantiene la carga en su lugar", "Costillas paralelas en el piso y esquinas redondeadas — fácil limpieza", "Protege fondo, laterales y portón trasero contra golpes, rayones y abolladuras", "Resistente a combustibles, ácidos de batería y productos químicos", "Protección UV en toda la superficie — no se decolora", "Instalación sin perforaciones extras — usa los agujeros originales del vehículo", "Desmontable para mantenimiento o traslado a otro vehículo del mismo modelo", "Fabricado en Argentina — Truckliner / ProForm (Vultrack S.A.)"], accesorios:[{"n": "Instrucciones de instalación", "inc": true}, {"n": "Portón trasero separado", "inc": true}], manual:null, videos:[], images:[] },
   { id:"902N", familia:"Cobertores de Caja", proveedor:"Truckliner", nombre:"COBERTOR PROFORM DODGE RAM D/C B/P 1500 2013+", compat:"Dodge RAM D/C Bajo Perfil 1500 2013→", listaVenta:274887, specs:["Material: polipropileno de alta densidad — moldeado en una sola pieza, sin uniones", "Variante B/P (Bajo Perfil) — diseño de perfil bajo con protector de bordes superiores de la caja", "Superficie antideslizante exclusiva con ranuras moldeadas — mantiene la carga en su lugar", "Costillas paralelas en el piso y esquinas redondeadas — fácil limpieza", "Protege fondo, laterales y portón trasero contra golpes, rayones y abolladuras", "Resistente a combustibles, ácidos de batería y productos químicos", "Protección UV en toda la superficie — no se decolora", "Instalación sin perforaciones extras — usa los agujeros originales del vehículo", "Desmontable para mantenimiento o traslado a otro vehículo del mismo modelo", "Fabricado en Argentina — Truckliner / ProForm (Vultrack S.A.)"], accesorios:[{"n": "Instrucciones de instalación", "inc": true}, {"n": "Portón trasero separado", "inc": true}], manual:null, videos:[], images:[] },
 ];
+const PRODUCTOS = PRODUCTOS_INICIALES.map((p) => {
+  const extra = SCRAPED_IMAGES[p.id] || {};
 
+  return {
+    ...p,
+    images: extra.images || p.images || [],
+    videos: extra.videos || p.videos || [],
+    manual: extra.manual || p.manual || null,
+  };
+});
 /* ═══════════════════════════════════════════════════════════════════
    CONFIG POR PROVEEDOR + FAMILIA  (descuento, IVA, markup default)
    Los productos con descuentoOverride ignoran el descuento de acá.
@@ -2122,7 +2131,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
   const cotBusqRes = useMemo(() => {
     if (!cotBusq.trim()) return [];
     const q = cotBusq.toLowerCase();
-    return PRODUCTOS_INICIALES
+    return PRODUCTOS
       .filter(p => p.nombre.toLowerCase().includes(q) || p.id.toLowerCase().includes(q) || p.compat.toLowerCase().includes(q))
       .slice(0, 8);
   }, [cotBusq]);

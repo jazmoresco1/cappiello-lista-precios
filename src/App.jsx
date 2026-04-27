@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
+import SCRAPED_IMAGES from "./scraped-images.js";
 
 /* ═══════════════════════════════════════════════════════════════════
    DATOS DE PRODUCTOS
@@ -1965,7 +1966,10 @@ export default function ListaPrecios() {
   // ── GESTOR DE IMÁGENES ────────────────────────────────────────────
   const [imgOpen, setImgOpen]       = useState(false);
   const [imgOvr, setImgOvr]         = useState(() => {
-    try { return JSON.parse(localStorage.getItem("img_overrides_v1")||"{}"); } catch{ return {}; }
+    let fromStorage = {};
+    try { fromStorage = JSON.parse(localStorage.getItem("img_overrides_v1")||"{}"); } catch {}
+    // Scraped images (del scraper.py) + overrides manuales de localStorage
+    return { ...(SCRAPED_IMAGES||{}), ...fromStorage };
   });
   const [imgSearchProd, setImgSP]   = useState(null);  // producto activo en el buscador
   const [imgSearching, setImgSrch]  = useState(false); // cargando búsqueda IA

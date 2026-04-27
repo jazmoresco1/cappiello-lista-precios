@@ -1994,8 +1994,14 @@ export default function ListaPrecios() {
   };
 
   // Retorna las imágenes reales de un producto (override > data)
-  const getImages = (p) => imgOvr[p.id]?.images || p.images || [];
-  const getVideos = (p) => imgOvr[p.id]?.videos || p.videos || [];
+  const getImages = (p) => {
+    const ovrImages = imgOvr[p.id]?.images;
+    return Array.isArray(ovrImages) && ovrImages.length > 0 ? ovrImages : (p.images || []);
+  };
+  const getVideos = (p) => {
+    const ovrVideos = imgOvr[p.id]?.videos;
+    return Array.isArray(ovrVideos) && ovrVideos.length > 0 ? ovrVideos : (p.videos || []);
+  };
 
   // Agrega una imagen confirmada
   const addImg = (pid, url) => {
@@ -2136,7 +2142,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
       .slice(0, 8);
   }, [cotBusq]);
 
-  const familias = useMemo(()=>[...new Set(PRODUCTOS_INICIALES.map(p=>p.familia))],[]);
+  const familias = useMemo(()=>[...new Set(PRODUCTOS.map(p=>p.familia))],[]);
   const key = (prov,fam) => `${prov}|${fam}`;
   const getCfg = (prov,fam) => config[key(prov,fam)] || {descuento:0,iva:0,markup:0};
   const updCfg = (prov,fam,f,v) => setConfig(p=>({...p,[key(prov,fam)]:{...getCfg(prov,fam),[f]:parseFloat(v)||0}}));
@@ -2156,10 +2162,10 @@ Sin texto adicional, sin markdown, solo el JSON.`;
   const filtrados = useMemo(()=>{
     if(busqueda.trim()){
       const q=busqueda.toLowerCase();
-      return PRODUCTOS_INICIALES.filter(p=>
+      return PRODUCTOS.filter(p=>
         p.nombre.toLowerCase().includes(q)||p.id.toLowerCase().includes(q)||p.compat.toLowerCase().includes(q));
     }
-    let res = PRODUCTOS_INICIALES.filter(p=>p.familia===familia);
+    let res = PRODUCTOS.filter(p=>p.familia===familia);
     if(subtabActual && SUBTAB_CFG[familia]) {
       res = res.filter(p => SUBTAB_CFG[familia].fn(p) === subtabActual);
     }
@@ -2216,7 +2222,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
       {!busqueda && subtabCfg && (
         <div className="snav">
           {subtabCfg.tabs.map(st => {
-            const count = PRODUCTOS_INICIALES.filter(p=>p.familia===familia && subtabCfg.fn(p)===st).length;
+            const count = PRODUCTOS.filter(p=>p.familia===familia && subtabCfg.fn(p)===st).length;
             return (
               <button key={st} className={`stab${subtabActual===st?" on":""}`}
                 onClick={()=>setSubtab(st)}>
@@ -2286,8 +2292,8 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                       const colorBadge = getColorBadge(p.nombre);
                       return (
                         <div className="card" key={p.id}>
-                          {p.images?.length>0
-                            ? <img className="card-img" src={p.images[0]} alt={p.nombre}/>
+                          {getImages(p).length>0
+                            ? <img className="card-img" src={getImages(p)[0]} alt={p.nombre} onError={e=>{e.currentTarget.style.display="none";}}/>
                             : <div className="card-nimg">📦</div>}
                           <div className="cb">
                             <div className="cb-r1">
@@ -2472,7 +2478,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
             <div>
               <div className="img-head-title">🖼 Gestor de Imágenes</div>
               <div className="img-head-sub">
-                {Object.keys(imgOvr).length} productos con imágenes · {PRODUCTOS_INICIALES.filter(p=>getImages(p).length===0).length} sin fotos
+                {Object.keys(imgOvr).length} productos con imágenes · {PRODUCTOS.filter(p=>getImages(p).length===0).length} sin fotos
               </div>
             </div>
             <button className="cot-x" onClick={()=>{setImgOpen(false);setImgSP(null);}}>✕</button>
@@ -2484,8 +2490,8 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                   value={imgFilter} onChange={e=>setImgFilter(e.target.value)}/>
                 <div style={{display:"flex",gap:8,marginBottom:12}}>
                   {["Steel Tiger","Ziel Technology","Padlock"].map(prov=>{
-                    const total=PRODUCTOS_INICIALES.filter(p=>p.proveedor===prov).length;
-                    const con=PRODUCTOS_INICIALES.filter(p=>p.proveedor===prov&&getImages(p).length>0).length;
+                    const total=PRODUCTOS.filter(p=>p.proveedor===prov).length;
+                    const con=PRODUCTOS.filter(p=>p.proveedor===prov&&getImages(p).length>0).length;
                     return <div key={prov} style={{flex:1,background:"#141414",borderRadius:8,padding:"8px 10px"}}>
                       <div style={{fontSize:9,color:"#666",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{prov}</div>
                       <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:16,fontWeight:700,color:"var(--ac)"}}>{con}<span style={{color:"#444"}}>/{total}</span></div>
@@ -2493,7 +2499,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                   })}
                 </div>
                 <div className="img-prod-list">
-                  {PRODUCTOS_INICIALES
+                  {PRODUCTOS
                     .filter(p=>!imgFilter.trim()||p.nombre.toLowerCase().includes(imgFilter.toLowerCase())||p.id.toLowerCase().includes(imgFilter.toLowerCase()))
                     .slice(0,60).map(p=>{
                       const imgs=getImages(p);

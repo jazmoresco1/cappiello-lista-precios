@@ -2063,7 +2063,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
   const [editando, setEditando] = useState(null);
   const [cfgOpen, setCfgOpen]   = useState(false);
 
-  // ── STOCK DE COMPRAS (Cappiello / Abril 2026) ─────────────────────
+  // ── STOCK DE COMPRAS (monstertrail accesorios / Abril 2026) ─────────────────────
   // Facturas: 5712, 5725, 5726, 5727, 5728
   // Cotizaciones: 36202, 36203, 36204, 36205
   // Todas las cantidades van a "deposito"
@@ -2308,7 +2308,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
       <div className="hdr">
         <div className="hdr-brand">Lista de Precios</div>
         <div className="hdr-dot"/>
-        <div className="hdr-sub">Cappiello 4×4</div>
+        <div className="hdr-sub">monstertrail accesorios 4×4</div>
         <div className="hdr-srch">
           <span className="hdr-srch-ico">🔍</span>
           <input placeholder="Buscar código, nombre, vehículo..."
@@ -2744,7 +2744,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
           <div className="cot-head">
             <div>
               <div className="cot-head-title">🧾 Cotizador</div>
-              <div className="cot-head-sub">{cotItems.length} producto{cotItems.length!==1?"s":""} · Cappiello 4×4</div>
+              <div className="cot-head-sub">{cotItems.length} producto{cotItems.length!==1?"s":""} · monstertrail accesorios 4×4</div>
             </div>
             <button className="cot-x" onClick={()=>setCotOpen(false)}>✕</button>
           </div>
@@ -2892,7 +2892,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                   ).join('\n\n');
                   const combos = cotComboAct.filter(c=>c.aplicado!==false).map(c=>`✦ ${c.nombre} −${c.descuento}%`).join('\n');
                   const txt = [
-                    `COTIZACIÓN — CAPPIELLO 4×4`,
+                    `COTIZACIÓN — monstertrail accesorios 4×4`,
                     cotNombre ? `Cliente: ${cotNombre}` : "",
                     `Fecha: ${new Date().toLocaleDateString('es-AR')}`,
                     `─────────────────────────────`,

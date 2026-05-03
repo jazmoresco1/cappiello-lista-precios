@@ -2330,13 +2330,12 @@ Sin texto adicional, sin markdown, solo el JSON.`;
 
   const filtrados = useMemo(()=>{
     if(busqueda.trim()){
-      const q = busqueda.toLowerCase().trim();
-      // Busca en id, nombre, compat y specs
-      const match = p =>
-        p.id.toLowerCase().includes(q) ||
-        p.nombre.toLowerCase().includes(q) ||
-        p.compat.toLowerCase().includes(q) ||
-        p.specs?.some(s=>s.toLowerCase().includes(q));
+      // Divide la búsqueda en palabras y busca que estén TODAS presentes
+      const palabras = busqueda.toLowerCase().trim().split(/\s+/).filter(Boolean);
+      const match = p => {
+        const texto = [p.id, p.nombre, p.compat, ...(p.specs||[])].join(" ").toLowerCase();
+        return palabras.every(pal => texto.includes(pal));
+      };
       // Por defecto busca dentro de la pestaña activa
       if(!busqGlobal){
         let res = PRODUCTOS.filter(p=>p.familia===familia && match(p));

@@ -2338,10 +2338,8 @@ Sin texto adicional, sin markdown, solo el JSON.`;
       };
       // Por defecto busca dentro de la pestaña activa
       if(!busqGlobal){
-        let res = PRODUCTOS.filter(p=>p.familia===familia && match(p));
-        if(subtabActual && SUBTAB_CFG[familia])
-          res = res.filter(p=>SUBTAB_CFG[familia].fn(p)===subtabActual);
-        return res;
+        // Al buscar dentro de la pestaña, muestra todos los sub-tabs
+        return PRODUCTOS.filter(p=>p.familia===familia && match(p));
       }
       // Si eligió búsqueda global, busca en todo
       return PRODUCTOS.filter(match);

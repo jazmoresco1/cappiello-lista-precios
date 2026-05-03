@@ -9794,7 +9794,13 @@
     "manual": "/manuals/BTM907/manual.pdf"
   },
   "009.020.0200": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Ln83PShwpyE",
       "https://www.youtube.com/watch?v=db-fFlfWisw",
@@ -9803,7 +9809,13 @@
     "manual": null
   },
   "009.020.0201": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Ln83PShwpyE",
       "https://www.youtube.com/watch?v=db-fFlfWisw",
@@ -9812,7 +9824,13 @@
     "manual": null
   },
   "009.020.0202": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Ln83PShwpyE",
       "https://www.youtube.com/watch?v=db-fFlfWisw",
@@ -9821,7 +9839,13 @@
     "manual": null
   },
   "009.020.0203": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Ln83PShwpyE",
       "https://www.youtube.com/watch?v=db-fFlfWisw",
@@ -9843,7 +9867,13 @@
     "manual": null
   },
   "009.020.0205": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Ln83PShwpyE",
       "https://www.youtube.com/watch?v=vrLHZg83vB0",
@@ -9852,7 +9882,13 @@
     "manual": null
   },
   "009.020.0206": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Ln83PShwpyE",
       "https://www.youtube.com/watch?v=db-fFlfWisw",

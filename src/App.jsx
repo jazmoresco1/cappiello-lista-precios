@@ -1950,6 +1950,21 @@ export default function ListaPrecios() {
   const [overrides, setOvr]     = useState({});
   const [stock, setStock]       = useState({});
   const [editStock, setEditStk] = useState(null);
+
+  // ── ACCESO INTERNO (PIN) ─────────────────────────────────────────
+  const ADMIN_PIN = "mt2026"; // cambiá este valor para cambiar la clave
+  const [unlocked, setUnlocked] = useState(false);
+  const [pinOpen,  setPinOpen]  = useState(false);
+  const [pinInput, setPinInput] = useState("");
+  const [pinError, setPinError] = useState(false);
+
+  const handlePin = () => {
+    if (pinInput === ADMIN_PIN) {
+      setUnlocked(true); setPinOpen(false); setPinInput(""); setPinError(false);
+    } else {
+      setPinError(true); setPinInput("");
+    }
+  };
   const [familia, setFamilia]   = useState("Tapas Rígidas");
   const [subtab, setSubtab]     = useState(null);
   const [busqueda, setBusqueda] = useState("");
@@ -2305,10 +2320,36 @@ Sin texto adicional, sin markdown, solo el JSON.`;
     <div className="app">
       <style>{CSS}</style>
 
+      {/* MODAL PIN */}
+      {pinOpen && (
+        <div className="ovl" onClick={e=>e.target===e.currentTarget&&(setPinOpen(false),setPinInput(""),setPinError(false))}>
+          <div className="mdl" style={{maxWidth:320,padding:24}}>
+            <div className="mhd" style={{marginBottom:16}}>
+              <div className="mtt">Acceso interno</div>
+              <button className="mx" onClick={()=>{setPinOpen(false);setPinInput("");setPinError(false);}}>✕</button>
+            </div>
+            <p style={{fontSize:13,color:"var(--tx2)",marginBottom:16}}>
+              Ingresá la clave para ver stock, costos y datos de proveedor.
+            </p>
+            <input
+              autoFocus type="password" placeholder="Clave…"
+              value={pinInput} onChange={e=>{setPinInput(e.target.value);setPinError(false);}}
+              onKeyDown={e=>e.key==="Enter"&&handlePin()}
+              style={{width:"100%",background:"#222",border:`1px solid ${pinError?"#c0392b":"#444"}`,borderRadius:8,padding:"10px 14px",color:"#fff",fontSize:15,fontFamily:"'DM Sans',sans-serif",outline:"none",boxSizing:"border-box",marginBottom:8}}
+            />
+            {pinError && <div style={{color:"#c0392b",fontSize:12,marginBottom:8}}>Clave incorrecta</div>}
+            <button onClick={handlePin}
+              style={{width:"100%",background:"var(--ac)",border:"none",borderRadius:8,padding:"10px",color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>
+              Ingresar
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="hdr">
-        <div className="hdr-brand">Lista de Precios</div>
+        <div className="hdr-brand">MonsterTrail</div>
         <div className="hdr-dot"/>
-        <div className="hdr-sub">monstertrail accesorios 4×4</div>
+        <div className="hdr-sub">lista de precios 4×4</div>
         <div className="hdr-srch">
           <span className="hdr-srch-ico">🔍</span>
           <input placeholder="Buscar código, nombre, vehículo..."
@@ -2320,6 +2361,11 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         <button className="hdr-btn" onClick={()=>setCotOpen(v=>!v)}
           style={{background:cotItems.length?"var(--ac)":"#222",borderColor:cotItems.length?"var(--ac)":"#333",color:"#fff"}}>
           🧾 Cotizar {cotItems.length>0 && <span className="cot-badge">{cotItems.length}</span>}
+        </button>
+        <button className="hdr-btn" onClick={()=>unlocked?setUnlocked(false):setPinOpen(true)}
+          title={unlocked?"Bloquear acceso interno":"Acceso interno"}
+          style={{borderColor:unlocked?"var(--ok)":"#333",color:unlocked?"var(--ok)":"#aaa"}}>
+          {unlocked?"🔓 Admin":"🔒"}
         </button>
       </div>
 
@@ -2384,7 +2430,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                         <span className="ph-cnt">{pp.length} productos</span>
                       </div>
                       <div className="ph-meta">
-                        {info.web && <a href={info.web} target="_blank" rel="noreferrer" className="ph-link">🔗 {prov}</a>}
+                        {info.web && unlocked && <a href={info.web} target="_blank" rel="noreferrer" className="ph-link">🔒🔗 {prov}</a>}
                       </div>
                     </div>
                     <div className="ph-cfgs">
@@ -2436,20 +2482,31 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                             <div className="cb-compat">{p.compat}</div>
                             <div className="cb-prices">
                               <div className="pr">
-                                <span className="prl">Efectivo</span>
-                                <span className="pref">{ARS(venta)}</span>
+                                <span className="prl">Mayorista</span>
+                                <span className="pref">{ARS(Math.round(p.listaVenta*1.25))}</span>
                               </div>
+                              <div className="pr">
+                                <span className="prl">Minorista</span>
+                                <span className="pref" style={{color:"var(--ac)"}}>{ARS(Math.round(p.listaVenta*1.50))}</span>
+                              </div>
+                              {unlocked && (
+                                <div className="pr">
+                                  <span className="prl">Efectivo (neto)</span>
+                                  <span className="pref" style={{fontSize:12,color:"var(--tx2)"}}>{ARS(venta)}</span>
+                                </div>
+                              )}
                               <div className="pr">
                                 <span className="prl">{cuotas.label}</span>
                                 <div style={{textAlign:"right"}}>
-                                  <span className="prq">{ARS(cuota)}/mes</span>
-                                  <div style={{fontSize:10,color:"var(--tx2)",marginTop:1}}>total {ARS(venta*cuotas.multiplicador)}</div>
+                                  <span className="prq">{ARS(Math.round(p.listaVenta*1.50*cuotas.multiplicador/cuotas.cant))}/mes</span>
+                                  <div style={{fontSize:10,color:"var(--tx2)",marginTop:1}}>sobre precio minorista</div>
                                 </div>
                               </div>
                             </div>
 
-                            {/* STOCK */}
-                            {editStock===p.id ? (
+                            {/* STOCK — solo admin */}
+                            {unlocked && (
+                              editStock===p.id ? (
                               <div className="stk-edit-wrap" style={{marginBottom:10}}>
                                 <span className="stk-edit-lbl">Royriff</span>
                                 <input className="stk-edit-inp" type="number" min="0"
@@ -2479,7 +2536,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                                   : <span className="stk-badge stk-badge-ok">En stock</span>
                                 }
                               </div>
-                            )}
+                            ))}
                             <div className="cb-acts">
                               <button className="bver" onClick={()=>setModal(p)}>
                                 Ver más →{getImages(p).length>0&&<span style={{fontSize:10,marginLeft:4,opacity:.7}}>📷{getImages(p).length}</span>}
@@ -2537,15 +2594,22 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                 : <div className="gal-empty">📷</div>}
               <div className="mb">
                 <div className="pbox">
-                  <div className="pbi"><span className="pbl">Precio efectivo</span><span className="pbv-big">{ARS(venta)}</span></div>
-                  <div className="pbi"><span className="pbl">{cuotas.label} (tasa {cuotas.tasa}%)</span><span className="pbv-med">{ARS(cuota)}/mes</span></div>
-                  <div className="pbi"><span className="pbl">Lista proveedor</span><span className="pbv-sm">{ARS(modal.listaVenta)}</span></div>
-                  <div className="pbi"><span className="pbl">Costo c/IVA {cfg.iva}%</span><span className="pbv-sm">{ARS(conIva)}</span></div>
+                  <div className="pbi"><span className="pbl" style={{fontWeight:700}}>Precio Mayorista (+25%)</span><span className="pbv-big">{ARS(Math.round(modal.listaVenta*1.25))}</span></div>
+                  <div className="pbi"><span className="pbl" style={{fontWeight:700,color:"var(--ac)"}}>Precio Minorista (+50%)</span><span className="pbv-big" style={{color:"var(--ac)"}}>{ARS(Math.round(modal.listaVenta*1.50))}</span></div>
+                  <div className="pbi"><span className="pbl">{cuotas.label} s/ minorista</span><span className="pbv-med">{ARS(Math.round(modal.listaVenta*1.50*cuotas.multiplicador/cuotas.cant))}/mes</span></div>
+                  {unlocked && <>
+                    <div style={{borderTop:"1px solid #2a2a2a",margin:"8px 0",paddingTop:8}}>
+                      <div className="pbi"><span className="pbl" style={{color:"var(--tx2)"}}>🔒 Neto efectivo</span><span className="pbv-sm">{ARS(venta)}</span></div>
+                      <div className="pbi"><span className="pbl" style={{color:"var(--tx2)"}}>🔒 Lista proveedor</span><span className="pbv-sm">{ARS(modal.listaVenta)}</span></div>
+                      <div className="pbi"><span className="pbl" style={{color:"var(--tx2)"}}>🔒 Costo c/IVA {cfg.iva}%</span><span className="pbv-sm">{ARS(conIva)}</span></div>
+                    </div>
+                  </>}
                 </div>
 
-                {/* STOCK en modal */}
+                {/* STOCK en modal — solo admin */}
+                {unlocked && (
                 <div className="ms">
-                  <div className="mst">Stock</div>
+                  <div className="mst">🔒 Stock</div>
                   <div style={{display:"flex",gap:10,flexWrap:"wrap",alignItems:"center"}}>
                     <div style={{display:"flex",alignItems:"center",gap:8,background:"var(--sf2)",border:"1px solid var(--bd)",borderRadius:8,padding:"8px 14px"}}>
                       <span style={{fontSize:12,color:"var(--tx2)",fontWeight:500}}>Royriff</span>
@@ -2562,6 +2626,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                     <span style={{fontSize:12,color:"var(--tx2)"}}>Total: <strong style={{color:totalStk(modal.id)>0?"var(--ok)":"#c0392b"}}>{totalStk(modal.id)}</strong></span>
                   </div>
                 </div>
+                )} {/* fin bloque admin stock */}
                 <div className="ms">
                   <div className="mst">Compatibilidad</div>
                   <div className="si"><span className="sd"/>{modal.compat}</div>
@@ -2586,10 +2651,10 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                 <div className="ms">
                   <div className="mst">Recursos</div>
                   <div className="mlnks">
-                    {info.web&&<a href={info.web} target="_blank" rel="noreferrer" className="mln mln-dk">🔗 Ver en {modal.proveedor}</a>}
+                    {unlocked && info.web&&<a href={info.web} target="_blank" rel="noreferrer" className="mln mln-dk">🔒🔗 Ver en {modal.proveedor}</a>}
                     {modal.manual&&<a href={modal.manual} target="_blank" rel="noreferrer" className="mln mln-lt">📄 Manual</a>}
                     {modal.videos?.map((v,i)=><a key={i} href={v} target="_blank" rel="noreferrer" className="mln mln-lt">▶ Video {i+1}</a>)}
-                    {!info.web&&!modal.manual&&!modal.videos?.length&&<span className="no-rec">Sin recursos cargados aún</span>}
+                    {(!unlocked||!info.web)&&!modal.manual&&!modal.videos?.length&&<span className="no-rec">Sin recursos cargados aún</span>}
                   </div>
                 </div>
               </div>

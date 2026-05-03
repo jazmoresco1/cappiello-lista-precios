@@ -1,4 +1,4 @@
-# Cappiello 4×4 — Lista de Precios
+# MonsterTrail 4×4 — Lista de Precios
 
 App interna para vendedores: catálogo de productos, precios, stock, cotizador y más.
 

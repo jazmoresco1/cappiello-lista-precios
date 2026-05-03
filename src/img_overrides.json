@@ -13234,5 +13234,173 @@
       "https://www.youtube.com/watch?v=SKHI5wof4hc"
     ],
     "manual": null
+  },
+  "EBT000": {
+    "images": [
+      "/assets/EBT000/1.webp",
+      "/assets/EBT000/2.webp",
+      "/assets/EBT000/3.webp",
+      "/assets/EBT000/4.webp",
+      "/assets/EBT000/5.webp",
+      "/assets/EBT000/6.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "EBW000": {
+    "images": [
+      "/assets/EBW000/1.webp",
+      "/assets/EBW000/2.webp",
+      "/assets/EBW000/3.webp",
+      "/assets/EBW000/4.webp",
+      "/assets/EBW000/5.webp",
+      "/assets/EBW000/6.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "EBWL001": {
+    "images": [
+      "/assets/EBWL001/1.webp",
+      "/assets/EBWL001/2.webp",
+      "/assets/EBWL001/3.webp",
+      "/assets/EBWL001/4.webp",
+      "/assets/EBWL001/5.webp",
+      "/assets/EBWL001/6.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "SEA163": {
+    "images": [
+      "/assets/EBT000/1.webp",
+      "/assets/EBT000/2.webp",
+      "/assets/EBT000/3.webp",
+      "/assets/EBT000/4.webp",
+      "/assets/EBT000/5.webp",
+      "/assets/EBT000/6.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "SEA162": {
+    "images": [
+      "/assets/EBT000/1.webp",
+      "/assets/EBT000/2.webp",
+      "/assets/EBT000/3.webp",
+      "/assets/EBT000/4.webp",
+      "/assets/EBT000/5.webp",
+      "/assets/EBT000/6.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "SEA157": {
+    "images": [
+      "/assets/EBT000/1.webp",
+      "/assets/EBT000/2.webp",
+      "/assets/EBT000/3.webp",
+      "/assets/EBT000/4.webp",
+      "/assets/EBT000/5.webp",
+      "/assets/EBT000/6.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "SEA161": {
+    "images": [
+      "/assets/EBT000/1.webp",
+      "/assets/EBT000/2.webp",
+      "/assets/EBT000/3.webp",
+      "/assets/EBT000/4.webp",
+      "/assets/EBT000/5.webp",
+      "/assets/EBT000/6.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "SEA155": {
+    "images": [
+      "/assets/EBT000/1.webp",
+      "/assets/EBT000/2.webp",
+      "/assets/EBT000/3.webp",
+      "/assets/EBT000/4.webp",
+      "/assets/EBT000/5.webp",
+      "/assets/EBT000/6.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "SEA160": {
+    "images": [
+      "/assets/EBT000/1.webp",
+      "/assets/EBT000/2.webp",
+      "/assets/EBT000/3.webp",
+      "/assets/EBT000/4.webp",
+      "/assets/EBT000/5.webp",
+      "/assets/EBT000/6.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "SEA156": {
+    "images": [
+      "/assets/EBT000/1.webp",
+      "/assets/EBT000/2.webp",
+      "/assets/EBT000/3.webp",
+      "/assets/EBT000/4.webp",
+      "/assets/EBT000/5.webp",
+      "/assets/EBT000/6.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "SEA159": {
+    "images": [
+      "/assets/EBT000/1.webp",
+      "/assets/EBT000/2.webp",
+      "/assets/EBT000/3.webp",
+      "/assets/EBT000/4.webp",
+      "/assets/EBT000/5.webp",
+      "/assets/EBT000/6.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "SEA150": {
+    "images": [
+      "/assets/EBT000/1.webp",
+      "/assets/EBT000/2.webp",
+      "/assets/EBT000/3.webp",
+      "/assets/EBT000/4.webp",
+      "/assets/EBT000/5.webp",
+      "/assets/EBT000/6.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "SEA158": {
+    "images": [
+      "/assets/EBT000/1.webp",
+      "/assets/EBT000/2.webp",
+      "/assets/EBT000/3.webp",
+      "/assets/EBT000/4.webp",
+      "/assets/EBT000/5.webp",
+      "/assets/EBT000/6.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "SEA154": {
+    "images": [
+      "/assets/EBT000/1.webp",
+      "/assets/EBT000/2.webp",
+      "/assets/EBT000/3.webp",
+      "/assets/EBT000/4.webp",
+      "/assets/EBT000/5.webp",
+      "/assets/EBT000/6.webp"
+    ],
+    "videos": [],
+    "manual": null
   }
 }

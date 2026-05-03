@@ -1968,6 +1968,7 @@ export default function ListaPrecios() {
   const [familia, setFamilia]   = useState("Tapas Rígidas");
   const [subtab, setSubtab]     = useState(null);
   const [busqueda, setBusqueda] = useState("");
+  const [busqGlobal, setBusqGlobal] = useState(false);
 
   // COTIZADOR
   const [cotOpen, setCotOpen]       = useState(false);
@@ -2214,6 +2215,32 @@ Sin texto adicional, sin markdown, solo el JSON.`;
     try { localStorage.setItem("stock_v1", JSON.stringify(next)); } catch(e){}
   }, []);
 
+  // ── LINKS INDIVIDUALES POR PRODUCTO ─────────────────────────────
+  // Al abrir/cerrar modal: actualizar URL
+  const abrirModal = useCallback((p) => {
+    setModal(p);
+    window.history.pushState({}, "", "?p=" + encodeURIComponent(p.id));
+  }, []);
+  const cerrarModal = useCallback(() => {
+    setModal(null);
+    window.history.pushState({}, "", window.location.pathname);
+  }, []);
+
+  // Al cargar la página: detectar ?p= y abrir ese producto
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const pid = params.get("p");
+    if(pid) {
+      const prod = PRODUCTOS.find(p => p.id === pid);
+      if(prod) {
+        // Navegar a la familia correcta
+        setFamilia(prod.familia);
+        setSubtab(SUBTAB_CFG[prod.familia]?.tabs[0] ?? null);
+        setTimeout(() => setModal(prod), 100);
+      }
+    }
+  }, []);
+
   const getStk = (id) => stock[id] || { royriff:0, deposito:0 };
   const updStk = (id, loc, val) => {
     const next = { ...stock, [id]: { ...getStk(id), [loc]: Math.max(0, parseInt(val)||0) } };
@@ -2303,16 +2330,29 @@ Sin texto adicional, sin markdown, solo el JSON.`;
 
   const filtrados = useMemo(()=>{
     if(busqueda.trim()){
-      const q=busqueda.toLowerCase();
-      return PRODUCTOS.filter(p=>
-        p.nombre.toLowerCase().includes(q)||p.id.toLowerCase().includes(q)||p.compat.toLowerCase().includes(q));
+      const q = busqueda.toLowerCase().trim();
+      // Busca en id, nombre, compat y specs
+      const match = p =>
+        p.id.toLowerCase().includes(q) ||
+        p.nombre.toLowerCase().includes(q) ||
+        p.compat.toLowerCase().includes(q) ||
+        p.specs?.some(s=>s.toLowerCase().includes(q));
+      // Por defecto busca dentro de la pestaña activa
+      if(!busqGlobal){
+        let res = PRODUCTOS.filter(p=>p.familia===familia && match(p));
+        if(subtabActual && SUBTAB_CFG[familia])
+          res = res.filter(p=>SUBTAB_CFG[familia].fn(p)===subtabActual);
+        return res;
+      }
+      // Si eligió búsqueda global, busca en todo
+      return PRODUCTOS.filter(match);
     }
     let res = PRODUCTOS.filter(p=>p.familia===familia);
     if(subtabActual && SUBTAB_CFG[familia]) {
       res = res.filter(p => SUBTAB_CFG[familia].fn(p) === subtabActual);
     }
     return res;
-  },[familia,busqueda,subtabActual]);
+  },[familia,busqueda,busqGlobal,subtabActual]);
 
   const proveedores = useMemo(()=>[...new Set(filtrados.map(p=>p.proveedor))],[filtrados]);
 
@@ -2353,7 +2393,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         <div className="hdr-srch">
           <span className="hdr-srch-ico">🔍</span>
           <input placeholder="Buscar código, nombre, vehículo..."
-            value={busqueda} onChange={e=>setBusqueda(e.target.value)}/>
+            value={busqueda} onChange={e=>{setBusqueda(e.target.value);setBusqGlobal(false);}}/>
         </div>
         <button className="hdr-btn" onClick={()=>setCfgOpen(v=>!v)}>⚙ Cuotas</button>
         <button className="hdr-btn" onClick={()=>{setImgOpen(v=>!v);setImgSP(null);}}
@@ -2409,14 +2449,34 @@ Sin texto adicional, sin markdown, solo el JSON.`;
       <div className="cnt">
         {busqueda && (
           <div className="srch-info">
-            {filtrados.length} resultado{filtrados.length!==1?"s":""} para "<strong>{busqueda}</strong>"
-            <button onClick={()=>setBusqueda("")}
-              style={{marginLeft:8,background:"none",border:"none",color:"var(--ac)",cursor:"pointer",fontSize:12}}>✕ Limpiar</button>
+            {filtrados.length} resultado{filtrados.length!==1?"s":""} en {busqGlobal?"todo el catálogo":familia} para "<strong>{busqueda}</strong>"
+            {!busqGlobal && (
+              <button onClick={()=>setBusqGlobal(true)}
+                style={{marginLeft:8,background:"var(--ac-bg)",border:"1px solid var(--ac)",color:"var(--ac)",cursor:"pointer",fontSize:11,borderRadius:5,padding:"2px 8px"}}>
+                🔍 Buscar en todo el catálogo
+              </button>
+            )}
+            {busqGlobal && (
+              <button onClick={()=>setBusqGlobal(false)}
+                style={{marginLeft:8,background:"none",border:"1px solid #444",color:"#aaa",cursor:"pointer",fontSize:11,borderRadius:5,padding:"2px 8px"}}>
+                ← Solo en {familia}
+              </button>
+            )}
+            <button onClick={()=>{setBusqueda("");setBusqGlobal(false);}}
+              style={{marginLeft:8,background:"none",border:"none",color:"#666",cursor:"pointer",fontSize:12}}>✕</button>
           </div>
         )}
 
         {filtrados.length===0
-          ? <div className="no-res">Sin resultados{busqueda?` para "${busqueda}"`:" en esta familia"}.</div>
+          ? <div className="no-res">
+              Sin resultados{busqueda?` para "${busqueda}" en ${busqGlobal?"el catálogo":familia}`:" en esta familia"}.
+              {busqueda && !busqGlobal && (
+                <button onClick={()=>setBusqGlobal(true)}
+                  style={{marginLeft:8,background:"var(--ac-bg)",border:"1px solid var(--ac)",color:"var(--ac)",cursor:"pointer",fontSize:11,borderRadius:5,padding:"2px 8px"}}>
+                  Buscar en todo el catálogo
+                </button>
+              )}
+            </div>
           : proveedores.map(prov=>{
               const pp = filtrados.filter(p=>p.proveedor===prov);
               const info = PROVEEDORES_INFO[prov]||{};
@@ -2538,7 +2598,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                               </div>
                             ))}
                             <div className="cb-acts">
-                              <button className="bver" onClick={()=>setModal(p)}>
+                              <button className="bver" onClick={()=>abrirModal(p)}>
                                 Ver más →{getImages(p).length>0&&<span style={{fontSize:10,marginLeft:4,opacity:.7}}>📷{getImages(p).length}</span>}
                               </button>
                               <button title="Agregar a cotización"
@@ -2580,14 +2640,25 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         const conIva=neto*(1+cfg.iva/100);
         const info=PROVEEDORES_INFO[modal.proveedor]||{};
         return (
-          <div className="ovl" onClick={e=>e.target===e.currentTarget&&setModal(null)}>
+          <div className="ovl" onClick={e=>e.target===e.currentTarget&&cerrarModal()}>
             <div className="mdl">
               <div className="mhd">
                 <div>
                   <div className="mcd">{modal.id} · {modal.proveedor} · {modal.familia}</div>
                   <div className="mtt">{modal.nombre}</div>
                 </div>
-                <button className="mx" onClick={()=>setModal(null)}>✕</button>
+                <div style={{display:"flex",gap:6,alignItems:"center"}}>
+                  <button
+                    onClick={()=>{
+                      const url = window.location.origin + window.location.pathname + "?p=" + encodeURIComponent(modal.id);
+                      navigator.clipboard.writeText(url).then(()=>alert("¡Link copiado!")).catch(()=>prompt("Copiá este link:",url));
+                    }}
+                    style={{background:"#222",border:"1px solid #333",color:"#aaa",borderRadius:7,padding:"5px 10px",cursor:"pointer",fontSize:11,fontFamily:"'DM Sans',sans-serif"}}
+                    title="Copiar link de este producto">
+                    🔗 Copiar link
+                  </button>
+                  <button className="mx" onClick={()=>cerrarModal()}>✕</button>
+                </div>
               </div>
               {modal.images?.length>0
                 ? <div className="gal">{modal.images.map((img,i)=><img key={i} src={img} alt={`foto ${i+1}`}/>)}</div>

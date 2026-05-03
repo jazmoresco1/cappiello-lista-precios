@@ -548,7 +548,11 @@
     "manual": null
   },
   "B1221-B15139": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.webp",
+      "/assets/B1221A-B15139/2.webp",
+      "/assets/B1221A-B15139/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=WMPMV2DXU5g",
       "https://www.youtube.com/watch?v=sEWCD4we_T8",
@@ -562,7 +566,11 @@
     "manual": null
   },
   "B1221-B15101": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.webp",
+      "/assets/B1221A-B15139/2.webp",
+      "/assets/B1221A-B15139/3.webp"
+    ],
     "videos": [],
     "manual": null
   },
@@ -582,7 +590,11 @@
     "manual": null
   },
   "B1221-B15782": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.webp",
+      "/assets/B1221A-B15139/2.webp",
+      "/assets/B1221A-B15139/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=sEWCD4we_T8",
       "https://www.youtube.com/watch?v=FrIOVb31Mv4",
@@ -600,7 +612,11 @@
     "manual": null
   },
   "B1221-B15812": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.webp",
+      "/assets/B1221A-B15139/2.webp",
+      "/assets/B1221A-B15139/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Rts0uyDhOuk",
       "https://www.youtube.com/watch?v=sEJa6-Nw9BE",
@@ -618,7 +634,11 @@
     "manual": null
   },
   "B1221-B15159": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.webp",
+      "/assets/B1221A-B15139/2.webp",
+      "/assets/B1221A-B15139/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=ZRNhtYVh7j4",
       "https://www.youtube.com/watch?v=Jw0LdVgMuFo",
@@ -636,7 +656,11 @@
     "manual": null
   },
   "B1220-B15106": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.webp",
+      "/assets/B1220A-B15137/2.webp",
+      "/assets/B1220A-B15137/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=RvOF8H1qt0k",
       "https://www.youtube.com/watch?v=9SowOBKQdmU",
@@ -654,7 +678,11 @@
     "manual": null
   },
   "B1233-B15187": {
-    "images": [],
+    "images": [
+      "/assets/B1231/1.webp",
+      "/assets/B1231/2.webp",
+      "/assets/B1231/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=_OnpZfaX2ks",
       "https://www.youtube.com/watch?v=9g2HnO6Hk_s",
@@ -672,7 +700,11 @@
     "manual": null
   },
   "B1220A-B15137": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.webp",
+      "/assets/B1220A-B15137/2.webp",
+      "/assets/B1220A-B15137/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=N4KrNkBsMhc",
       "https://www.youtube.com/watch?v=sEWCD4we_T8",
@@ -690,7 +722,11 @@
     "manual": null
   },
   "B1220A-B15813": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.webp",
+      "/assets/B1220A-B15137/2.webp",
+      "/assets/B1220A-B15137/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=wdlRSPVy_r0",
       "https://www.youtube.com/watch?v=N4KrNkBsMhc",
@@ -726,7 +762,11 @@
     "manual": null
   },
   "B1221A-B15812": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.webp",
+      "/assets/B1221A-B15139/2.webp",
+      "/assets/B1221A-B15139/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=sEJa6-Nw9BE",
       "https://www.youtube.com/watch?v=6s_ntnSYCvw",
@@ -744,7 +784,11 @@
     "manual": null
   },
   "B1233A-B15164": {
-    "images": [],
+    "images": [
+      "/assets/B1231/1.webp",
+      "/assets/B1231/2.webp",
+      "/assets/B1231/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=wdlRSPVy_r0",
       "https://www.youtube.com/watch?v=87O5F75HFbw",
@@ -762,7 +806,11 @@
     "manual": null
   },
   "B1220A-B15138": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.webp",
+      "/assets/B1220A-B15137/2.webp",
+      "/assets/B1220A-B15137/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=wdlRSPVy_r0",
       "https://www.youtube.com/watch?v=vkTvTDV99l0",
@@ -780,7 +828,11 @@
     "manual": null
   },
   "B1220A-B15130": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.webp",
+      "/assets/B1220A-B15137/2.webp",
+      "/assets/B1220A-B15137/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=UcWSliLz9g4",
       "https://www.youtube.com/watch?v=TGJ3DLmPy90",
@@ -798,7 +850,11 @@
     "manual": null
   },
   "B1238": {
-    "images": [],
+    "images": [
+      "/assets/B1231/1.webp",
+      "/assets/B1231/2.webp",
+      "/assets/B1231/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=wdlRSPVy_r0",
       "https://www.youtube.com/watch?v=sEWCD4we_T8",
@@ -834,7 +890,11 @@
     "manual": null
   },
   "B1231": {
-    "images": [],
+    "images": [
+      "/assets/B1231/1.webp",
+      "/assets/B1231/2.webp",
+      "/assets/B1231/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=wdlRSPVy_r0",
       "https://www.youtube.com/watch?v=izEfcqgW-WY",
@@ -852,7 +912,11 @@
     "manual": null
   },
   "B1232": {
-    "images": [],
+    "images": [
+      "/assets/B1231/1.webp",
+      "/assets/B1231/2.webp",
+      "/assets/B1231/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=wdlRSPVy_r0",
       "https://www.youtube.com/watch?v=wFaxV96WqS8",
@@ -1041,7 +1105,13 @@
     "manual": null
   },
   "B962B": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=w1ztcPs8YIg",
       "https://www.youtube.com/watch?v=uYciGnkOMGk",
@@ -1059,7 +1129,13 @@
     "manual": null
   },
   "B960D": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=S3eB2cGSPBU",
       "https://www.youtube.com/watch?v=bk_Jg2Cr-rM",
@@ -1077,7 +1153,13 @@
     "manual": null
   },
   "B965D": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=OtaOEKsbxEU",
       "https://www.youtube.com/watch?v=MNkoGoJXCoM",
@@ -1095,7 +1177,13 @@
     "manual": null
   },
   "B995B": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=wdlRSPVy_r0",
       "https://www.youtube.com/watch?v=tZeBwSrEYAE",
@@ -1113,7 +1201,13 @@
     "manual": null
   },
   "B969B": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=S3eB2cGSPBU",
       "https://www.youtube.com/watch?v=SXl7A3Fbc9Y",
@@ -1122,7 +1216,14 @@
     "manual": null
   },
   "ZTCC3/168": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1163,7 +1264,14 @@
     "manual": null
   },
   "ZTDR4/8": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1181,7 +1289,14 @@
     "manual": null
   },
   "ZTFT/10": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1232,7 +1347,14 @@
     "manual": null
   },
   "ZTJWJK/13": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1250,7 +1372,14 @@
     "manual": null
   },
   "ZTJGC/15": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1268,7 +1397,14 @@
     "manual": null
   },
   "ZTFF/17": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1309,7 +1445,14 @@
     "manual": null
   },
   "ZTFMOB/21": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=Mu37-Pv_Jk8",
@@ -1355,7 +1498,14 @@
     "manual": null
   },
   "ZTFR CS/25": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Mu37-Pv_Jk8",
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
@@ -1373,7 +1523,14 @@
     "manual": null
   },
   "ZTFFO2/28": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=Mu37-Pv_Jk8",
@@ -1442,7 +1599,14 @@
     "manual": null
   },
   "ZTF150/34": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=Mu37-Pv_Jk8",
@@ -1460,7 +1624,14 @@
     "manual": null
   },
   "ZTFB/172": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1478,7 +1649,14 @@
     "manual": null
   },
   "ZTCHO1/39": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1496,7 +1674,14 @@
     "manual": null
   },
   "ZTCHO2/41": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1542,7 +1727,14 @@
     "manual": null
   },
   "ZTCHTRAILC/46": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1565,7 +1757,14 @@
     "manual": null
   },
   "ZTCHS10 CS/50": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1583,7 +1782,14 @@
     "manual": null
   },
   "ZTCHSP/174": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1601,7 +1807,14 @@
     "manual": null
   },
   "ZTHH2/52": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1619,7 +1832,14 @@
     "manual": null
   },
   "ZTNS/56": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1665,7 +1885,14 @@
     "manual": null
   },
   "ZTRS/59": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1688,7 +1915,14 @@
     "manual": null
   },
   "ZTRC/62": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1711,7 +1945,14 @@
     "manual": null
   },
   "ZTRKA2/64": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1729,7 +1970,14 @@
     "manual": null
   },
   "ZTCBECS/67": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1752,7 +2000,14 @@
     "manual": null
   },
   "ZTP2081/69": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1775,7 +2030,14 @@
     "manual": null
   },
   "ZTP20082/72": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1793,7 +2055,14 @@
     "manual": null
   },
   "ZTTH/74": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1811,7 +2080,14 @@
     "manual": null
   },
   "ZTTSW47512/77": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1829,7 +2105,14 @@
     "manual": null
   },
   "ZTTSW4C7/80": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1847,7 +2130,14 @@
     "manual": null
   },
   "ZTTE/85": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1870,7 +2160,14 @@
     "manual": null
   },
   "ZTTC/87": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1888,7 +2185,14 @@
     "manual": null
   },
   "ZTTCC/89": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1911,7 +2215,14 @@
     "manual": null
   },
   "ZTVWA CS/92": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=Pu5Bomip_j4",
@@ -1934,7 +2245,14 @@
     "manual": null
   },
   "ZTVWT1/94": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1957,7 +2275,14 @@
     "manual": null
   },
   "ZTVWGF4/96": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1975,7 +2300,14 @@
     "manual": null
   },
   "ZTVWGL CS/99": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -1993,7 +2325,14 @@
     "manual": null
   },
   "ZTVWS/101": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -2011,7 +2350,14 @@
     "manual": null
   },
   "ZTVWV5/103": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -2029,7 +2375,14 @@
     "manual": null
   },
   "ZTVWP/105": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -2070,7 +2423,14 @@
     "manual": null
   },
   "ZTCT5/109": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -2088,7 +2448,14 @@
     "manual": null
   },
   "ZTJETDAS/170": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -2106,7 +2473,14 @@
     "manual": null
   },
   "ZTMAT60/175": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -2124,7 +2498,14 @@
     "manual": null
   },
   "ZAMAT60 TPE/177": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -2142,7 +2523,14 @@
     "manual": null
   },
   "ZTHHB20/179": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -2160,7 +2548,14 @@
     "manual": null
   },
   "ZTCBCB5A/122": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -2178,7 +2573,14 @@
     "manual": null
   },
   "ZTRKA2CB5A/124": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=YZ_OxEq3UpE",
@@ -2196,7 +2598,14 @@
     "manual": null
   },
   "ZTFRP703CBB/126": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Mu37-Pv_Jk8",
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
@@ -2214,7 +2623,14 @@
     "manual": null
   },
   "ZTFTCB/128": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -2520,7 +2936,14 @@
     "manual": null
   },
   "ZTCP/114": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=0dz0RJHpQQQ",
       "https://www.youtube.com/watch?v=yuf0ZL2or1I",
@@ -2538,7 +2961,14 @@
     "manual": null
   },
   "ZTComXXL/116": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=4b4_sPAk1n0",
       "https://www.youtube.com/watch?v=YQogTGZ8vi4",
@@ -2610,7 +3040,14 @@
     "manual": null
   },
   "ZTCajas/132": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=Pu5Bomip_j4",
@@ -5704,7 +6141,14 @@
     "manual": null
   },
   "SEA066": {
-    "images": [],
+    "images": [
+      "/assets/SE097/1.webp",
+      "/assets/SE097/2.webp",
+      "/assets/SE097/3.webp",
+      "/assets/SE097/4.webp",
+      "/assets/SE097/5.webp",
+      "/assets/SE097/6.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=f7bBu0WfQXY",
       "https://www.youtube.com/watch?v=mQfzR2Taf8s",
@@ -5946,7 +6390,14 @@
     "manual": null
   },
   "SE111": {
-    "images": [],
+    "images": [
+      "/assets/SE097/1.webp",
+      "/assets/SE097/2.webp",
+      "/assets/SE097/3.webp",
+      "/assets/SE097/4.webp",
+      "/assets/SE097/5.webp",
+      "/assets/SE097/6.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=_V54pbuaXd0",
       "https://www.youtube.com/watch?v=b_7QtPavzT0",
@@ -6393,7 +6844,14 @@
     "manual": null
   },
   "ECH7602": {
-    "images": [],
+    "images": [
+      "/assets/ECH7631/1.webp",
+      "/assets/ECH7631/2.webp",
+      "/assets/ECH7631/3.webp",
+      "/assets/ECH7631/4.webp",
+      "/assets/ECH7631/5.jpg",
+      "/assets/ECH7631/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=DCS3FJ7dL_Y",
       "https://www.youtube.com/watch?v=DY9yu1hqdm8",
@@ -7189,7 +7647,14 @@
     "manual": null
   },
   "ENI8310": {
-    "images": [],
+    "images": [
+      "/assets/ECH7631/1.webp",
+      "/assets/ECH7631/2.webp",
+      "/assets/ECH7631/3.webp",
+      "/assets/ECH7631/4.webp",
+      "/assets/ECH7631/5.jpg",
+      "/assets/ECH7631/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=jfjBoHpKFRc",
       "https://www.youtube.com/watch?v=_e_7IUowBdk",
@@ -7473,7 +7938,14 @@
     "manual": null
   },
   "ETY7754": {
-    "images": [],
+    "images": [
+      "/assets/ECH7631/1.webp",
+      "/assets/ECH7631/2.webp",
+      "/assets/ECH7631/3.webp",
+      "/assets/ECH7631/4.webp",
+      "/assets/ECH7631/5.jpg",
+      "/assets/ECH7631/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=uQ8HsUPkmeY",
       "https://www.youtube.com/watch?v=vJ3IrzhPUn4",
@@ -7915,7 +8387,14 @@
     "manual": null
   },
   "EAC0612-N": {
-    "images": [],
+    "images": [
+      "/assets/ECH7631/1.webp",
+      "/assets/ECH7631/2.webp",
+      "/assets/ECH7631/3.webp",
+      "/assets/ECH7631/4.webp",
+      "/assets/ECH7631/5.jpg",
+      "/assets/ECH7631/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=lXYlbaVTDR0",
       "https://www.youtube.com/watch?v=2UP2e7HcnI4",
@@ -9604,7 +10083,13 @@
     "manual": "/manuals/BTM907/manual.pdf"
   },
   "009.020.0200": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Ln83PShwpyE",
       "https://www.youtube.com/watch?v=db-fFlfWisw",
@@ -9622,7 +10107,13 @@
     "manual": null
   },
   "009.020.0202": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Ln83PShwpyE",
       "https://www.youtube.com/watch?v=db-fFlfWisw",
@@ -9662,7 +10153,13 @@
     "manual": null
   },
   "009.020.0206": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Ln83PShwpyE",
       "https://www.youtube.com/watch?v=db-fFlfWisw",
@@ -9678,7 +10175,14 @@
     "manual": null
   },
   "ZTCBECS/2": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -9696,7 +10200,14 @@
     "manual": null
   },
   "ZTCC4/4": {
-    "images": [],
+    "images": [
+      "/assets/ZTFT/19/1.webp",
+      "/assets/ZTFT/19/2.webp",
+      "/assets/ZTFT/19/3.webp",
+      "/assets/ZTFT/19/4.webp",
+      "/assets/ZTFT/19/5.webp",
+      "/assets/ZTFT/19/6.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=z-aRqeNHX_o",
       "https://www.youtube.com/watch?v=CfXI5Sb90KY",
@@ -9768,7 +10279,13 @@
     "manual": null
   },
   "7903": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=iVIkpz5VJnM",
       "https://www.youtube.com/watch?v=I4TJpCQ4C5g",
@@ -9786,7 +10303,13 @@
     "manual": null
   },
   "3630": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=iVIkpz5VJnM",
       "https://www.youtube.com/watch?v=CHQMftqjzRw",
@@ -13027,6 +13550,18 @@
       "https://www.youtube.com/watch?v=N3gMIubPrzg",
       "https://www.youtube.com/watch?v=SKHI5wof4hc"
     ],
+    "manual": null
+  },
+  "ASE005-N": {
+    "images": [
+      "/assets/SE097/1.webp",
+      "/assets/SE097/2.webp",
+      "/assets/SE097/3.webp",
+      "/assets/SE097/4.webp",
+      "/assets/SE097/5.webp",
+      "/assets/SE097/6.jpg"
+    ],
+    "videos": [],
     "manual": null
   }
 }

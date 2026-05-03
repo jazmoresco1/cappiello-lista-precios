@@ -16,10 +16,12 @@
   },
   "113N": {
     "images": [
+      "/assets/113N/1.jpg",
       "/assets/113N/1.webp",
       "/assets/113N/2.webp",
       "/assets/113N/3.webp",
       "/assets/113N/4.jpg",
+      "/assets/113N/4.webp",
       "/assets/113N/5.webp",
       "/assets/113N/6.webp"
     ],
@@ -296,10 +298,12 @@
   },
   "431N": {
     "images": [
+      "/assets/431N/1.jpg",
       "/assets/431N/1.webp",
       "/assets/431N/2.webp",
       "/assets/431N/3.webp",
       "/assets/431N/4.jpg",
+      "/assets/431N/4.webp",
       "/assets/431N/5.webp",
       "/assets/431N/6.webp"
     ],
@@ -4274,14 +4278,18 @@
     "manual": null
   },
   "KTT2": {
-    "images": [],
+    "images": [
+      "/assets/KTT2/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=rw20cSY2BZU"
     ],
     "manual": null
   },
   "KTT3": {
-    "images": [],
+    "images": [
+      "/assets/KTT3/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=rw20cSY2BZU"
     ],
@@ -4309,14 +4317,18 @@
     "manual": null
   },
   "KTT11": {
-    "images": [],
+    "images": [
+      "/assets/KTT11/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=rw20cSY2BZU"
     ],
     "manual": null
   },
   "KTT12": {
-    "images": [],
+    "images": [
+      "/assets/KTT12/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=rw20cSY2BZU"
     ],
@@ -4330,7 +4342,9 @@
     "manual": null
   },
   "KTT22": {
-    "images": [],
+    "images": [
+      "/assets/KTT22/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=rw20cSY2BZU"
     ],
@@ -4344,7 +4358,9 @@
     "manual": null
   },
   "KTT30": {
-    "images": [],
+    "images": [
+      "/assets/KTT30/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=rw20cSY2BZU"
     ],
@@ -5269,6 +5285,7 @@
       "/assets/TAPTT1001/3.webp",
       "/assets/TAPTT1001/4.webp",
       "/assets/TAPTT1001/5.webp",
+      "/assets/TAPTT1001/6.jpg",
       "/assets/TAPTT1001/6.webp"
     ],
     "videos": [
@@ -5296,6 +5313,7 @@
       "/assets/TAPTT1004/2.webp",
       "/assets/TAPTT1004/3.webp",
       "/assets/TAPTT1004/4.jpg",
+      "/assets/TAPTT1004/4.webp",
       "/assets/TAPTT1004/5.webp",
       "/assets/TAPTT1004/6.webp"
     ],
@@ -5394,6 +5412,7 @@
       "/assets/TAPTT1010/2.webp",
       "/assets/TAPTT1010/3.webp",
       "/assets/TAPTT1010/4.webp",
+      "/assets/TAPTT1010/5.jpg",
       "/assets/TAPTT1010/5.webp",
       "/assets/TAPTT1010/6.webp"
     ],

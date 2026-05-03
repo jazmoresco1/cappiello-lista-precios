@@ -4416,14 +4416,18 @@
     "manual": null
   },
   "KTP4": {
-    "images": [],
+    "images": [
+      "/assets/KTP4/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP5": {
-    "images": [],
+    "images": [
+      "/assets/KTP5/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
@@ -4458,35 +4462,48 @@
     "manual": null
   },
   "KTP8": {
-    "images": [],
+    "images": [
+      "/assets/KTP8/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP9": {
-    "images": [],
+    "images": [
+      "/assets/KTP9/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP10": {
-    "images": [],
+    "images": [
+      "/assets/KTP10/1.webp",
+      "/assets/KTP10/2.webp",
+      "/assets/KTP10/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP11": {
-    "images": [],
+    "images": [
+      "/assets/KTP11/1.webp",
+      "/assets/KTP11/2.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP12": {
-    "images": [],
+    "images": [
+      "/assets/KTP12/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
@@ -4507,77 +4524,99 @@
     "manual": null
   },
   "KTP15": {
-    "images": [],
+    "images": [
+      "/assets/KTP15/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP17": {
-    "images": [],
+    "images": [
+      "/assets/KTP17/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP18": {
-    "images": [],
+    "images": [
+      "/assets/KTP18/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP19": {
-    "images": [],
+    "images": [
+      "/assets/KTP19/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP20": {
-    "images": [],
+    "images": [
+      "/assets/KTP20/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP22": {
-    "images": [],
+    "images": [
+      "/assets/KTP22/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP23": {
-    "images": [],
+    "images": [
+      "/assets/KTP23/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP25": {
-    "images": [],
+    "images": [
+      "/assets/KTP25/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP26": {
-    "images": [],
+    "images": [
+      "/assets/KTP26/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP27": {
-    "images": [],
+    "images": [
+      "/assets/KTP27/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP32": {
-    "images": [],
+    "images": [
+      "/assets/KTP32/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
@@ -4598,14 +4637,18 @@
     "manual": null
   },
   "KTR2": {
-    "images": [],
+    "images": [
+      "/assets/KTR2/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
     "manual": null
   },
   "KTR3xlt": {
-    "images": [],
+    "images": [
+      "/assets/KTR3xlt/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
@@ -4626,28 +4669,36 @@
     "manual": null
   },
   "KTR4": {
-    "images": [],
+    "images": [
+      "/assets/KTR4/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
     "manual": null
   },
   "KTR5": {
-    "images": [],
+    "images": [
+      "/assets/KTR5/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
     "manual": null
   },
   "KTR6-F150": {
-    "images": [],
+    "images": [
+      "/assets/KTR6-F150/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
     "manual": null
   },
   "KTR6-RAM": {
-    "images": [],
+    "images": [
+      "/assets/KTR6-RAM/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
@@ -4668,21 +4719,27 @@
     "manual": null
   },
   "KTR8": {
-    "images": [],
+    "images": [
+      "/assets/KTR8/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
     "manual": null
   },
   "KTR9": {
-    "images": [],
+    "images": [
+      "/assets/KTR9/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
     "manual": null
   },
   "KTR10": {
-    "images": [],
+    "images": [
+      "/assets/KTR10/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
@@ -4724,21 +4781,27 @@
     "manual": null
   },
   "KTR14": {
-    "images": [],
+    "images": [
+      "/assets/KTR14/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
     "manual": null
   },
   "KTR15": {
-    "images": [],
+    "images": [
+      "/assets/KTR15/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
     "manual": null
   },
   "KTR20": {
-    "images": [],
+    "images": [
+      "/assets/KTR20/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
@@ -5422,7 +5485,9 @@
     "manual": "/manuals/TAPTT1010/manual.pdf"
   },
   "TAPTT1011": {
-    "images": [],
+    "images": [
+      "/assets/TAPTT1011/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/shorts/Xhxb6K9ROKg"
     ],
@@ -5457,7 +5522,9 @@
     "manual": null
   },
   "TAPTT1015": {
-    "images": [],
+    "images": [
+      "/assets/TAPTT1015/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/shorts/Xhxb6K9ROKg"
     ],

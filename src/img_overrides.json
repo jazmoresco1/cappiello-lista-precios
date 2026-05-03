@@ -13261,12 +13261,8 @@
   },
   "EBWL001": {
     "images": [
-      "/assets/EBWL001/1.webp",
-      "/assets/EBWL001/2.webp",
-      "/assets/EBWL001/3.webp",
-      "/assets/EBWL001/4.webp",
-      "/assets/EBWL001/5.webp",
-      "/assets/EBWL001/6.webp"
+      "/assets/EBWL001/1.jpg",
+      "/assets/EBWL001/2.jpg"
     ],
     "videos": [],
     "manual": null

@@ -2385,7 +2385,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
       )}
 
       <div className="hdr">
-        <img src="/logo.jpg" alt="MonsterTrail" style={{height:36,width:36,borderRadius:6,objectFit:"cover",flexShrink:0}}/>
+        <img src="/logo.jpeg" alt="MonsterTrail" style={{height:36,width:36,borderRadius:6,objectFit:"cover",flexShrink:0}}/>
         <div className="hdr-brand">MonsterTrail</div>
         <div className="hdr-dot"/>
         <div className="hdr-sub">lista de precios 4×4</div>

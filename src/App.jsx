@@ -1621,7 +1621,8 @@ const CSS = `
 :root{
   --bg:#F2F0EB;--sf:#fff;--sf2:#F7F5F0;--bd:#E3DFD8;
   --tx:#1A1A1A;--tx2:#777;
-  --ac:#C94800;--ac-bg:#FFF1EB;
+  --ac:#9c1905;--ac-bg:#F9EDEB;
+  --gold:#d7b44e;--gold-bg:#FDF8EE;
   --ok:#1A7A45;--ok-bg:#E8F5EE;
   --sh:0 1px 3px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.04);
   --sh2:0 8px 32px rgba(0,0,0,.12);
@@ -2384,6 +2385,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
       )}
 
       <div className="hdr">
+        <img src="/logo.jpg" alt="MonsterTrail" style={{height:36,width:36,borderRadius:6,objectFit:"cover",flexShrink:0}}/>
         <div className="hdr-brand">MonsterTrail</div>
         <div className="hdr-dot"/>
         <div className="hdr-sub">lista de precios 4×4</div>

@@ -691,7 +691,13 @@
     "manual": null
   },
   "B1221A-B15139": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.jpg",
+      "/assets/B1221A-B15139/2.jpg",
+      "/assets/B1221A-B15139/3.png",
+      "/assets/B1221A-B15139/4.jpg",
+      "/assets/B1221A-B15139/5.png"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=MNkoGoJXCoM",
       "https://www.youtube.com/watch?v=RCyRM0qiPZA",
@@ -701,9 +707,9 @@
   },
   "B1220A-B15137": {
     "images": [
-      "/assets/B1220A-B15137/1.webp",
-      "/assets/B1220A-B15137/2.webp",
-      "/assets/B1220A-B15137/3.webp"
+      "/assets/B1220A-B15137/1.jpg",
+      "/assets/B1220A-B15137/2.jpg",
+      "/assets/B1220A-B15137/3.jpg"
     ],
     "videos": [
       "https://www.youtube.com/watch?v=N4KrNkBsMhc",
@@ -891,9 +897,10 @@
   },
   "B1231": {
     "images": [
-      "/assets/B1231/1.webp",
-      "/assets/B1231/2.webp",
-      "/assets/B1231/3.webp"
+      "/assets/B1231/1.png",
+      "/assets/B1231/2.png",
+      "/assets/B1231/3.jpg",
+      "/assets/B1231/4.jpg"
     ],
     "videos": [
       "https://www.youtube.com/watch?v=wdlRSPVy_r0",
@@ -13560,6 +13567,34 @@
       "/assets/SE097/4.webp",
       "/assets/SE097/5.webp",
       "/assets/SE097/6.jpg"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "EBT000": {
+    "images": [
+      "/assets/EBT000/1.webp",
+      "/assets/EBT000/2.webp",
+      "/assets/EBT000/3.webp",
+      "/assets/EBT000/4.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "EBW000": {
+    "images": [
+      "/assets/EBW000/1.jpg",
+      "/assets/EBW000/1.webp",
+      "/assets/EBW000/2.webp",
+      "/assets/EBW000/3.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "EBWL00": {
+    "images": [
+      "/assets/EBWL00/1.jpg",
+      "/assets/EBWL00/2.jpg"
     ],
     "videos": [],
     "manual": null

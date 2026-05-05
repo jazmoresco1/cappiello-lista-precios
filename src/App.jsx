@@ -2651,11 +2651,42 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                   <button
                     onClick={()=>{
                       const url = window.location.origin + window.location.pathname + "?p=" + encodeURIComponent(modal.id);
+                      const mayorista = Math.round(conIva*1.25);
+                      const minorista = Math.round(conIva*1.50);
+                      const cuotasLineas = CUOTAS_MP.map(c =>
+                        `   • ${c.label}: $${Math.round(minorista*c.multiplicador/c.cant).toLocaleString('es-AR')}/mes`
+                      ).join('\n');
+                      const msg =
+`🚗 *${modal.nombre}*
+_${modal.compat}_
+
+💰 *Precio:* $${minorista.toLocaleString('es-AR')} _(incluye colocación en local)_
+💸 *Contado/transferencia:* $${Math.round(minorista*0.90).toLocaleString('es-AR')} *(10% OFF)*
+
+📅 *Cuotas MercadoPago (s/ precio minorista):*
+${cuotasLineas}
+
+✅ Enviamos a todo el país
+📍 Local: Av. Aconquija 1727, Yerba Buena, Tucumán
+📍 Rosario, Santa Fe (con cita previa)
+
+🔗 Ver producto: ${url}
+
+¡Consultanos sin compromiso! 👇`;
+                      window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
+                    }}
+                    style={{background:"#25D366",border:"none",color:"#fff",borderRadius:7,padding:"5px 10px",cursor:"pointer",fontSize:11,fontFamily:"'DM Sans',sans-serif",fontWeight:600}}
+                    title="Compartir por WhatsApp">
+                    📲 WhatsApp
+                  </button>
+                  <button
+                    onClick={()=>{
+                      const url = window.location.origin + window.location.pathname + "?p=" + encodeURIComponent(modal.id);
                       navigator.clipboard.writeText(url).then(()=>alert("¡Link copiado!")).catch(()=>prompt("Copiá este link:",url));
                     }}
                     style={{background:"#222",border:"1px solid #333",color:"#aaa",borderRadius:7,padding:"5px 10px",cursor:"pointer",fontSize:11,fontFamily:"'DM Sans',sans-serif"}}
                     title="Copiar link de este producto">
-                    🔗 Copiar link
+                    🔗 Link
                   </button>
                   <button className="mx" onClick={()=>cerrarModal()}>✕</button>
                 </div>

@@ -2324,9 +2324,11 @@ Sin texto adicional, sin markdown, solo el JSON.`;
   const getPrecios = p => {
     const cfg = getCfg(p.proveedor,p.familia);
     const desc = getDesc(p);
+    const neto = p.listaVenta * (1 - desc/100);
+    const conIva = neto * (1 + cfg.iva/100);
     const {venta} = calcular(p.listaVenta, desc, cfg.iva, cfg.markup);
     const cuota = venta * cuotas.multiplicador / cuotas.cant;
-    return {venta, cuota, desc};
+    return {venta, cuota, desc, conIva};
   };
 
   const filtrados = useMemo(()=>{
@@ -2385,7 +2387,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
       )}
 
       <div className="hdr">
-        <img src="/logo.jpeg" alt="MonsterTrail" style={{height:36,width:36,borderRadius:6,objectFit:"cover",flexShrink:0}}/>
+        <img src="/logo.jpg" alt="MonsterTrail" style={{height:36,width:36,borderRadius:6,objectFit:"cover",flexShrink:0}}/>
         <div className="hdr-brand">MonsterTrail</div>
         <div className="hdr-dot"/>
         <div className="hdr-sub">lista de precios 4×4</div>
@@ -2518,7 +2520,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
 
                   <div className="grid">
                     {pp.map(p=>{
-                      const {venta,cuota,desc}=getPrecios(p);
+                      const {venta,cuota,desc,conIva}=getPrecios(p);
                       const tieneOvr = overrides[p.id]!==undefined||p.descuentoOverride!==undefined;
                       const enEdit   = editando===p.id;
                       const colorBadge = getColorBadge(p.nombre);
@@ -2542,22 +2544,22 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                             <div className="cb-prices">
                               <div className="pr">
                                 <span className="prl">Mayorista</span>
-                                <span className="pref">{ARS(Math.round(p.listaVenta*1.25))}</span>
+                                <span className="pref">{ARS(Math.round(conIva*1.25))}</span>
                               </div>
                               <div className="pr">
                                 <span className="prl">Minorista</span>
-                                <span className="pref" style={{color:"var(--ac)"}}>{ARS(Math.round(p.listaVenta*1.50))}</span>
+                                <span className="pref" style={{color:"var(--ac)"}}>{ARS(Math.round(conIva*1.50))}</span>
                               </div>
                               {unlocked && (
                                 <div className="pr">
-                                  <span className="prl">Efectivo (neto)</span>
+                                  <span className="prl">Lista proveedor</span>
                                   <span className="pref" style={{fontSize:12,color:"var(--tx2)"}}>{ARS(venta)}</span>
                                 </div>
                               )}
                               <div className="pr">
                                 <span className="prl">{cuotas.label}</span>
                                 <div style={{textAlign:"right"}}>
-                                  <span className="prq">{ARS(Math.round(p.listaVenta*1.50*cuotas.multiplicador/cuotas.cant))}/mes</span>
+                                  <span className="prq">{ARS(Math.round(conIva*1.50*cuotas.multiplicador/cuotas.cant))}/mes</span>
                                   <div style={{fontSize:10,color:"var(--tx2)",marginTop:1}}>sobre precio minorista</div>
                                 </div>
                               </div>
@@ -2633,10 +2635,9 @@ Sin texto adicional, sin markdown, solo el JSON.`;
 
       {/* MODAL */}
       {modal&&(()=>{
-        const {venta,cuota,desc}=getPrecios(modal);
+        const {venta,cuota,desc,conIva}=getPrecios(modal);
         const cfg=getCfg(modal.proveedor,modal.familia);
         const neto=modal.listaVenta*(1-desc/100);
-        const conIva=neto*(1+cfg.iva/100);
         const info=PROVEEDORES_INFO[modal.proveedor]||{};
         return (
           <div className="ovl" onClick={e=>e.target===e.currentTarget&&cerrarModal()}>
@@ -2650,11 +2651,42 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                   <button
                     onClick={()=>{
                       const url = window.location.origin + window.location.pathname + "?p=" + encodeURIComponent(modal.id);
+                      const mayorista = Math.round(conIva*1.25);
+                      const minorista = Math.round(conIva*1.50);
+                      const cuotasLineas = CUOTAS_MP.map(c =>
+                        `   • ${c.label}: $${Math.round(minorista*c.multiplicador/c.cant).toLocaleString('es-AR')}/mes`
+                      ).join('\n');
+                      const msg =
+`🚗 *${modal.nombre}*
+_${modal.compat}_
+
+💰 *Precio:* $${minorista.toLocaleString('es-AR')} _(incluye colocación en local)_
+💸 *Contado/transferencia:* $${Math.round(minorista*0.90).toLocaleString('es-AR')} *(10% OFF)*
+
+📅 *Cuotas MercadoPago (s/ precio minorista):*
+${cuotasLineas}
+
+✅ Enviamos a todo el país
+📍 Local: Av. Aconquija 1727, Yerba Buena, Tucumán
+📍 Rosario, Santa Fe (con cita previa)
+
+🔗 Ver producto: ${url}
+
+¡Consultanos sin compromiso! 👇`;
+                      navigator.clipboard.writeText(msg).then(()=>alert("¡Texto copiado! Pegalo en tu WhatsApp.")).catch(()=>prompt("Copiá este texto:",msg));
+                    }}
+                    style={{background:"#25D366",border:"none",color:"#fff",borderRadius:7,padding:"5px 10px",cursor:"pointer",fontSize:11,fontFamily:"'DM Sans',sans-serif",fontWeight:600}}
+                    title="Copiar texto para WhatsApp">
+                    📋 Copiar para WA
+                  </button>
+                  <button
+                    onClick={()=>{
+                      const url = window.location.origin + window.location.pathname + "?p=" + encodeURIComponent(modal.id);
                       navigator.clipboard.writeText(url).then(()=>alert("¡Link copiado!")).catch(()=>prompt("Copiá este link:",url));
                     }}
                     style={{background:"#222",border:"1px solid #333",color:"#aaa",borderRadius:7,padding:"5px 10px",cursor:"pointer",fontSize:11,fontFamily:"'DM Sans',sans-serif"}}
                     title="Copiar link de este producto">
-                    🔗 Copiar link
+                    🔗 Link
                   </button>
                   <button className="mx" onClick={()=>cerrarModal()}>✕</button>
                 </div>
@@ -2664,9 +2696,9 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                 : <div className="gal-empty">📷</div>}
               <div className="mb">
                 <div className="pbox">
-                  <div className="pbi"><span className="pbl" style={{fontWeight:700}}>Precio Mayorista (+25%)</span><span className="pbv-big">{ARS(Math.round(modal.listaVenta*1.25))}</span></div>
-                  <div className="pbi"><span className="pbl" style={{fontWeight:700,color:"var(--ac)"}}>Precio Minorista (+50%)</span><span className="pbv-big" style={{color:"var(--ac)"}}>{ARS(Math.round(modal.listaVenta*1.50))}</span></div>
-                  <div className="pbi"><span className="pbl">{cuotas.label} s/ minorista</span><span className="pbv-med">{ARS(Math.round(modal.listaVenta*1.50*cuotas.multiplicador/cuotas.cant))}/mes</span></div>
+                  <div className="pbi"><span className="pbl" style={{fontWeight:700}}>Precio Mayorista </span><span className="pbv-big">{ARS(Math.round(conIva*1.25))}</span></div>
+                  <div className="pbi"><span className="pbl" style={{fontWeight:700,color:"var(--ac)"}}>Precio Minorista </span><span className="pbv-big" style={{color:"var(--ac)"}}>{ARS(Math.round(conIva*1.50))}</span></div>
+                  <div className="pbi"><span className="pbl">{cuotas.label} s/ minorista</span><span className="pbv-med">{ARS(Math.round(conIva*1.50*cuotas.multiplicador/cuotas.cant))}/mes</span></div>
                   {unlocked && <>
                     <div style={{borderTop:"1px solid #2a2a2a",margin:"8px 0",paddingTop:8}}>
                       <div className="pbi"><span className="pbl" style={{color:"var(--tx2)"}}>🔒 Neto efectivo</span><span className="pbv-sm">{ARS(venta)}</span></div>

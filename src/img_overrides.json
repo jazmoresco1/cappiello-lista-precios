@@ -16,10 +16,12 @@
   },
   "113N": {
     "images": [
+      "/assets/113N/1.jpg",
       "/assets/113N/1.webp",
       "/assets/113N/2.webp",
       "/assets/113N/3.webp",
       "/assets/113N/4.jpg",
+      "/assets/113N/4.webp",
       "/assets/113N/5.webp",
       "/assets/113N/6.webp"
     ],
@@ -296,10 +298,12 @@
   },
   "431N": {
     "images": [
+      "/assets/431N/1.jpg",
       "/assets/431N/1.webp",
       "/assets/431N/2.webp",
       "/assets/431N/3.webp",
       "/assets/431N/4.jpg",
+      "/assets/431N/4.webp",
       "/assets/431N/5.webp",
       "/assets/431N/6.webp"
     ],
@@ -544,7 +548,13 @@
     "manual": null
   },
   "B1221-B15139": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.jpg",
+      "/assets/B1221A-B15139/2.jpg",
+      "/assets/B1221A-B15139/3.png",
+      "/assets/B1221A-B15139/4.jpg",
+      "/assets/B1221A-B15139/5.png"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=WMPMV2DXU5g",
       "https://www.youtube.com/watch?v=sEWCD4we_T8",
@@ -553,32 +563,68 @@
     "manual": null
   },
   "B1220-B15137": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.jpg",
+      "/assets/B1221A-B15139/2.jpg",
+      "/assets/B1221A-B15139/3.png",
+      "/assets/B1221A-B15139/4.jpg",
+      "/assets/B1221A-B15139/5.png"
+    ],
     "videos": [],
     "manual": null
   },
   "B1221-B15101": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.jpg",
+      "/assets/B1221A-B15139/2.jpg",
+      "/assets/B1221A-B15139/3.png",
+      "/assets/B1221A-B15139/4.jpg",
+      "/assets/B1221A-B15139/5.png"
+    ],
     "videos": [],
     "manual": null
   },
   "B1220-B15813": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.jpg",
+      "/assets/B1221A-B15139/2.jpg",
+      "/assets/B1221A-B15139/3.png",
+      "/assets/B1221A-B15139/4.jpg",
+      "/assets/B1221A-B15139/5.png"
+    ],
     "videos": [],
     "manual": null
   },
   "B1222-B15780": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.jpg",
+      "/assets/B1221A-B15139/2.jpg",
+      "/assets/B1221A-B15139/3.png",
+      "/assets/B1221A-B15139/4.jpg",
+      "/assets/B1221A-B15139/5.png"
+    ],
     "videos": [],
     "manual": null
   },
   "B1222-B15136": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.jpg",
+      "/assets/B1221A-B15139/2.jpg",
+      "/assets/B1221A-B15139/3.png",
+      "/assets/B1221A-B15139/4.jpg",
+      "/assets/B1221A-B15139/5.png"
+    ],
     "videos": [],
     "manual": null
   },
   "B1221-B15782": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.jpg",
+      "/assets/B1221A-B15139/2.jpg",
+      "/assets/B1221A-B15139/3.png",
+      "/assets/B1221A-B15139/4.jpg",
+      "/assets/B1221A-B15139/5.png"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=sEWCD4we_T8",
       "https://www.youtube.com/watch?v=FrIOVb31Mv4",
@@ -587,7 +633,13 @@
     "manual": null
   },
   "B1221-B15141": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.jpg",
+      "/assets/B1221A-B15139/2.jpg",
+      "/assets/B1221A-B15139/3.png",
+      "/assets/B1221A-B15139/4.jpg",
+      "/assets/B1221A-B15139/5.png"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=sEWCD4we_T8",
       "https://www.youtube.com/watch?v=v0txly4La2w",
@@ -596,7 +648,13 @@
     "manual": null
   },
   "B1221-B15812": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.jpg",
+      "/assets/B1221A-B15139/2.jpg",
+      "/assets/B1221A-B15139/3.png",
+      "/assets/B1221A-B15139/4.jpg",
+      "/assets/B1221A-B15139/5.png"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Rts0uyDhOuk",
       "https://www.youtube.com/watch?v=sEJa6-Nw9BE",
@@ -605,7 +663,13 @@
     "manual": null
   },
   "B1233-B15164": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.jpg",
+      "/assets/B1221A-B15139/2.jpg",
+      "/assets/B1221A-B15139/3.png",
+      "/assets/B1221A-B15139/4.jpg",
+      "/assets/B1221A-B15139/5.png"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=VvApNK5a8-8",
       "https://www.youtube.com/watch?v=-RkoIj2S870",
@@ -614,7 +678,13 @@
     "manual": null
   },
   "B1221-B15159": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.jpg",
+      "/assets/B1221A-B15139/2.jpg",
+      "/assets/B1221A-B15139/3.png",
+      "/assets/B1221A-B15139/4.jpg",
+      "/assets/B1221A-B15139/5.png"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=ZRNhtYVh7j4",
       "https://www.youtube.com/watch?v=Jw0LdVgMuFo",
@@ -623,7 +693,13 @@
     "manual": null
   },
   "B1220-B15138": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.jpg",
+      "/assets/B1221A-B15139/2.jpg",
+      "/assets/B1221A-B15139/3.png",
+      "/assets/B1221A-B15139/4.jpg",
+      "/assets/B1221A-B15139/5.png"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=RvOF8H1qt0k",
       "https://www.youtube.com/watch?v=vkTvTDV99l0",
@@ -632,7 +708,13 @@
     "manual": null
   },
   "B1220-B15106": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.jpg",
+      "/assets/B1221A-B15139/2.jpg",
+      "/assets/B1221A-B15139/3.png",
+      "/assets/B1221A-B15139/4.jpg",
+      "/assets/B1221A-B15139/5.png"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=RvOF8H1qt0k",
       "https://www.youtube.com/watch?v=9SowOBKQdmU",
@@ -641,7 +723,13 @@
     "manual": null
   },
   "B1220-B15130": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.jpg",
+      "/assets/B1221A-B15139/2.jpg",
+      "/assets/B1221A-B15139/3.png",
+      "/assets/B1221A-B15139/4.jpg",
+      "/assets/B1221A-B15139/5.png"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=mQfzR2Taf8s",
       "https://www.youtube.com/watch?v=Gp8uqBw7vwI",
@@ -650,7 +738,13 @@
     "manual": null
   },
   "B1233-B15187": {
-    "images": [],
+    "images": [
+      "/assets/B1221A-B15139/1.jpg",
+      "/assets/B1221A-B15139/2.jpg",
+      "/assets/B1221A-B15139/3.png",
+      "/assets/B1221A-B15139/4.jpg",
+      "/assets/B1221A-B15139/5.png"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=_OnpZfaX2ks",
       "https://www.youtube.com/watch?v=9g2HnO6Hk_s",
@@ -659,7 +753,11 @@
     "manual": null
   },
   "B1221A-B15139": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.jpg",
+      "/assets/B1220A-B15137/2.jpg",
+      "/assets/B1220A-B15137/3.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=MNkoGoJXCoM",
       "https://www.youtube.com/watch?v=RCyRM0qiPZA",
@@ -668,7 +766,11 @@
     "manual": null
   },
   "B1220A-B15137": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.jpg",
+      "/assets/B1220A-B15137/2.jpg",
+      "/assets/B1220A-B15137/3.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=N4KrNkBsMhc",
       "https://www.youtube.com/watch?v=sEWCD4we_T8",
@@ -677,7 +779,11 @@
     "manual": null
   },
   "B1221A-B15101": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.jpg",
+      "/assets/B1220A-B15137/2.jpg",
+      "/assets/B1220A-B15137/3.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=N4KrNkBsMhc",
       "https://www.youtube.com/watch?v=g1FBzgN6GT8",
@@ -686,7 +792,11 @@
     "manual": null
   },
   "B1220A-B15813": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.jpg",
+      "/assets/B1220A-B15137/2.jpg",
+      "/assets/B1220A-B15137/3.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=wdlRSPVy_r0",
       "https://www.youtube.com/watch?v=N4KrNkBsMhc",
@@ -695,7 +805,11 @@
     "manual": null
   },
   "B1222A-B15780": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.jpg",
+      "/assets/B1220A-B15137/2.jpg",
+      "/assets/B1220A-B15137/3.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=mpQIBfJyS6Y",
       "https://www.youtube.com/watch?v=hpmz3UG8t7Y",
@@ -704,7 +818,11 @@
     "manual": null
   },
   "B1222A-B15136": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.jpg",
+      "/assets/B1220A-B15137/2.jpg",
+      "/assets/B1220A-B15137/3.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=qsLxcnWE37o",
       "https://www.youtube.com/watch?v=mpQIBfJyS6Y",
@@ -713,7 +831,11 @@
     "manual": null
   },
   "B1221A-B15782": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.jpg",
+      "/assets/B1220A-B15137/2.jpg",
+      "/assets/B1220A-B15137/3.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=4oB9VMOvFu8",
       "https://www.youtube.com/watch?v=sEJa6-Nw9BE",
@@ -722,7 +844,11 @@
     "manual": null
   },
   "B1221A-B15812": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.jpg",
+      "/assets/B1220A-B15137/2.jpg",
+      "/assets/B1220A-B15137/3.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=sEJa6-Nw9BE",
       "https://www.youtube.com/watch?v=6s_ntnSYCvw",
@@ -731,7 +857,11 @@
     "manual": null
   },
   "B1221A-B15141": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.jpg",
+      "/assets/B1220A-B15137/2.jpg",
+      "/assets/B1220A-B15137/3.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=sEJa6-Nw9BE",
       "https://www.youtube.com/watch?v=4oB9VMOvFu8",
@@ -740,7 +870,11 @@
     "manual": null
   },
   "B1233A-B15164": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.jpg",
+      "/assets/B1220A-B15137/2.jpg",
+      "/assets/B1220A-B15137/3.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=wdlRSPVy_r0",
       "https://www.youtube.com/watch?v=87O5F75HFbw",
@@ -749,7 +883,11 @@
     "manual": null
   },
   "B1221A-B15159": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.jpg",
+      "/assets/B1220A-B15137/2.jpg",
+      "/assets/B1220A-B15137/3.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-RkoIj2S870",
       "https://www.youtube.com/watch?v=Mvkm38THcoM",
@@ -758,7 +896,11 @@
     "manual": null
   },
   "B1220A-B15138": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.jpg",
+      "/assets/B1220A-B15137/2.jpg",
+      "/assets/B1220A-B15137/3.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=wdlRSPVy_r0",
       "https://www.youtube.com/watch?v=vkTvTDV99l0",
@@ -767,7 +909,11 @@
     "manual": null
   },
   "B1220A-B15106": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.jpg",
+      "/assets/B1220A-B15137/2.jpg",
+      "/assets/B1220A-B15137/3.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=k91b2bh28XE",
       "https://www.youtube.com/watch?v=vkTvTDV99l0",
@@ -776,7 +922,11 @@
     "manual": null
   },
   "B1220A-B15130": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.jpg",
+      "/assets/B1220A-B15137/2.jpg",
+      "/assets/B1220A-B15137/3.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=UcWSliLz9g4",
       "https://www.youtube.com/watch?v=TGJ3DLmPy90",
@@ -785,7 +935,11 @@
     "manual": null
   },
   "B1233A-B15187": {
-    "images": [],
+    "images": [
+      "/assets/B1220A-B15137/1.jpg",
+      "/assets/B1220A-B15137/2.jpg",
+      "/assets/B1220A-B15137/3.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=LbKnleTcCX0",
       "https://www.youtube.com/watch?v=bcRKXwYop9A",
@@ -794,7 +948,12 @@
     "manual": null
   },
   "B1238": {
-    "images": [],
+    "images": [
+      "/assets/B1231/1.png",
+      "/assets/B1231/2.png",
+      "/assets/B1231/3.jpg",
+      "/assets/B1231/4.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=wdlRSPVy_r0",
       "https://www.youtube.com/watch?v=sEWCD4we_T8",
@@ -803,7 +962,12 @@
     "manual": null
   },
   "B1236": {
-    "images": [],
+    "images": [
+      "/assets/B1231/1.png",
+      "/assets/B1231/2.png",
+      "/assets/B1231/3.jpg",
+      "/assets/B1231/4.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=wdlRSPVy_r0",
       "https://www.youtube.com/watch?v=N4KrNkBsMhc",
@@ -812,7 +976,12 @@
     "manual": null
   },
   "B1425": {
-    "images": [],
+    "images": [
+      "/assets/B1231/1.png",
+      "/assets/B1231/2.png",
+      "/assets/B1231/3.jpg",
+      "/assets/B1231/4.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=sEWCD4we_T8",
       "https://www.youtube.com/watch?v=1_1hBB_ONBY",
@@ -821,7 +990,12 @@
     "manual": null
   },
   "B1243": {
-    "images": [],
+    "images": [
+      "/assets/B1231/1.png",
+      "/assets/B1231/2.png",
+      "/assets/B1231/3.jpg",
+      "/assets/B1231/4.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=v0txly4La2w",
       "https://www.youtube.com/watch?v=CXHHAWQbFms",
@@ -830,7 +1004,12 @@
     "manual": null
   },
   "B1231": {
-    "images": [],
+    "images": [
+      "/assets/B1231/1.png",
+      "/assets/B1231/2.png",
+      "/assets/B1231/3.jpg",
+      "/assets/B1231/4.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=wdlRSPVy_r0",
       "https://www.youtube.com/watch?v=izEfcqgW-WY",
@@ -839,7 +1018,12 @@
     "manual": null
   },
   "B1237": {
-    "images": [],
+    "images": [
+      "/assets/B1231/1.png",
+      "/assets/B1231/2.png",
+      "/assets/B1231/3.jpg",
+      "/assets/B1231/4.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=wFaxV96WqS8",
       "https://www.youtube.com/watch?v=hpmz3UG8t7Y",
@@ -848,7 +1032,12 @@
     "manual": null
   },
   "B1232": {
-    "images": [],
+    "images": [
+      "/assets/B1231/1.png",
+      "/assets/B1231/2.png",
+      "/assets/B1231/3.jpg",
+      "/assets/B1231/4.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=wdlRSPVy_r0",
       "https://www.youtube.com/watch?v=wFaxV96WqS8",
@@ -857,7 +1046,12 @@
     "manual": null
   },
   "B1235": {
-    "images": [],
+    "images": [
+      "/assets/B1231/1.png",
+      "/assets/B1231/2.png",
+      "/assets/B1231/3.jpg",
+      "/assets/B1231/4.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=wdlRSPVy_r0",
       "https://www.youtube.com/watch?v=VvApNK5a8-8",
@@ -4274,14 +4468,18 @@
     "manual": null
   },
   "KTT2": {
-    "images": [],
+    "images": [
+      "/assets/KTT2/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=rw20cSY2BZU"
     ],
     "manual": null
   },
   "KTT3": {
-    "images": [],
+    "images": [
+      "/assets/KTT3/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=rw20cSY2BZU"
     ],
@@ -4309,14 +4507,18 @@
     "manual": null
   },
   "KTT11": {
-    "images": [],
+    "images": [
+      "/assets/KTT11/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=rw20cSY2BZU"
     ],
     "manual": null
   },
   "KTT12": {
-    "images": [],
+    "images": [
+      "/assets/KTT12/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=rw20cSY2BZU"
     ],
@@ -4330,7 +4532,9 @@
     "manual": null
   },
   "KTT22": {
-    "images": [],
+    "images": [
+      "/assets/KTT22/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=rw20cSY2BZU"
     ],
@@ -4344,7 +4548,9 @@
     "manual": null
   },
   "KTT30": {
-    "images": [],
+    "images": [
+      "/assets/KTT30/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=rw20cSY2BZU"
     ],
@@ -4400,14 +4606,18 @@
     "manual": null
   },
   "KTP4": {
-    "images": [],
+    "images": [
+      "/assets/KTP4/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP5": {
-    "images": [],
+    "images": [
+      "/assets/KTP5/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
@@ -4442,35 +4652,48 @@
     "manual": null
   },
   "KTP8": {
-    "images": [],
+    "images": [
+      "/assets/KTP8/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP9": {
-    "images": [],
+    "images": [
+      "/assets/KTP9/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP10": {
-    "images": [],
+    "images": [
+      "/assets/KTP10/1.webp",
+      "/assets/KTP10/2.webp",
+      "/assets/KTP10/3.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP11": {
-    "images": [],
+    "images": [
+      "/assets/KTP11/1.webp",
+      "/assets/KTP11/2.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP12": {
-    "images": [],
+    "images": [
+      "/assets/KTP12/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
@@ -4491,77 +4714,99 @@
     "manual": null
   },
   "KTP15": {
-    "images": [],
+    "images": [
+      "/assets/KTP15/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP17": {
-    "images": [],
+    "images": [
+      "/assets/KTP17/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP18": {
-    "images": [],
+    "images": [
+      "/assets/KTP18/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP19": {
-    "images": [],
+    "images": [
+      "/assets/KTP19/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP20": {
-    "images": [],
+    "images": [
+      "/assets/KTP20/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP22": {
-    "images": [],
+    "images": [
+      "/assets/KTP22/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP23": {
-    "images": [],
+    "images": [
+      "/assets/KTP23/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP25": {
-    "images": [],
+    "images": [
+      "/assets/KTP25/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP26": {
-    "images": [],
+    "images": [
+      "/assets/KTP26/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP27": {
-    "images": [],
+    "images": [
+      "/assets/KTP27/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
     "manual": null
   },
   "KTP32": {
-    "images": [],
+    "images": [
+      "/assets/KTP32/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=-2bbBg36AoY"
     ],
@@ -4582,14 +4827,18 @@
     "manual": null
   },
   "KTR2": {
-    "images": [],
+    "images": [
+      "/assets/KTR2/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
     "manual": null
   },
   "KTR3xlt": {
-    "images": [],
+    "images": [
+      "/assets/KTR3xlt/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
@@ -4610,28 +4859,36 @@
     "manual": null
   },
   "KTR4": {
-    "images": [],
+    "images": [
+      "/assets/KTR4/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
     "manual": null
   },
   "KTR5": {
-    "images": [],
+    "images": [
+      "/assets/KTR5/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
     "manual": null
   },
   "KTR6-F150": {
-    "images": [],
+    "images": [
+      "/assets/KTR6-F150/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
     "manual": null
   },
   "KTR6-RAM": {
-    "images": [],
+    "images": [
+      "/assets/KTR6-RAM/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
@@ -4652,21 +4909,27 @@
     "manual": null
   },
   "KTR8": {
-    "images": [],
+    "images": [
+      "/assets/KTR8/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
     "manual": null
   },
   "KTR9": {
-    "images": [],
+    "images": [
+      "/assets/KTR9/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
     "manual": null
   },
   "KTR10": {
-    "images": [],
+    "images": [
+      "/assets/KTR10/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
@@ -4708,21 +4971,27 @@
     "manual": null
   },
   "KTR14": {
-    "images": [],
+    "images": [
+      "/assets/KTR14/1.webp"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
     "manual": null
   },
   "KTR15": {
-    "images": [],
+    "images": [
+      "/assets/KTR15/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
     "manual": null
   },
   "KTR20": {
-    "images": [],
+    "images": [
+      "/assets/KTR20/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=3WzaHoJ38f0"
     ],
@@ -5269,6 +5538,7 @@
       "/assets/TAPTT1001/3.webp",
       "/assets/TAPTT1001/4.webp",
       "/assets/TAPTT1001/5.webp",
+      "/assets/TAPTT1001/6.jpg",
       "/assets/TAPTT1001/6.webp"
     ],
     "videos": [
@@ -5296,6 +5566,7 @@
       "/assets/TAPTT1004/2.webp",
       "/assets/TAPTT1004/3.webp",
       "/assets/TAPTT1004/4.jpg",
+      "/assets/TAPTT1004/4.webp",
       "/assets/TAPTT1004/5.webp",
       "/assets/TAPTT1004/6.webp"
     ],
@@ -5394,6 +5665,7 @@
       "/assets/TAPTT1010/2.webp",
       "/assets/TAPTT1010/3.webp",
       "/assets/TAPTT1010/4.webp",
+      "/assets/TAPTT1010/5.jpg",
       "/assets/TAPTT1010/5.webp",
       "/assets/TAPTT1010/6.webp"
     ],
@@ -5403,7 +5675,9 @@
     "manual": "/manuals/TAPTT1010/manual.pdf"
   },
   "TAPTT1011": {
-    "images": [],
+    "images": [
+      "/assets/TAPTT1011/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/shorts/Xhxb6K9ROKg"
     ],
@@ -5438,7 +5712,9 @@
     "manual": null
   },
   "TAPTT1015": {
-    "images": [],
+    "images": [
+      "/assets/TAPTT1015/1.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/shorts/Xhxb6K9ROKg"
     ],
@@ -9518,7 +9794,13 @@
     "manual": "/manuals/BTM907/manual.pdf"
   },
   "009.020.0200": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Ln83PShwpyE",
       "https://www.youtube.com/watch?v=db-fFlfWisw",
@@ -9527,7 +9809,13 @@
     "manual": null
   },
   "009.020.0201": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Ln83PShwpyE",
       "https://www.youtube.com/watch?v=db-fFlfWisw",
@@ -9536,7 +9824,13 @@
     "manual": null
   },
   "009.020.0202": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Ln83PShwpyE",
       "https://www.youtube.com/watch?v=db-fFlfWisw",
@@ -9545,7 +9839,13 @@
     "manual": null
   },
   "009.020.0203": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Ln83PShwpyE",
       "https://www.youtube.com/watch?v=db-fFlfWisw",
@@ -9567,7 +9867,13 @@
     "manual": null
   },
   "009.020.0205": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Ln83PShwpyE",
       "https://www.youtube.com/watch?v=vrLHZg83vB0",
@@ -9576,7 +9882,13 @@
     "manual": null
   },
   "009.020.0206": {
-    "images": [],
+    "images": [
+      "/assets/009.020.0204/1.webp",
+      "/assets/009.020.0204/2.webp",
+      "/assets/009.020.0204/3.webp",
+      "/assets/009.020.0204/4.webp",
+      "/assets/009.020.0204/5.jpg"
+    ],
     "videos": [
       "https://www.youtube.com/watch?v=Ln83PShwpyE",
       "https://www.youtube.com/watch?v=db-fFlfWisw",
@@ -12901,36 +13213,28 @@
   "6601923-9999": {
     "images": [],
     "videos": [
-      "https://www.youtube.com/watch?v=N3gMIubPrzg",
-      "https://www.youtube.com/watch?v=RCuoFfmMfzc",
-      "https://www.youtube.com/watch?v=UooAmFysSGg"
+      "/assets/COVERSAX/video.mp4"
     ],
     "manual": null
   },
   "6603923-9999": {
     "images": [],
     "videos": [
-      "https://www.youtube.com/watch?v=_mnTJRbiL2s",
-      "https://www.youtube.com/watch?v=wllYIKwVNFo",
-      "https://www.youtube.com/watch?v=WdTYHq5-b-E"
+      "/assets/COVERSAX/video.mp4"
     ],
     "manual": null
   },
   "8032923-9999": {
     "images": [],
     "videos": [
-      "https://www.youtube.com/watch?v=wllYIKwVNFo",
-      "https://www.youtube.com/watch?v=_mnTJRbiL2s",
-      "https://www.youtube.com/watch?v=N3gMIubPrzg"
+      "/assets/COVERSAX/video.mp4"
     ],
     "manual": null
   },
   "6605923-9999": {
     "images": [],
     "videos": [
-      "https://www.youtube.com/watch?v=64Jm7suD-7g",
-      "https://www.youtube.com/watch?v=N3gMIubPrzg",
-      "https://www.youtube.com/watch?v=wllYIKwVNFo"
+      "/assets/COVERSAX/video.mp4"
     ],
     "manual": null
   },
@@ -12941,6 +13245,38 @@
       "https://www.youtube.com/watch?v=N3gMIubPrzg",
       "https://www.youtube.com/watch?v=SKHI5wof4hc"
     ],
+    "manual": null
+  },
+  "EBT000": {
+    "images": [
+      "/assets/EBT000/1.webp",
+      "/assets/EBT000/2.webp",
+      "/assets/EBT000/3.webp",
+      "/assets/EBT000/4.webp",
+      "/assets/EBT000/5.webp",
+      "/assets/EBT000/6.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "EBW000": {
+    "images": [
+      "/assets/EBW000/1.webp",
+      "/assets/EBW000/2.webp",
+      "/assets/EBW000/3.webp",
+      "/assets/EBW000/4.webp",
+      "/assets/EBW000/5.webp",
+      "/assets/EBW000/6.webp"
+    ],
+    "videos": [],
+    "manual": null
+  },
+  "EBWL001": {
+    "images": [
+      "/assets/EBWL001/1.jpg",
+      "/assets/EBWL001/2.jpg"
+    ],
+    "videos": [],
     "manual": null
   }
 }

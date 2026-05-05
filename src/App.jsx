@@ -2673,11 +2673,11 @@ ${cuotasLineas}
 🔗 Ver producto: ${url}
 
 ¡Consultanos sin compromiso! 👇`;
-                      window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
+                      navigator.clipboard.writeText(msg).then(()=>alert("¡Texto copiado! Pegalo en tu WhatsApp.")).catch(()=>prompt("Copiá este texto:",msg));
                     }}
                     style={{background:"#25D366",border:"none",color:"#fff",borderRadius:7,padding:"5px 10px",cursor:"pointer",fontSize:11,fontFamily:"'DM Sans',sans-serif",fontWeight:600}}
-                    title="Compartir por WhatsApp">
-                    📲 WhatsApp
+                    title="Copiar texto para WhatsApp">
+                    📋 Copiar para WA
                   </button>
                   <button
                     onClick={()=>{

@@ -2696,8 +2696,8 @@ ${cuotasLineas}
                 : <div className="gal-empty">📷</div>}
               <div className="mb">
                 <div className="pbox">
-                  <div className="pbi"><span className="pbl" style={{fontWeight:700}}>Precio Mayorista (+25%)</span><span className="pbv-big">{ARS(Math.round(conIva*1.25))}</span></div>
-                  <div className="pbi"><span className="pbl" style={{fontWeight:700,color:"var(--ac)"}}>Precio Minorista (+50%)</span><span className="pbv-big" style={{color:"var(--ac)"}}>{ARS(Math.round(conIva*1.50))}</span></div>
+                  <div className="pbi"><span className="pbl" style={{fontWeight:700}}>Precio Mayorista </span><span className="pbv-big">{ARS(Math.round(conIva*1.25))}</span></div>
+                  <div className="pbi"><span className="pbl" style={{fontWeight:700,color:"var(--ac)"}}>Precio Minorista </span><span className="pbv-big" style={{color:"var(--ac)"}}>{ARS(Math.round(conIva*1.50))}</span></div>
                   <div className="pbi"><span className="pbl">{cuotas.label} s/ minorista</span><span className="pbv-med">{ARS(Math.round(conIva*1.50*cuotas.multiplicador/cuotas.cant))}/mes</span></div>
                   {unlocked && <>
                     <div style={{borderTop:"1px solid #2a2a2a",margin:"8px 0",paddingTop:8}}>

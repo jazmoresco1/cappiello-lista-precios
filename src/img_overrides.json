@@ -13211,28 +13211,52 @@
     "manual": null
   },
   "6601923-9999": {
-    "images": [],
+    "images": [
+      "/assets/6601923-9999/1.jpg",
+      "/assets/6601923-9999/2.jpg",
+      "/assets/6601923-9999/3.jpg",
+      "/assets/6601923-9999/4.jpg",
+      "/assets/6601923-9999/5.jpg"
+    ],
     "videos": [
       "/assets/COVERSAX/video.mp4"
     ],
     "manual": null
   },
   "6603923-9999": {
-    "images": [],
+    "images": [
+      "/assets/6603923-9999/1.jpg",
+      "/assets/6603923-9999/2.jpg",
+      "/assets/6603923-9999/3.jpg",
+      "/assets/6603923-9999/4.jpg",
+      "/assets/6603923-9999/5.jpg"
+    ],
     "videos": [
       "/assets/COVERSAX/video.mp4"
     ],
     "manual": null
   },
   "8032923-9999": {
-    "images": [],
+    "images": [
+      "/assets/8032923-9999/1.jpg",
+      "/assets/8032923-9999/2.jpg",
+      "/assets/8032923-9999/3.jpg",
+      "/assets/8032923-9999/4.jpg",
+      "/assets/8032923-9999/5.jpg"
+    ],
     "videos": [
       "/assets/COVERSAX/video.mp4"
     ],
     "manual": null
   },
   "6605923-9999": {
-    "images": [],
+    "images": [
+      "/assets/6605923-9999/1.jpg",
+      "/assets/6605923-9999/2.jpg",
+      "/assets/6605923-9999/3.jpg",
+      "/assets/6605923-9999/4.jpg",
+      "/assets/6605923-9999/5.jpg"
+    ],
     "videos": [
       "/assets/COVERSAX/video.mp4"
     ],
@@ -13277,6 +13301,19 @@
       "/assets/EBWL001/2.jpg"
     ],
     "videos": [],
+    "manual": null
+  },
+  "6601923-0003": {
+    "images": [
+      "/assets/6601923-0003/1.jpg",
+      "/assets/6601923-0003/2.jpg",
+      "/assets/6601923-0003/3.jpg",
+      "/assets/6601923-0003/4.jpg",
+      "/assets/6601923-0003/5.jpg"
+    ],
+    "videos": [
+      "/assets/COVERSAX/video.mp4"
+    ],
     "manual": null
   }
 }

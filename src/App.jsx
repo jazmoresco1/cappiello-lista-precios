@@ -2211,6 +2211,32 @@ Sin texto adicional, sin markdown, solo el JSON.`;
       }
     } catch(e) {}
   }, []);
+
+  // Ajuste de egresos — mayo 2026
+  const STOCK_EGRESOS_MAY2026 = {
+    "TAPTT1006": 1, // Tapa Top Tiger Ford Ranger Limited 23→ — vendida
+    "KTP2":      1, // Tapa Kraken Toyota Hilux — vendida
+    "TAPTT1001": 1, // Tapa Top Tiger Ford Ranger XL/XLT/XLS/Raptor 23→ — vendida
+    "SEA157":    1, // Soporte Blacktrend Ford Ranger CD 23→ — vendido
+    "EBW000":    1, // Estribos Blacktrend Wild Cabina Doble — vendidos
+  };
+  useEffect(() => {
+    try {
+      const yaAjustado = localStorage.getItem("stock_egreso_20260521");
+      if (!yaAjustado) {
+        const s = localStorage.getItem("stock_v1");
+        const stockActual = s ? JSON.parse(s) : {};
+        const merged = { ...stockActual };
+        Object.entries(STOCK_EGRESOS_MAY2026).forEach(([id, qty]) => {
+          const curr = merged[id] || { royriff: 0, deposito: 0 };
+          merged[id] = { ...curr, deposito: Math.max(0, curr.deposito - qty) };
+        });
+        setStock(merged);
+        localStorage.setItem("stock_v1", JSON.stringify(merged));
+        localStorage.setItem("stock_egreso_20260521", "1");
+      }
+    } catch(e) {}
+  }, []);
   const saveStock = useCallback((next) => {
     setStock(next);
     try { localStorage.setItem("stock_v1", JSON.stringify(next)); } catch(e){}

@@ -2237,6 +2237,31 @@ Sin texto adicional, sin markdown, solo el JSON.`;
       }
     } catch(e) {}
   }, []);
+  // Override stock exacto — Coversax fundas 22/05/2026
+  useEffect(() => {
+    try {
+      const yaOverride = localStorage.getItem("stock_override_20260522");
+      if (!yaOverride) {
+        const s = localStorage.getItem("stock_v1");
+        const stockActual = s ? JSON.parse(s) : {};
+        const merged = { ...stockActual };
+        const overrides = {
+          "8032923-9999": 3,  // Racing Negro
+          "6605923-9999": 2,  // Raptor Negro
+          "6601923-9999": 1,  // Confort Negro
+          "6603923-9999": 1,  // Luxury Negro
+        };
+        Object.entries(overrides).forEach(([id, qty]) => {
+          const curr = merged[id] || { royriff: 0, deposito: 0 };
+          merged[id] = { ...curr, deposito: qty };
+        });
+        setStock(merged);
+        localStorage.setItem("stock_v1", JSON.stringify(merged));
+        localStorage.setItem("stock_override_20260522", "1");
+      }
+    } catch(e) {}
+  }, []);
+
   const saveStock = useCallback((next) => {
     setStock(next);
     try { localStorage.setItem("stock_v1", JSON.stringify(next)); } catch(e){}

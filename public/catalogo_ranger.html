@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MonsterTrail — Ford Ranger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --rojo:   #9c1905;
+      --negro:  #1a1a1a;
+      --blanco: #ffffff;
+      --gris:   #f4f4f4;
+      --gris2:  #e0e0e0;
+      --gris3:  #888;
+      --card-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f0f0f0;
+      color: var(--negro);
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--rojo);
+      padding: 18px 32px 14px;
+      display: flex;
+      align-items: flex-end;
+      gap: 20px;
+      border-bottom: 5px solid var(--negro);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 36px;
+      color: var(--blanco);
+      letter-spacing: 1px;
+      line-height: 1;
+    }
+    .header-sep {
+      width: 2px; height: 36px;
+      background: rgba(255,255,255,0.3);
+    }
+    .header-vehicle {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: 22px;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 0.5px;
+      line-height: 1;
+    }
+    .header-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+      margin-top: 3px;
+    }
+    .header-count {
+      margin-left: auto;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    /* ── CONTENIDO ── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 20px 40px;
+    }
+
+    /* ── CATEGORÍA ── */
+    .category {
+      margin-bottom: 28px;
+    }
+    .cat-header {
+      background: var(--negro);
+      color: var(--blanco);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      border-radius: 2px;
+    }
+    .cat-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 1px;
+    }
+    .cat-count {
+      font-size: 11px;
+      color: rgba(255,255,255,0.55);
+    }
+
+    /* ── GRILLA ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--blanco);
+      border-radius: 4px;
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--gris2);
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+    .card:hover {
+      box-shadow: 0 4px 16px rgba(156,25,5,0.15);
+      transform: translateY(-2px);
+    }
+    .card-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: var(--gris);
+      overflow: hidden;
+      position: relative;
+    }
+    .card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .card-img-placeholder {
+      display: none;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--gris3);
+      background: var(--gris);
+    }
+    .card-body {
+      padding: 8px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .card-id {
+      font-size: 9px;
+      color: var(--gris3);
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+    .card-nombre {
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 4px;
+      flex: 1;
+    }
+    .card-compat {
+      font-size: 9px;
+      color: var(--gris3);
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    .card-precio {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--rojo);
+      letter-spacing: 0.5px;
+      border-top: 1px solid var(--gris2);
+      padding-top: 6px;
+      margin-top: auto;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 10px;
+      color: var(--gris3);
+      border-top: 1px solid var(--gris2);
+    }
+
+    @media print {
+      .header { position: static; }
+      .card:hover { transform: none; box-shadow: var(--card-shadow); }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div>
+      <div class="header-logo">MONSTERTRAIL</div>
+    </div>
+    <div class="header-sep"></div>
+    <div>
+      <div class="header-vehicle">Catálogo — Ford Ranger</div>
+      <div class="header-sub">Accesorios 4×4 y Pick-Up</div>
+    </div>
+    <div class="header-count">
+      112 productos<br>
+      <span style="font-size:10px">Precios con IVA incluido</span>
+    </div>
+  </header>
+
+  <div class="container">
+    
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">ALFOMBRAS</span>
+          <span class="cat-count">3 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ZTFRP703/22/1.webp" alt="CUBRE ALFOMBRAS FORD RANGER & RANGER RAPTOR P703 HABITÁCULO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ZTFRP703/22</div>
+            <div class="card-nombre">CUBRE ALFOMBRAS FORD RANGER & RANGER RAPTOR P703 HABITÁCULO</div>
+            <div class="card-compat">Ford Ranger & Ranger Raptor P703 2023→</div>
+            <div class="card-precio">$ 440.675</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ZTFR/23/1.webp" alt="CUBRE ALFOMBRAS FORD RANGER HABITÁCULO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ZTFR/23</div>
+            <div class="card-nombre">CUBRE ALFOMBRAS FORD RANGER HABITÁCULO</div>
+            <div class="card-compat">Ford Ranger 2012–07/2023</div>
+            <div class="card-precio">$ 440.675</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ZTFR CS/25/1.webp" alt="CUBRE ALFOMBRAS FORD RANGER CABINA SIMPLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ZTFR CS/25</div>
+            <div class="card-nombre">CUBRE ALFOMBRAS FORD RANGER CABINA SIMPLE</div>
+            <div class="card-compat">Ford Ranger Cabina Simple 2012–07/2023</div>
+            <div class="card-precio">$ 352.540</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">AMORTIGUADORES</span>
+          <span class="cat-count">1 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/009.020.0201/1.webp" alt="AMORTIGUADOR COMPUERTA STEEL TIGER C/BARRA RANGER" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">009.020.0201</div>
+            <div class="card-nombre">AMORTIGUADOR COMPUERTA STEEL TIGER C/BARRA RANGER</div>
+            <div class="card-compat">Ford Ranger (con barra)</div>
+            <div class="card-precio">$ 122.160</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">BARRA EXTREME PLUS</span>
+          <span class="cat-count">6 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BPI503/1.webp" alt="BARRA EXTREME PLUS INOXIDABLE FORD NUEVA RANGER CABINA DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BPI503</div>
+            <div class="card-nombre">BARRA EXTREME PLUS INOXIDABLE FORD NUEVA RANGER CABINA DOBLE</div>
+            <div class="card-compat">Ford Ranger Cabina Doble 2012→</div>
+            <div class="card-precio">$ 547.965</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BPI503-R/1.webp" alt="BARRA EXTREME PLUS INOXIDABLE FORD RANGER RAPTOR" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BPI503-R</div>
+            <div class="card-nombre">BARRA EXTREME PLUS INOXIDABLE FORD RANGER RAPTOR</div>
+            <div class="card-compat">Ford Ranger Raptor 2019→</div>
+            <div class="card-precio">$ 547.965</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BPI510/1.webp" alt="BARRA EXTREME PLUS INOXIDABLE FORD NUEVA RANGER CABINA DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BPI510</div>
+            <div class="card-nombre">BARRA EXTREME PLUS INOXIDABLE FORD NUEVA RANGER CABINA DOBLE</div>
+            <div class="card-compat">Ford Ranger Cabina Doble 2023→</div>
+            <div class="card-precio">$ 547.965</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BPN603/1.webp" alt="BARRA EXTREME PLUS NEGRA FORD NUEVA RANGER CABINA DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BPN603</div>
+            <div class="card-nombre">BARRA EXTREME PLUS NEGRA FORD NUEVA RANGER CABINA DOBLE</div>
+            <div class="card-compat">Ford Ranger Cabina Doble 2012→</div>
+            <div class="card-precio">$ 387.952</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BPN603-R/1.webp" alt="BARRA EXTREME PLUS NEGRA FORD RANGER RAPTOR" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BPN603-R</div>
+            <div class="card-nombre">BARRA EXTREME PLUS NEGRA FORD RANGER RAPTOR</div>
+            <div class="card-compat">Ford Ranger Raptor 2019→</div>
+            <div class="card-precio">$ 387.952</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BPN610/1.webp" alt="BARRA EXTREME PLUS NEGRA FORD NUEVA RANGER CABINA DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BPN610</div>
+            <div class="card-nombre">BARRA EXTREME PLUS NEGRA FORD NUEVA RANGER CABINA DOBLE</div>
+            <div class="card-compat">Ford Ranger Cabina Doble 2023→</div>
+            <div class="card-precio">$ 387.952</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">BARRAS MODULARES</span>
+          <span class="cat-count">1 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BTM907/1.webp" alt="BARRA DE TRABAJO MODULAR FORD RANGER CABINA DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BTM907</div>
+            <div class="card-nombre">BARRA DE TRABAJO MODULAR FORD RANGER CABINA DOBLE</div>
+            <div class="card-compat">Ford Ranger Cabina Doble 2023→</div>
+            <div class="card-precio">$ 471.972</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">BARRAS DE TRABAJO</span>
+          <span class="cat-count">6 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BTD804/1.webp" alt="BARRA DE TRABAJO FORD RANGER / NISSAN NP300 / RENAULT ALASKAN CABINA DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BTD804</div>
+            <div class="card-nombre">BARRA DE TRABAJO FORD RANGER / NISSAN NP300 / RENAULT ALASKAN CABINA DOBLE</div>
+            <div class="card-compat">Ford Ranger D/C 2012→ / Nissan NP300 2016→ / Renault Alaskan 2021→</div>
+            <div class="card-precio">$ 496.819</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BTD807/1.webp" alt="BARRA DE TRABAJO FORD RANGER CABINA DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BTD807</div>
+            <div class="card-nombre">BARRA DE TRABAJO FORD RANGER CABINA DOBLE</div>
+            <div class="card-compat">Ford Ranger Cabina Doble 2023→</div>
+            <div class="card-precio">$ 496.819</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BTS804/1.webp" alt="BARRA DE TRABAJO FORD NUEVA RANGER CABINA SIMPLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BTS804</div>
+            <div class="card-nombre">BARRA DE TRABAJO FORD NUEVA RANGER CABINA SIMPLE</div>
+            <div class="card-compat">Ford Ranger Cabina Simple 2012→</div>
+            <div class="card-precio">$ 590.450</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KBA-FR/1.webp" alt="BARRA SPORTBAR KRAKEN OFF ROAD FORD RANGER 2012/2022" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KBA-FR</div>
+            <div class="card-nombre">BARRA SPORTBAR KRAKEN OFF ROAD FORD RANGER 2012/2022</div>
+            <div class="card-compat">Ford Ranger 2012–2022</div>
+            <div class="card-precio">$ 992.997</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KBA-RANRAP/1.webp" alt="BARRA SPORTBAR KRAKEN OFF ROAD FORD RANGER 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KBA-RANRAP</div>
+            <div class="card-nombre">BARRA SPORTBAR KRAKEN OFF ROAD FORD RANGER 2023+</div>
+            <div class="card-compat">Ford Ranger 2023→</div>
+            <div class="card-precio">$ 992.997</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KPAR2/1.webp" alt="PARRILLA KRAKEN OFF ROAD UNIVERSAL PICK-UPS" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KPAR2</div>
+            <div class="card-nombre">PARRILLA KRAKEN OFF ROAD UNIVERSAL PICK-UPS</div>
+            <div class="card-compat">Ranger 23+, Hilux 16+, Ranger 12–22, Frontier, Alaskan, RAM 1500, S10</div>
+            <div class="card-precio">$ 693.232</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">BAÚL</span>
+          <span class="cat-count">4 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1158A/1.webp" alt="BARRAS LONGITUDINALES NEGRAS ADHESIVAS BEPO FORD RANGER 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1158A</div>
+            <div class="card-nombre">BARRAS LONGITUDINALES NEGRAS ADHESIVAS BEPO FORD RANGER 2023+</div>
+            <div class="card-compat">Ford Ranger 2023→ (adhesivas)</div>
+            <div class="card-precio">$ 448.566</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1158C/1.webp" alt="BARRAS LONGITUDINALES PULIDAS ADHESIVAS BEPO FORD RANGER 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1158C</div>
+            <div class="card-nombre">BARRAS LONGITUDINALES PULIDAS ADHESIVAS BEPO FORD RANGER 2023+</div>
+            <div class="card-compat">Ford Ranger 2023→ (adhesivas)</div>
+            <div class="card-precio">$ 448.566</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KBL5-IZQ/1.webp" alt="BAÚL LATERAL RETRÁCTIL KRAKEN FORD RANGER 2013/2023+ IZQUIERDO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KBL5-IZQ</div>
+            <div class="card-nombre">BAÚL LATERAL RETRÁCTIL KRAKEN FORD RANGER 2013/2023+ IZQUIERDO</div>
+            <div class="card-compat">Ford Ranger 2013→ / 2023→ — lado izquierdo (conductor)</div>
+            <div class="card-precio">$ 674.412</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KBL5-DER/1.webp" alt="BAÚL LATERAL RETRÁCTIL KRAKEN FORD RANGER 2013/2023+ DERECHO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KBL5-DER</div>
+            <div class="card-nombre">BAÚL LATERAL RETRÁCTIL KRAKEN FORD RANGER 2013/2023+ DERECHO</div>
+            <div class="card-compat">Ford Ranger 2013→ / 2023→ — lado derecho (acompañante)</div>
+            <div class="card-precio">$ 674.412</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">COBERTORES DE CAJA</span>
+          <span class="cat-count">13 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ZTFRP703CBB/126/1.webp" alt="CUBRE ALFOMBRA CAJA FORD RANGER P703 (NUEVA)" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ZTFRP703CBB/126</div>
+            <div class="card-nombre">CUBRE ALFOMBRA CAJA FORD RANGER P703 (NUEVA)</div>
+            <div class="card-compat">Ford Ranger P703 2023→</div>
+            <div class="card-precio">$ 377.718</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ZTFRP703CBF/127/1.webp" alt="CUBRE ALFOMBRA CAJA FORD RANGER P703 FURGÓN" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ZTFRP703CBF/127</div>
+            <div class="card-nombre">CUBRE ALFOMBRA CAJA FORD RANGER P703 FURGÓN</div>
+            <div class="card-compat">Ford Ranger P703 2023→ (variante)</div>
+            <div class="card-precio">$ 377.718</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/330N/1.webp" alt="COBERTOR PROFORM FORD RANGER LONG BED 7' S/P" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">330N</div>
+            <div class="card-nombre">COBERTOR PROFORM FORD RANGER LONG BED 7' S/P</div>
+            <div class="card-compat">Ford Ranger Long Bed 7' Sobre Perfil</div>
+            <div class="card-precio">$ 455.625</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/331N/1.webp" alt="COBERTOR PROFORM FORD RANGER LONG BED 7' B/P" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">331N</div>
+            <div class="card-nombre">COBERTOR PROFORM FORD RANGER LONG BED 7' B/P</div>
+            <div class="card-compat">Ford Ranger Long Bed 7' Bajo Perfil</div>
+            <div class="card-precio">$ 455.625</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/332N/1.webp" alt="COBERTOR PROFORM FORD RANGER D/C B/P" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">332N</div>
+            <div class="card-nombre">COBERTOR PROFORM FORD RANGER D/C B/P</div>
+            <div class="card-compat">Ford Ranger D/C Bajo Perfil</div>
+            <div class="card-precio">$ 372.021</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/333N/1.webp" alt="COBERTOR PROFORM FORD RANGER D/C B/P 2012+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">333N</div>
+            <div class="card-nombre">COBERTOR PROFORM FORD RANGER D/C B/P 2012+</div>
+            <div class="card-compat">Ford Ranger D/C Bajo Perfil 2012→</div>
+            <div class="card-precio">$ 401.675</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/334N/1.webp" alt="COBERTOR PROFORM FORD RANGER D/C B/P 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">334N</div>
+            <div class="card-nombre">COBERTOR PROFORM FORD RANGER D/C B/P 2023+</div>
+            <div class="card-compat">Ford Ranger D/C Bajo Perfil 2023→</div>
+            <div class="card-precio">$ 462.618</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/335N/1.webp" alt="COBERTOR PROFORM FORD RANGER LONG BED 7' S/P 2012+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">335N</div>
+            <div class="card-nombre">COBERTOR PROFORM FORD RANGER LONG BED 7' S/P 2012+</div>
+            <div class="card-compat">Ford Ranger Long Bed 7' Sobre Perfil 2012→</div>
+            <div class="card-precio">$ 455.625</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/336N/1.webp" alt="COBERTOR PROFORM FORD RANGER LONG BED 7' B/P 2012+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">336N</div>
+            <div class="card-nombre">COBERTOR PROFORM FORD RANGER LONG BED 7' B/P 2012+</div>
+            <div class="card-compat">Ford Ranger Long Bed 7' Bajo Perfil 2012→</div>
+            <div class="card-precio">$ 455.625</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/337N/1.webp" alt="COBERTOR PROFORM FORD RANGER C/S B/P 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">337N</div>
+            <div class="card-nombre">COBERTOR PROFORM FORD RANGER C/S B/P 2023+</div>
+            <div class="card-compat">Ford Ranger Cabina Simple Bajo Perfil 2023→</div>
+            <div class="card-precio">$ 520.455</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/341N/1.webp" alt="COBERTOR PROFORM FORD RANGER SHORT BED 6' S/P" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">341N</div>
+            <div class="card-nombre">COBERTOR PROFORM FORD RANGER SHORT BED 6' S/P</div>
+            <div class="card-compat">Ford Ranger Short Bed 6' Sobre Perfil</div>
+            <div class="card-precio">$ 422.034</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/342N/1.webp" alt="COBERTOR PROFORM FORD RANGER D/C S/P" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">342N</div>
+            <div class="card-nombre">COBERTOR PROFORM FORD RANGER D/C S/P</div>
+            <div class="card-compat">Ford Ranger D/C Sobre Perfil</div>
+            <div class="card-precio">$ 401.675</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/343N/1.webp" alt="COBERTOR PROFORM FORD RANGER D/C S/P 2012+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">343N</div>
+            <div class="card-nombre">COBERTOR PROFORM FORD RANGER D/C S/P 2012+</div>
+            <div class="card-compat">Ford Ranger D/C Sobre Perfil 2012→</div>
+            <div class="card-precio">$ 401.675</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">CUBRECARTER</span>
+          <span class="cat-count">3 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ASP217/1.webp" alt="PROTECTOR CÁRTER FORD NUEVA RANGER" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ASP217</div>
+            <div class="card-nombre">PROTECTOR CÁRTER FORD NUEVA RANGER</div>
+            <div class="card-compat">Ford Ranger 2012–2018</div>
+            <div class="card-precio">$ 97.545</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ASP248/1.webp" alt="PROTECTOR CARTER FORD RANGER" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ASP248</div>
+            <div class="card-nombre">PROTECTOR CARTER FORD RANGER</div>
+            <div class="card-compat">Ford Ranger 2016→</div>
+            <div class="card-precio">$ 118.757</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ASP269/1.webp" alt="PROTECTOR CARTER FORD RANGER CABINA DOBLE 4X2/4X4" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ASP269</div>
+            <div class="card-nombre">PROTECTOR CARTER FORD RANGER CABINA DOBLE 4X2/4X4</div>
+            <div class="card-compat">Ford Ranger Cabina Doble 4x2/4x4 2023→</div>
+            <div class="card-precio">$ 97.545</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">DEFENSAS BAJAS</span>
+          <span class="cat-count">4 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/DBI601/1.webp" alt="DEFENSA BAJA INOXIDABLE FORD NUEVA RANGER" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">DBI601</div>
+            <div class="card-nombre">DEFENSA BAJA INOXIDABLE FORD NUEVA RANGER</div>
+            <div class="card-compat">Ford Ranger 2012→</div>
+            <div class="card-precio">$ 386.033</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/DBI617/1.webp" alt="DEFENSA BAJA INOXIDABLE FORD RANGER" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">DBI617</div>
+            <div class="card-nombre">DEFENSA BAJA INOXIDABLE FORD RANGER</div>
+            <div class="card-compat">Ford Ranger 2023→</div>
+            <div class="card-precio">$ 386.033</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/DBN101/1.webp" alt="DEFENSA BAJA NEGRA FORD NUEVA RANGER" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">DBN101</div>
+            <div class="card-nombre">DEFENSA BAJA NEGRA FORD NUEVA RANGER</div>
+            <div class="card-compat">Ford Ranger 2012→</div>
+            <div class="card-precio">$ 219.614</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/DBN117/1.webp" alt="DEFENSA BAJA NEGRA FORD RANGER" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">DBN117</div>
+            <div class="card-nombre">DEFENSA BAJA NEGRA FORD RANGER</div>
+            <div class="card-compat">Ford Ranger 2023→</div>
+            <div class="card-precio">$ 219.614</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">DEFLECTORES</span>
+          <span class="cat-count">14 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O3006/1.webp" alt="DEFLECTOR CAPOT FORD RANGER 1997/2003" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O3006</div>
+            <div class="card-nombre">DEFLECTOR CAPOT FORD RANGER 1997/2003</div>
+            <div class="card-compat">Ford Ranger 1997–2003</div>
+            <div class="card-precio">$ 37.592</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O3019/1.webp" alt="DEFLECTOR CAPOT FORD RANGER 2004/2009" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O3019</div>
+            <div class="card-nombre">DEFLECTOR CAPOT FORD RANGER 2004/2009</div>
+            <div class="card-compat">Ford Ranger 2004–2009</div>
+            <div class="card-precio">$ 32.671</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O3031/1.webp" alt="DEFLECTOR CAPOT FORD RANGER 2010/2012 CORTO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O3031</div>
+            <div class="card-nombre">DEFLECTOR CAPOT FORD RANGER 2010/2012 CORTO</div>
+            <div class="card-compat">Ford Ranger 2010–2012 (corto)</div>
+            <div class="card-precio">$ 30.457</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O3031L/1.webp" alt="DEFLECTOR CAPOT FORD RANGER 2010/2012 LARGO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O3031L</div>
+            <div class="card-nombre">DEFLECTOR CAPOT FORD RANGER 2010/2012 LARGO</div>
+            <div class="card-compat">Ford Ranger 2010–2012 (largo)</div>
+            <div class="card-precio">$ 47.282</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O3044/1.webp" alt="DEFLECTOR CAPOT FORD RANGER 2013/2015 LARGO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O3044</div>
+            <div class="card-nombre">DEFLECTOR CAPOT FORD RANGER 2013/2015 LARGO</div>
+            <div class="card-compat">Ford Ranger 2013–2015 (largo)</div>
+            <div class="card-precio">$ 42.384</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O3048/1.webp" alt="DEFLECTOR CAPOT FORD RANGER 2016/2021" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O3048</div>
+            <div class="card-nombre">DEFLECTOR CAPOT FORD RANGER 2016/2021</div>
+            <div class="card-compat">Ford Ranger 2016–2021</div>
+            <div class="card-precio">$ 57.330</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O3095/1.webp" alt="DEFLECTOR CAPOT FORD RANGER NUEVA GENERACIÓN 2024+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O3095</div>
+            <div class="card-nombre">DEFLECTOR CAPOT FORD RANGER NUEVA GENERACIÓN 2024+</div>
+            <div class="card-compat">Ford Ranger Nueva Generación 2024→</div>
+            <div class="card-precio">$ 50.507</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/G1340A/1.webp" alt="DEFLECTOR VENTANILLA ADHESIVO FORD RANGER C/SIMPLE 2013+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">G1340A</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA ADHESIVO FORD RANGER C/SIMPLE 2013+</div>
+            <div class="card-compat">Ford Ranger Cabina Simple 2013→</div>
+            <div class="card-precio">$ 30.031</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O1318A/1.webp" alt="DEFLECTOR VENTANILLA ADHESIVO FORD RANGER D/C DEL. 2013+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O1318A</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA ADHESIVO FORD RANGER D/C DEL. 2013+</div>
+            <div class="card-compat">Ford Ranger D/C 2013→ — delantero</div>
+            <div class="card-precio">$ 36.100</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O1318TA/1.webp" alt="DEFLECTOR VENTANILLA ADHESIVO FORD RANGER D/C TRAS. 2013+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O1318TA</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA ADHESIVO FORD RANGER D/C TRAS. 2013+</div>
+            <div class="card-compat">Ford Ranger D/C 2013→ — trasero</div>
+            <div class="card-precio">$ 29.179</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O1310A/1.webp" alt="DEFLECTOR VENTANILLA ADHESIVO FORD RANGER DEL. 2005/2011" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O1310A</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA ADHESIVO FORD RANGER DEL. 2005/2011</div>
+            <div class="card-compat">Ford Ranger 2005–2011 — delantero</div>
+            <div class="card-precio">$ 29.605</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O1310TA/1.webp" alt="DEFLECTOR VENTANILLA ADHESIVO FORD RANGER TRAS. 2005/2011" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O1310TA</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA ADHESIVO FORD RANGER TRAS. 2005/2011</div>
+            <div class="card-compat">Ford Ranger 2005–2011 — trasero</div>
+            <div class="card-precio">$ 22.704</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/G1318/1.webp" alt="DEFLECTOR VENTANILLA COLIZA FORD RANGER D/C DEL. 2013+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">G1318</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA COLIZA FORD RANGER D/C DEL. 2013+</div>
+            <div class="card-compat">Ford Ranger D/C 2013→ — delantero</div>
+            <div class="card-precio">$ 30.243</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/G1318T/1.webp" alt="DEFLECTOR VENTANILLA COLIZA FORD RANGER D/C TRAS. 2013+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">G1318T</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA COLIZA FORD RANGER D/C TRAS. 2013+</div>
+            <div class="card-compat">Ford Ranger D/C 2013→ — trasero</div>
+            <div class="card-precio">$ 25.559</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">ELECTRÓNICA DP-20</span>
+          <span class="cat-count">1 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/7905/1.webp" alt="APERTURA AUTOMÁTICA PORTÓN TRASERO DP-20 FORD RANGER / RAPTOR" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">7905</div>
+            <div class="card-nombre">APERTURA AUTOMÁTICA PORTÓN TRASERO DP-20 FORD RANGER / RAPTOR</div>
+            <div class="card-compat">Ford Ranger / Raptor</div>
+            <div class="card-precio">$ 449.249</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">ENGANCHES LIVIANOS</span>
+          <span class="cat-count">3 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/EFD7104/1.webp" alt="ENGANCHE ST1 FORD RANGER" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">EFD7104</div>
+            <div class="card-nombre">ENGANCHE ST1 FORD RANGER</div>
+            <div class="card-compat">Ford Ranger 2012–2022</div>
+            <div class="card-precio">$ 183.654</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/EFD7105/1.webp" alt="ENGANCHE ST1 FORD RANGER" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">EFD7105</div>
+            <div class="card-nombre">ENGANCHE ST1 FORD RANGER</div>
+            <div class="card-compat">Ford Ranger 1997–2011</div>
+            <div class="card-precio">$ 166.435</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/EFD7158/1.webp" alt="ENGANCHE ST1 FORD RANGER" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">EFD7158</div>
+            <div class="card-nombre">ENGANCHE ST1 FORD RANGER</div>
+            <div class="card-compat">Ford Ranger 2023→</div>
+            <div class="card-precio">$ 194.744</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">ENGANCHES PESADOS</span>
+          <span class="cat-count">5 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SE009/1.webp" alt="ENGANCHE ST5 FORD RANGER MOD. 97-11" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SE009</div>
+            <div class="card-nombre">ENGANCHE ST5 FORD RANGER MOD. 97-11</div>
+            <div class="card-compat">Ford Ranger 1997–2011</div>
+            <div class="card-precio">$ 226.333</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SE089/1.webp" alt="ENGANCHE ST5 FORD RANGER MOD. 12-22" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SE089</div>
+            <div class="card-nombre">ENGANCHE ST5 FORD RANGER MOD. 12-22</div>
+            <div class="card-compat">Ford Ranger 2012–2022</div>
+            <div class="card-precio">$ 281.378</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SE115/1.webp" alt="ENGANCHE ST5 FORD RANGER RAPTOR MOD. 19-22" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SE115</div>
+            <div class="card-nombre">ENGANCHE ST5 FORD RANGER RAPTOR MOD. 19-22</div>
+            <div class="card-compat">Ford Ranger Raptor 2019–2022</div>
+            <div class="card-precio">$ 378.777</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SE117/1.webp" alt="ENGANCHE ST5 FORD NUEVA RANGER MOD. 23+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SE117</div>
+            <div class="card-nombre">ENGANCHE ST5 FORD NUEVA RANGER MOD. 23+</div>
+            <div class="card-compat">Ford Ranger 2023→</div>
+            <div class="card-precio">$ 324.741</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SE089-E/1.webp" alt="ENGANCHE ST5 FORD RANGER (BOLIVIA-CHILE) / MAZDA BT50 (CHILE) MOD. 12-22" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SE089-E</div>
+            <div class="card-nombre">ENGANCHE ST5 FORD RANGER (BOLIVIA-CHILE) / MAZDA BT50 (CHILE) MOD. 12-22</div>
+            <div class="card-compat">Ford Ranger (Bolivia/Chile) 2012–2022 / Mazda BT50 (Chile) 2013–2022</div>
+            <div class="card-precio">$ 281.378</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">ESTRIBOS</span>
+          <span class="cat-count">14 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SEA157/1.webp" alt="SOPORTES ESTRIBO BLACKTREND FORD RANGER C/D" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SEA157</div>
+            <div class="card-nombre">SOPORTES ESTRIBO BLACKTREND FORD RANGER C/D</div>
+            <div class="card-compat">Ford Ranger Cabina Doble 2023→</div>
+            <div class="card-precio">$ 144.555</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SEA156/1.webp" alt="SOPORTES ESTRIBO BLACKTREND FORD RANGER D/C" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SEA156</div>
+            <div class="card-nombre">SOPORTES ESTRIBO BLACKTREND FORD RANGER D/C</div>
+            <div class="card-compat">Ford Ranger D/C 2012→</div>
+            <div class="card-precio">$ 144.555</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SEA056/1.webp" alt="SOPORTES ESTRIBOS OPTIMUS/STATUS/STRONG FORD RANGER D/C 12+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SEA056</div>
+            <div class="card-nombre">SOPORTES ESTRIBOS OPTIMUS/STATUS/STRONG FORD RANGER D/C 12+</div>
+            <div class="card-compat">Ford Ranger D/C 2012→</div>
+            <div class="card-precio">$ 137.671</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SEA057/1.webp" alt="SOPORTES ESTRIBOS OPTIMUS/STATUS/STRONG FORD NUEVA RANGER D/C 23+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SEA057</div>
+            <div class="card-nombre">SOPORTES ESTRIBOS OPTIMUS/STATUS/STRONG FORD NUEVA RANGER D/C 23+</div>
+            <div class="card-compat">Ford Ranger D/C 2023→</div>
+            <div class="card-precio">$ 137.671</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SEA051/1.webp" alt="SOPORTES ESTRIBOS OPTIMUS FORD RANGER D/C 2000-2011" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SEA051</div>
+            <div class="card-nombre">SOPORTES ESTRIBOS OPTIMUS FORD RANGER D/C 2000-2011</div>
+            <div class="card-compat">Ford Ranger D/C 2000–2011</div>
+            <div class="card-precio">$ 137.671</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1220-B15137/1.webp" alt="ESTRIBO G3 PULIDO BEPO FORD RANGER 2013+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1220-B15137</div>
+            <div class="card-nombre">ESTRIBO G3 PULIDO BEPO FORD RANGER 2013+</div>
+            <div class="card-compat">Ford Ranger D/C 2013→</div>
+            <div class="card-precio">$ 430.135</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1221-B15101/1.webp" alt="ESTRIBO G3 PULIDO BEPO FORD RANGER 1999/2012" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1221-B15101</div>
+            <div class="card-nombre">ESTRIBO G3 PULIDO BEPO FORD RANGER 1999/2012</div>
+            <div class="card-compat">Ford Ranger D/C 1999–2012</div>
+            <div class="card-precio">$ 430.135</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1220-B15813/1.webp" alt="ESTRIBO G3 PULIDO BEPO FORD RANGER 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1220-B15813</div>
+            <div class="card-nombre">ESTRIBO G3 PULIDO BEPO FORD RANGER 2023+</div>
+            <div class="card-compat">Ford Ranger D/C 2023→</div>
+            <div class="card-precio">$ 430.135</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1220A-B15137/1.webp" alt="ESTRIBO G3 NEGRO BEPO FORD RANGER 2013+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1220A-B15137</div>
+            <div class="card-nombre">ESTRIBO G3 NEGRO BEPO FORD RANGER 2013+</div>
+            <div class="card-compat">Ford Ranger D/C 2013→</div>
+            <div class="card-precio">$ 430.135</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1221A-B15101/1.webp" alt="ESTRIBO G3 NEGRO BEPO FORD RANGER 99/2012" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1221A-B15101</div>
+            <div class="card-nombre">ESTRIBO G3 NEGRO BEPO FORD RANGER 99/2012</div>
+            <div class="card-compat">Ford Ranger D/C 1999–2012</div>
+            <div class="card-precio">$ 430.135</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1220A-B15813/1.webp" alt="ESTRIBO G3 NEGRO BEPO FORD RANGER 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1220A-B15813</div>
+            <div class="card-nombre">ESTRIBO G3 NEGRO BEPO FORD RANGER 2023+</div>
+            <div class="card-compat">Ford Ranger D/C 2023→</div>
+            <div class="card-precio">$ 430.135</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1236/1.webp" alt="ESTRIBO PLÁSTICO INYECTADO BEPO FORD RANGER 2013+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1236</div>
+            <div class="card-nombre">ESTRIBO PLÁSTICO INYECTADO BEPO FORD RANGER 2013+</div>
+            <div class="card-compat">Ford Ranger D/C 2013→</div>
+            <div class="card-precio">$ 607.644</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1425/1.webp" alt="ESTRIBO PLÁSTICO INYECTADO BEPO FORD RANGER 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1425</div>
+            <div class="card-nombre">ESTRIBO PLÁSTICO INYECTADO BEPO FORD RANGER 2023+</div>
+            <div class="card-compat">Ford Ranger D/C 2023→</div>
+            <div class="card-precio">$ 607.644</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/7521/1.webp" alt="ESTRIBO ELÉCTRICO DP-20 FORD RANGER NUEVA Y RAPTOR 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">7521</div>
+            <div class="card-nombre">ESTRIBO ELÉCTRICO DP-20 FORD RANGER NUEVA Y RAPTOR 2023+</div>
+            <div class="card-compat">Ford Ranger Nueva y Raptor desde junio 2023→</div>
+            <div class="card-precio">$ 2.175.459</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">KIT ANTIRROBO AUXILIO</span>
+          <span class="cat-count">3 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/N.096.0/1.webp" alt="KIT ANTIRROBO AUXILIO FORD RANGER" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">N.096.0</div>
+            <div class="card-nombre">KIT ANTIRROBO AUXILIO FORD RANGER</div>
+            <div class="card-compat">Ford Ranger 2012–2023</div>
+            <div class="card-precio">$ 204.792</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/L.120.0/1.webp" alt="KIT ANTIRROBO AUXILIO FORD RANGER XL/XLS/XLT/V6" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">L.120.0</div>
+            <div class="card-nombre">KIT ANTIRROBO AUXILIO FORD RANGER XL/XLS/XLT/V6</div>
+            <div class="card-compat">Ford Ranger XL / XLS / XLT / V6 2023–2025</div>
+            <div class="card-precio">$ 204.792</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/N.104.0/1.webp" alt="KIT ANTIRROBO AUXILIO FORD RANGER RAPTOR" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">N.104.0</div>
+            <div class="card-nombre">KIT ANTIRROBO AUXILIO FORD RANGER RAPTOR</div>
+            <div class="card-compat">Ford Ranger Raptor 2016–2025</div>
+            <div class="card-precio">$ 204.792</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">LOMOS DE CAJA</span>
+          <span class="cat-count">2 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B967C/1.webp" alt="LOMO LATERAL DE CAJA BEPO FORD RANGER 2013+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B967C</div>
+            <div class="card-nombre">LOMO LATERAL DE CAJA BEPO FORD RANGER 2013+</div>
+            <div class="card-compat">Ford Ranger 2013→</div>
+            <div class="card-precio">$ 90.644</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B967B/1.webp" alt="LOMO DE PORTÓN BEPO FORD RANGER 2013+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B967B</div>
+            <div class="card-nombre">LOMO DE PORTÓN BEPO FORD RANGER 2013+</div>
+            <div class="card-compat">Ford Ranger 2013→</div>
+            <div class="card-precio">$ 61.924</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">LONAS FLASHCOVER</span>
+          <span class="cat-count">14 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/019FF/1.webp" alt="LONA FLASHCOVER FORCE FORD RANGER D/C MODELO VIEJO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">019FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE FORD RANGER D/C MODELO VIEJO</div>
+            <div class="card-compat">Ford Ranger D/C modelo viejo</div>
+            <div class="card-precio">$ 394.023</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/929FF/1.webp" alt="LONA FLASHCOVER FORCE FORD RANGER D/C 2013+ XLS" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">929FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE FORD RANGER D/C 2013+ XLS</div>
+            <div class="card-compat">Ford Ranger D/C 2013→ XLS</div>
+            <div class="card-precio">$ 394.023</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/177FF/1.webp" alt="LONA FLASHCOVER FORCE FORD RANGER D/C 2013+ XLT" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">177FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE FORD RANGER D/C 2013+ XLT</div>
+            <div class="card-compat">Ford Ranger D/C 2013→ XLT</div>
+            <div class="card-precio">$ 444.879</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/179FF/1.webp" alt="LONA FLASHCOVER FORCE FORD RANGER D/C 2013+ LIMITED" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">179FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE FORD RANGER D/C 2013+ LIMITED</div>
+            <div class="card-compat">Ford Ranger D/C 2013→ Limited</div>
+            <div class="card-precio">$ 444.879</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/646FF/1.webp" alt="LONA FLASHCOVER FORCE FORD RANGER 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">646FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE FORD RANGER 2023+</div>
+            <div class="card-compat">Ford Ranger 2023→</div>
+            <div class="card-precio">$ 394.023</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/650FF/1.webp" alt="LONA FLASHCOVER FORCE FORD RANGER LIMITED 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">650FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE FORD RANGER LIMITED 2023+</div>
+            <div class="card-compat">Ford Ranger Limited 2023→</div>
+            <div class="card-precio">$ 444.879</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/178FF/1.webp" alt="LONA FLASHCOVER FORCE FORD RANGER CABINA SIMPLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">178FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE FORD RANGER CABINA SIMPLE</div>
+            <div class="card-compat">Ford Ranger Cabina Simple</div>
+            <div class="card-precio">$ 506.212</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/019RP/1.webp" alt="LONA FLASHCOVER ROLLER FORD RANGER D/C MODELO VIEJO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">019RP</div>
+            <div class="card-nombre">LONA FLASHCOVER ROLLER FORD RANGER D/C MODELO VIEJO</div>
+            <div class="card-compat">Ford Ranger D/C modelo viejo</div>
+            <div class="card-precio">$ 473.472</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/929RP/1.webp" alt="LONA FLASHCOVER ROLLER FORD RANGER D/C 2013+ XLS" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">929RP</div>
+            <div class="card-nombre">LONA FLASHCOVER ROLLER FORD RANGER D/C 2013+ XLS</div>
+            <div class="card-compat">Ford Ranger D/C 2013→ XLS</div>
+            <div class="card-precio">$ 473.472</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/177RP/1.webp" alt="LONA FLASHCOVER ROLLER FORD RANGER D/C 2013+ XLT" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">177RP</div>
+            <div class="card-nombre">LONA FLASHCOVER ROLLER FORD RANGER D/C 2013+ XLT</div>
+            <div class="card-compat">Ford Ranger D/C 2013→ XLT</div>
+            <div class="card-precio">$ 533.348</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/179RP/1.webp" alt="LONA FLASHCOVER ROLLER FORD RANGER D/C 2013+ LIMITED" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">179RP</div>
+            <div class="card-nombre">LONA FLASHCOVER ROLLER FORD RANGER D/C 2013+ LIMITED</div>
+            <div class="card-compat">Ford Ranger D/C 2013→ Limited</div>
+            <div class="card-precio">$ 533.348</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/646RP/1.webp" alt="LONA FLASHCOVER ROLLER FORD RANGER 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">646RP</div>
+            <div class="card-nombre">LONA FLASHCOVER ROLLER FORD RANGER 2023+</div>
+            <div class="card-compat">Ford Ranger 2023→</div>
+            <div class="card-precio">$ 473.472</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/650RP/1.webp" alt="LONA FLASHCOVER ROLLER FORD RANGER LIMITED 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">650RP</div>
+            <div class="card-nombre">LONA FLASHCOVER ROLLER FORD RANGER LIMITED 2023+</div>
+            <div class="card-compat">Ford Ranger Limited 2023→</div>
+            <div class="card-precio">$ 533.348</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/178RP/1.webp" alt="LONA FLASHCOVER ROLLER FORD RANGER CABINA SIMPLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">178RP</div>
+            <div class="card-nombre">LONA FLASHCOVER ROLLER FORD RANGER CABINA SIMPLE</div>
+            <div class="card-compat">Ford Ranger Cabina Simple</div>
+            <div class="card-precio">$ 586.467</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">TAPAS RÍGIDAS</span>
+          <span class="cat-count">15 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/TAPTT1001/1.webp" alt="TAPA TOP TIGER FORD RANGER D/C XL/XLT/XLS/RAPTOR" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">TAPTT1001</div>
+            <div class="card-nombre">TAPA TOP TIGER FORD RANGER D/C XL/XLT/XLS/RAPTOR</div>
+            <div class="card-compat">Ford Ranger D/C — XL / XLT / XLS / Raptor 2023→</div>
+            <div class="card-precio">$ 1.257.750</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/TAPTT1006/1.webp" alt="TAPA TOP TIGER FORD RANGER D/C LIMITED" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">TAPTT1006</div>
+            <div class="card-nombre">TAPA TOP TIGER FORD RANGER D/C LIMITED</div>
+            <div class="card-compat">Ford Ranger D/C Limited 2023→</div>
+            <div class="card-precio">$ 1.377.535</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/TAPTT1009/1.webp" alt="TAPA TOP TIGER FORD RANGER D/C 2012-2022" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">TAPTT1009</div>
+            <div class="card-nombre">TAPA TOP TIGER FORD RANGER D/C 2012-2022</div>
+            <div class="card-compat">Ford Ranger D/C 2012–2022</div>
+            <div class="card-precio">$ 1.257.750</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTT3/1.webp" alt="TAPA PLEGABLE TRICOVER FORD RANGER 2013/2022" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTT3</div>
+            <div class="card-nombre">TAPA PLEGABLE TRICOVER FORD RANGER 2013/2022</div>
+            <div class="card-compat">Ford Ranger 2013–2022</div>
+            <div class="card-precio">$ 1.402.965</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTT12/1.webp" alt="TAPA PLEGABLE TRICOVER FORD RANGER 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTT12</div>
+            <div class="card-nombre">TAPA PLEGABLE TRICOVER FORD RANGER 2023+</div>
+            <div class="card-compat">Ford Ranger 2023→</div>
+            <div class="card-precio">$ 1.402.965</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTP3/1.webp" alt="TAPA PLEGABLE KRAKEN FORD RANGER 2013/2022" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTP3</div>
+            <div class="card-nombre">TAPA PLEGABLE KRAKEN FORD RANGER 2013/2022</div>
+            <div class="card-compat">Ford Ranger 2013–2022</div>
+            <div class="card-precio">$ 1.987.500</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTP8/1.webp" alt="TAPA PLEGABLE KRAKEN FORD RANGER LIMITED 2013/2022" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTP8</div>
+            <div class="card-nombre">TAPA PLEGABLE KRAKEN FORD RANGER LIMITED 2013/2022</div>
+            <div class="card-compat">Ford Ranger Limited 2013–2022</div>
+            <div class="card-precio">$ 1.987.500</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTP12/1.webp" alt="TAPA PLEGABLE KRAKEN FORD RANGER 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTP12</div>
+            <div class="card-nombre">TAPA PLEGABLE KRAKEN FORD RANGER 2023+</div>
+            <div class="card-compat">Ford Ranger 2023→</div>
+            <div class="card-precio">$ 1.987.500</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTP13/1.webp" alt="TAPA PLEGABLE KRAKEN FORD RANGER LIMITED 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTP13</div>
+            <div class="card-nombre">TAPA PLEGABLE KRAKEN FORD RANGER LIMITED 2023+</div>
+            <div class="card-compat">Ford Ranger Limited 2023→</div>
+            <div class="card-precio">$ 1.987.500</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTP19/1.webp" alt="TAPA PLEGABLE KRAKEN FORD RANGER 2023+ INTERIOR ELITE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTP19</div>
+            <div class="card-nombre">TAPA PLEGABLE KRAKEN FORD RANGER 2023+ INTERIOR ELITE</div>
+            <div class="card-compat">Ford Ranger 2023→ Interior Elite</div>
+            <div class="card-precio">$ 1.987.500</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTR3xlt/1.webp" alt="TAPA RETRÁCTIL KRAKEN FORD RANGER XLT 2013/2022" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTR3xlt</div>
+            <div class="card-nombre">TAPA RETRÁCTIL KRAKEN FORD RANGER XLT 2013/2022</div>
+            <div class="card-compat">Ford Ranger XLT 2013–2022</div>
+            <div class="card-precio">$ 2.113.316</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTR3/1.webp" alt="TAPA RETRÁCTIL KRAKEN FORD RANGER 2013+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTR3</div>
+            <div class="card-nombre">TAPA RETRÁCTIL KRAKEN FORD RANGER 2013+</div>
+            <div class="card-compat">Ford Ranger 2013→</div>
+            <div class="card-precio">$ 2.113.316</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTR8/1.webp" alt="TAPA RETRÁCTIL KRAKEN FORD RANGER LIMITED 2013/2022" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTR8</div>
+            <div class="card-nombre">TAPA RETRÁCTIL KRAKEN FORD RANGER LIMITED 2013/2022</div>
+            <div class="card-compat">Ford Ranger Limited 2013–2022</div>
+            <div class="card-precio">$ 2.113.316</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTR12/1.webp" alt="TAPA RETRÁCTIL KRAKEN FORD RANGER 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTR12</div>
+            <div class="card-nombre">TAPA RETRÁCTIL KRAKEN FORD RANGER 2023+</div>
+            <div class="card-compat">Ford Ranger 2023→</div>
+            <div class="card-precio">$ 2.113.316</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTR13/1.webp" alt="TAPA RETRÁCTIL KRAKEN FORD RANGER LIMITED 2023+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTR13</div>
+            <div class="card-nombre">TAPA RETRÁCTIL KRAKEN FORD RANGER LIMITED 2023+</div>
+            <div class="card-compat">Ford Ranger Limited 2023→</div>
+            <div class="card-precio">$ 2.113.316</div>
+          </div>
+        </div>
+        </div>
+      </section>
+  </div>
+
+  <footer class="footer">
+    Precios en pesos argentinos con IVA incluido · Sujeto a cambios sin previo aviso · monstertrail.com.ar
+  </footer>
+
+</body>
+</html>

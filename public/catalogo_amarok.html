@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MonsterTrail — Volkswagen Amarok</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --rojo:   #9c1905;
+      --negro:  #1a1a1a;
+      --blanco: #ffffff;
+      --gris:   #f4f4f4;
+      --gris2:  #e0e0e0;
+      --gris3:  #888;
+      --card-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f0f0f0;
+      color: var(--negro);
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--rojo);
+      padding: 18px 32px 14px;
+      display: flex;
+      align-items: flex-end;
+      gap: 20px;
+      border-bottom: 5px solid var(--negro);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 36px;
+      color: var(--blanco);
+      letter-spacing: 1px;
+      line-height: 1;
+    }
+    .header-sep {
+      width: 2px; height: 36px;
+      background: rgba(255,255,255,0.3);
+    }
+    .header-vehicle {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: 22px;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 0.5px;
+      line-height: 1;
+    }
+    .header-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+      margin-top: 3px;
+    }
+    .header-count {
+      margin-left: auto;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    /* ── CONTENIDO ── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 20px 40px;
+    }
+
+    /* ── CATEGORÍA ── */
+    .category {
+      margin-bottom: 28px;
+    }
+    .cat-header {
+      background: var(--negro);
+      color: var(--blanco);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      border-radius: 2px;
+    }
+    .cat-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 1px;
+    }
+    .cat-count {
+      font-size: 11px;
+      color: rgba(255,255,255,0.55);
+    }
+
+    /* ── GRILLA ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--blanco);
+      border-radius: 4px;
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--gris2);
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+    .card:hover {
+      box-shadow: 0 4px 16px rgba(156,25,5,0.15);
+      transform: translateY(-2px);
+    }
+    .card-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: var(--gris);
+      overflow: hidden;
+      position: relative;
+    }
+    .card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .card-img-placeholder {
+      display: none;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--gris3);
+      background: var(--gris);
+    }
+    .card-body {
+      padding: 8px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .card-id {
+      font-size: 9px;
+      color: var(--gris3);
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+    .card-nombre {
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 4px;
+      flex: 1;
+    }
+    .card-compat {
+      font-size: 9px;
+      color: var(--gris3);
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    .card-precio {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--rojo);
+      letter-spacing: 0.5px;
+      border-top: 1px solid var(--gris2);
+      padding-top: 6px;
+      margin-top: auto;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 10px;
+      color: var(--gris3);
+      border-top: 1px solid var(--gris2);
+    }
+
+    @media print {
+      .header { position: static; }
+      .card:hover { transform: none; box-shadow: var(--card-shadow); }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div>
+      <div class="header-logo">MONSTERTRAIL</div>
+    </div>
+    <div class="header-sep"></div>
+    <div>
+      <div class="header-vehicle">Catálogo — Volkswagen Amarok</div>
+      <div class="header-sub">Accesorios 4×4 y Pick-Up</div>
+    </div>
+    <div class="header-count">
+      61 productos<br>
+      <span style="font-size:10px">Precios con IVA incluido</span>
+    </div>
+  </header>
+
+  <div class="container">
+    
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">ALFOMBRAS</span>
+          <span class="cat-count">2 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ZTVWA/90/1.webp" alt="CUBRE ALFOMBRAS VW AMAROK D/C HABITÁCULO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ZTVWA/90</div>
+            <div class="card-nombre">CUBRE ALFOMBRAS VW AMAROK D/C HABITÁCULO</div>
+            <div class="card-compat">Volkswagen Amarok D/C 2010→</div>
+            <div class="card-precio">$ 440.675</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ZTVWA CS/92/1.webp" alt="CUBRE ALFOMBRAS VW AMAROK CABINA SIMPLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ZTVWA CS/92</div>
+            <div class="card-nombre">CUBRE ALFOMBRAS VW AMAROK CABINA SIMPLE</div>
+            <div class="card-compat">Volkswagen Amarok Cabina Simple 2010→</div>
+            <div class="card-precio">$ 352.540</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">AMORTIGUADORES</span>
+          <span class="cat-count">1 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/009.020.0206/1.webp" alt="AMORTIGUADOR COMPUERTA STEEL TIGER C/BARRA NN AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">009.020.0206</div>
+            <div class="card-nombre">AMORTIGUADOR COMPUERTA STEEL TIGER C/BARRA NN AMAROK</div>
+            <div class="card-compat">VW Amarok (con barra NN)</div>
+            <div class="card-precio">$ 121.781</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">BARRA EXTREME PLUS</span>
+          <span class="cat-count">2 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BPI501/1.webp" alt="BARRA EXTREME PLUS INOXIDABLE VOLKSWAGEN AMAROK CABINA SIMPLE/DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BPI501</div>
+            <div class="card-nombre">BARRA EXTREME PLUS INOXIDABLE VOLKSWAGEN AMAROK CABINA SIMPLE/DOBLE</div>
+            <div class="card-compat">VW Amarok Cab. Simple/Doble 2010→</div>
+            <div class="card-precio">$ 547.965</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BPN601/1.webp" alt="BARRA EXTREME PLUS NEGRA VOLKSWAGEN AMAROK CABINA SIMPLE/DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BPN601</div>
+            <div class="card-nombre">BARRA EXTREME PLUS NEGRA VOLKSWAGEN AMAROK CABINA SIMPLE/DOBLE</div>
+            <div class="card-compat">VW Amarok Cab. Simple/Doble 2010→</div>
+            <div class="card-precio">$ 387.952</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">BARRAS MODULARES</span>
+          <span class="cat-count">1 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BTM902/1.webp" alt="BARRA DE TRABAJO MODULAR VOLKSWAGEN AMAROK CABINA DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BTM902</div>
+            <div class="card-nombre">BARRA DE TRABAJO MODULAR VOLKSWAGEN AMAROK CABINA DOBLE</div>
+            <div class="card-compat">VW Amarok Cabina Doble 2010→</div>
+            <div class="card-precio">$ 471.972</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">BARRAS DE TRABAJO</span>
+          <span class="cat-count">4 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BTD802/1.webp" alt="BARRA DE TRABAJO VOLKSWAGEN AMAROK CABINA DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BTD802</div>
+            <div class="card-nombre">BARRA DE TRABAJO VOLKSWAGEN AMAROK CABINA DOBLE</div>
+            <div class="card-compat">VW Amarok Cabina Doble 2010→</div>
+            <div class="card-precio">$ 496.819</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BTS802/1.webp" alt="BARRA DE TRABAJO VOLKSWAGEN AMAROK CABINA SIMPLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BTS802</div>
+            <div class="card-nombre">BARRA DE TRABAJO VOLKSWAGEN AMAROK CABINA SIMPLE</div>
+            <div class="card-compat">VW Amarok Cabina Simple 2010→</div>
+            <div class="card-precio">$ 590.450</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KBA-A/1.webp" alt="BARRA SPORTBAR KRAKEN OFF ROAD VW AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KBA-A</div>
+            <div class="card-nombre">BARRA SPORTBAR KRAKEN OFF ROAD VW AMAROK</div>
+            <div class="card-compat">Volkswagen Amarok</div>
+            <div class="card-precio">$ 992.997</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KPAR1/1.webp" alt="PARRILLA KRAKEN OFF ROAD VW AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KPAR1</div>
+            <div class="card-nombre">PARRILLA KRAKEN OFF ROAD VW AMAROK</div>
+            <div class="card-compat">Volkswagen Amarok</div>
+            <div class="card-precio">$ 693.232</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">BAÚL</span>
+          <span class="cat-count">4 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1093A/1.webp" alt="BARRAS LONGITUDINALES NEGRAS BEPO VW AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1093A</div>
+            <div class="card-nombre">BARRAS LONGITUDINALES NEGRAS BEPO VW AMAROK</div>
+            <div class="card-compat">Volkswagen Amarok</div>
+            <div class="card-precio">$ 304.334</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1093C/1.webp" alt="BARRAS LONGITUDINALES PULIDAS BEPO VW AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1093C</div>
+            <div class="card-nombre">BARRAS LONGITUDINALES PULIDAS BEPO VW AMAROK</div>
+            <div class="card-compat">Volkswagen Amarok</div>
+            <div class="card-precio">$ 304.334</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KBL1-IZQ/1.webp" alt="BAÚL LATERAL RETRÁCTIL KRAKEN VW AMAROK IZQUIERDO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KBL1-IZQ</div>
+            <div class="card-nombre">BAÚL LATERAL RETRÁCTIL KRAKEN VW AMAROK IZQUIERDO</div>
+            <div class="card-compat">Volkswagen Amarok DC — lado izquierdo (conductor)</div>
+            <div class="card-precio">$ 674.412</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KBL1-DER/1.webp" alt="BAÚL LATERAL RETRÁCTIL KRAKEN VW AMAROK DERECHO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KBL1-DER</div>
+            <div class="card-nombre">BAÚL LATERAL RETRÁCTIL KRAKEN VW AMAROK DERECHO</div>
+            <div class="card-compat">Volkswagen Amarok DC — lado derecho (acompañante)</div>
+            <div class="card-precio">$ 674.412</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">COBERTORES DE CAJA</span>
+          <span class="cat-count">5 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ZTVWACBB/125/1.webp" alt="CUBRE ALFOMBRA CAJA VW AMAROK CHAPA" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ZTVWACBB/125</div>
+            <div class="card-nombre">CUBRE ALFOMBRA CAJA VW AMAROK CHAPA</div>
+            <div class="card-compat">Volkswagen Amarok (chapa interior)</div>
+            <div class="card-precio">$ 377.718</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/501/1.webp" alt="COBERTOR PROFORM VW AMAROK D/C B/P" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">501</div>
+            <div class="card-nombre">COBERTOR PROFORM VW AMAROK D/C B/P</div>
+            <div class="card-compat">Volkswagen Amarok D/C Bajo Perfil</div>
+            <div class="card-precio">$ 401.672</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/502/1.webp" alt="COBERTOR PROFORM VW AMAROK D/C S/P" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">502</div>
+            <div class="card-nombre">COBERTOR PROFORM VW AMAROK D/C S/P</div>
+            <div class="card-compat">Volkswagen Amarok D/C Sobre Perfil</div>
+            <div class="card-precio">$ 401.672</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/503/1.webp" alt="COBERTOR PROFORM VW AMAROK C/S B/P" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">503</div>
+            <div class="card-nombre">COBERTOR PROFORM VW AMAROK C/S B/P</div>
+            <div class="card-compat">Volkswagen Amarok Cabina Simple Bajo Perfil</div>
+            <div class="card-precio">$ 471.101</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/504/1.webp" alt="COBERTOR PROFORM VW AMAROK C/S S/P" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">504</div>
+            <div class="card-nombre">COBERTOR PROFORM VW AMAROK C/S S/P</div>
+            <div class="card-compat">Volkswagen Amarok Cabina Simple Sobre Perfil</div>
+            <div class="card-precio">$ 471.101</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">DEFENSAS BAJAS</span>
+          <span class="cat-count">6 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/DBI603/1.webp" alt="DEFENSA BAJA INOXIDABLE VOLKSWAGEN AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">DBI603</div>
+            <div class="card-nombre">DEFENSA BAJA INOXIDABLE VOLKSWAGEN AMAROK</div>
+            <div class="card-compat">VW Amarok 2010–2015</div>
+            <div class="card-precio">$ 386.033</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/DBI610/1.webp" alt="DEFENSA BAJA INOXIDABLE VOLKSWAGEN AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">DBI610</div>
+            <div class="card-nombre">DEFENSA BAJA INOXIDABLE VOLKSWAGEN AMAROK</div>
+            <div class="card-compat">VW Amarok 2016→</div>
+            <div class="card-precio">$ 386.033</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/DBI618/1.webp" alt="DEFENSA BAJA INOXIDABLE VOLKSWAGEN AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">DBI618</div>
+            <div class="card-nombre">DEFENSA BAJA INOXIDABLE VOLKSWAGEN AMAROK</div>
+            <div class="card-compat">VW Amarok 2024→</div>
+            <div class="card-precio">$ 386.033</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/DBN103/1.webp" alt="DEFENSA BAJA NEGRA VOLKSWAGEN AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">DBN103</div>
+            <div class="card-nombre">DEFENSA BAJA NEGRA VOLKSWAGEN AMAROK</div>
+            <div class="card-compat">VW Amarok 2010–2015</div>
+            <div class="card-precio">$ 219.614</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/DBN110/1.webp" alt="DEFENSA BAJA NEGRA VOLKSWAGEN AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">DBN110</div>
+            <div class="card-nombre">DEFENSA BAJA NEGRA VOLKSWAGEN AMAROK</div>
+            <div class="card-compat">VW Amarok 2016→</div>
+            <div class="card-precio">$ 219.614</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/DBN118/1.webp" alt="DEFENSA BAJA NEGRA VOLKSWAGEN AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">DBN118</div>
+            <div class="card-nombre">DEFENSA BAJA NEGRA VOLKSWAGEN AMAROK</div>
+            <div class="card-compat">VW Amarok 2024→</div>
+            <div class="card-precio">$ 219.614</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">DEFLECTORES</span>
+          <span class="cat-count">7 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O3032/1.webp" alt="DEFLECTOR CAPOT VW AMAROK 2010+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O3032</div>
+            <div class="card-nombre">DEFLECTOR CAPOT VW AMAROK 2010+</div>
+            <div class="card-compat">Volkswagen Amarok 2010→</div>
+            <div class="card-precio">$ 43.768</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O3093/1.webp" alt="DEFLECTOR CAPOT VW AMAROK NUEVA GENERACIÓN 2024+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O3093</div>
+            <div class="card-nombre">DEFLECTOR CAPOT VW AMAROK NUEVA GENERACIÓN 2024+</div>
+            <div class="card-compat">Volkswagen Amarok Nueva Generación 2024→</div>
+            <div class="card-precio">$ 55.104</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/G1835A/1.webp" alt="DEFLECTOR VENTANILLA ADHESIVO VW AMAROK C/SIMPLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">G1835A</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA ADHESIVO VW AMAROK C/SIMPLE</div>
+            <div class="card-compat">Volkswagen Amarok Cabina Simple</div>
+            <div class="card-precio">$ 35.568</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O1830A/1.webp" alt="DEFLECTOR VENTANILLA ADHESIVO VW AMAROK DEL." loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O1830A</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA ADHESIVO VW AMAROK DEL.</div>
+            <div class="card-compat">Volkswagen Amarok — delantero</div>
+            <div class="card-precio">$ 35.099</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O1830TA/1.webp" alt="DEFLECTOR VENTANILLA ADHESIVO VW AMAROK TRAS." loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O1830TA</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA ADHESIVO VW AMAROK TRAS.</div>
+            <div class="card-compat">Volkswagen Amarok — trasero</div>
+            <div class="card-precio">$ 28.411</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/G1830/1.webp" alt="DEFLECTOR VENTANILLA COLIZA VW AMAROK 2010+ DEL." loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">G1830</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA COLIZA VW AMAROK 2010+ DEL.</div>
+            <div class="card-compat">Volkswagen Amarok 2010→ — delantero</div>
+            <div class="card-precio">$ 33.225</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/G1835/1.webp" alt="DEFLECTOR VENTANILLA COLIZA VW AMAROK C/SIMPLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">G1835</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA COLIZA VW AMAROK C/SIMPLE</div>
+            <div class="card-compat">Volkswagen Amarok Cabina Simple</div>
+            <div class="card-precio">$ 32.373</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">ELECTRÓNICA DP-20</span>
+          <span class="cat-count">2 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/7011/1.webp" alt="APERTURA AUTOMÁTICA PORTÓN TRASERO DP-20 VW AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">7011</div>
+            <div class="card-nombre">APERTURA AUTOMÁTICA PORTÓN TRASERO DP-20 VW AMAROK</div>
+            <div class="card-compat">Volkswagen Amarok — todas las versiones</div>
+            <div class="card-precio">$ 449.249</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/3630/1.webp" alt="CIERRE CENTRALIZADO PORTÓN DP-20 VW AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">3630</div>
+            <div class="card-nombre">CIERRE CENTRALIZADO PORTÓN DP-20 VW AMAROK</div>
+            <div class="card-compat">Volkswagen Amarok — todas las versiones</div>
+            <div class="card-precio">$ 94.866</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">ENGANCHES LIVIANOS</span>
+          <span class="cat-count">1 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/EVW7417/1.webp" alt="ENGANCHE ST1 VOLKSWAGEN AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">EVW7417</div>
+            <div class="card-nombre">ENGANCHE ST1 VOLKSWAGEN AMAROK</div>
+            <div class="card-compat">Volkswagen Amarok 2010→</div>
+            <div class="card-precio">$ 116.656</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">ENGANCHES PESADOS</span>
+          <span class="cat-count">1 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SE080/1.webp" alt="ENGANCHE ST5 VOLKSWAGEN AMAROK MOD. 10+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SE080</div>
+            <div class="card-nombre">ENGANCHE ST5 VOLKSWAGEN AMAROK MOD. 10+</div>
+            <div class="card-compat">Volkswagen Amarok 2010→</div>
+            <div class="card-precio">$ 148.828</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">ESTRIBOS</span>
+          <span class="cat-count">6 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SEA154/1.webp" alt="SOPORTES ESTRIBO BLACKTREND VW AMAROK D/C" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SEA154</div>
+            <div class="card-nombre">SOPORTES ESTRIBO BLACKTREND VW AMAROK D/C</div>
+            <div class="card-compat">VW Amarok D/C 2010→</div>
+            <div class="card-precio">$ 144.555</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SEA054/1.webp" alt="SOPORTES ESTRIBOS OPTIMUS/STATUS/STRONG VW AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SEA054</div>
+            <div class="card-nombre">SOPORTES ESTRIBOS OPTIMUS/STATUS/STRONG VW AMAROK</div>
+            <div class="card-compat">VW Amarok 2010→</div>
+            <div class="card-precio">$ 137.671</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1221-B15139/1.webp" alt="ESTRIBO G3 PULIDO BEPO VW AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1221-B15139</div>
+            <div class="card-nombre">ESTRIBO G3 PULIDO BEPO VW AMAROK</div>
+            <div class="card-compat">Volkswagen Amarok DC</div>
+            <div class="card-precio">$ 430.135</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1221A-B15139/1.webp" alt="ESTRIBO G3 NEGRO BEPO VW AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1221A-B15139</div>
+            <div class="card-nombre">ESTRIBO G3 NEGRO BEPO VW AMAROK</div>
+            <div class="card-compat">Volkswagen Amarok DC</div>
+            <div class="card-precio">$ 430.135</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1238/1.webp" alt="ESTRIBO PLÁSTICO INYECTADO BEPO VW AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1238</div>
+            <div class="card-nombre">ESTRIBO PLÁSTICO INYECTADO BEPO VW AMAROK</div>
+            <div class="card-compat">Volkswagen Amarok DC</div>
+            <div class="card-precio">$ 607.644</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/7511/1.webp" alt="ESTRIBO ELÉCTRICO DP-20 VW AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">7511</div>
+            <div class="card-nombre">ESTRIBO ELÉCTRICO DP-20 VW AMAROK</div>
+            <div class="card-compat">Volkswagen Amarok</div>
+            <div class="card-precio">$ 2.175.459</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">KIT ANTIRROBO AUXILIO</span>
+          <span class="cat-count">3 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/N.103.0/1.webp" alt="KIT ANTIRROBO AUXILIO VW AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">N.103.0</div>
+            <div class="card-nombre">KIT ANTIRROBO AUXILIO VW AMAROK</div>
+            <div class="card-compat">Volkswagen Amarok 2011–2015</div>
+            <div class="card-precio">$ 204.792</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/C.078.0/1.webp" alt="KIT ANTIRROBO AUXILIO VW AMAROK TRENDLINE / COMFORTLINE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">C.078.0</div>
+            <div class="card-nombre">KIT ANTIRROBO AUXILIO VW AMAROK TRENDLINE / COMFORTLINE</div>
+            <div class="card-compat">Volkswagen Amarok Trendline / Comfortline</div>
+            <div class="card-precio">$ 204.792</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/L.114.0/1.webp" alt="KIT ANTIRROBO AUXILIO VW AMAROK COMFORTLINE / HIGHLINE 180HP" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">L.114.0</div>
+            <div class="card-nombre">KIT ANTIRROBO AUXILIO VW AMAROK COMFORTLINE / HIGHLINE 180HP</div>
+            <div class="card-compat">Volkswagen Amarok Comfortline / Highline 180HP</div>
+            <div class="card-precio">$ 204.792</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">LOMOS DE CAJA</span>
+          <span class="cat-count">2 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B962C/1.webp" alt="LOMO LATERAL DE CAJA BEPO VW AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B962C</div>
+            <div class="card-nombre">LOMO LATERAL DE CAJA BEPO VW AMAROK</div>
+            <div class="card-compat">Volkswagen Amarok</div>
+            <div class="card-precio">$ 90.644</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B962B/1.webp" alt="LOMO DE PORTÓN BEPO VW AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B962B</div>
+            <div class="card-nombre">LOMO DE PORTÓN BEPO VW AMAROK</div>
+            <div class="card-compat">Volkswagen Amarok</div>
+            <div class="card-precio">$ 61.924</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">LONAS FLASHCOVER</span>
+          <span class="cat-count">6 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/160FF/1.webp" alt="LONA FLASHCOVER FORCE VW AMAROK D/C" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">160FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE VW AMAROK D/C</div>
+            <div class="card-compat">Volkswagen Amarok D/C</div>
+            <div class="card-precio">$ 394.023</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/203FF/1.webp" alt="LONA FLASHCOVER FORCE VW AMAROK V6 EXTREME" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">203FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE VW AMAROK V6 EXTREME</div>
+            <div class="card-compat">Volkswagen Amarok V6 Extreme</div>
+            <div class="card-precio">$ 444.879</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/173FF/1.webp" alt="LONA FLASHCOVER FORCE VW AMAROK CABINA SIMPLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">173FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE VW AMAROK CABINA SIMPLE</div>
+            <div class="card-compat">Volkswagen Amarok Cabina Simple</div>
+            <div class="card-precio">$ 506.212</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/160RP/1.webp" alt="LONA FLASHCOVER ROLLER VW AMAROK D/C" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">160RP</div>
+            <div class="card-nombre">LONA FLASHCOVER ROLLER VW AMAROK D/C</div>
+            <div class="card-compat">Volkswagen Amarok D/C</div>
+            <div class="card-precio">$ 473.472</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/203RP/1.webp" alt="LONA FLASHCOVER ROLLER VW AMAROK V6 EXTREME" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">203RP</div>
+            <div class="card-nombre">LONA FLASHCOVER ROLLER VW AMAROK V6 EXTREME</div>
+            <div class="card-compat">Volkswagen Amarok V6 Extreme</div>
+            <div class="card-precio">$ 533.348</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/173RP/1.webp" alt="LONA FLASHCOVER ROLLER VW AMAROK CABINA SIMPLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">173RP</div>
+            <div class="card-nombre">LONA FLASHCOVER ROLLER VW AMAROK CABINA SIMPLE</div>
+            <div class="card-compat">Volkswagen Amarok Cabina Simple</div>
+            <div class="card-precio">$ 586.467</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">TAPAS RÍGIDAS</span>
+          <span class="cat-count">8 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/TAPTT1003/1.webp" alt="TAPA TOP TIGER VW AMAROK D/D" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">TAPTT1003</div>
+            <div class="card-nombre">TAPA TOP TIGER VW AMAROK D/D</div>
+            <div class="card-compat">VW Amarok Doble Diferencial 2010→</div>
+            <div class="card-precio">$ 1.257.750</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/TAPTT1007/1.webp" alt="TAPA TOP TIGER VW AMAROK V6 EXTREME" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">TAPTT1007</div>
+            <div class="card-nombre">TAPA TOP TIGER VW AMAROK V6 EXTREME</div>
+            <div class="card-compat">VW Amarok D/C V6 Extreme 2010→</div>
+            <div class="card-precio">$ 1.404.282</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTT1/1.webp" alt="TAPA PLEGABLE TRICOVER VW AMAROK" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTT1</div>
+            <div class="card-nombre">TAPA PLEGABLE TRICOVER VW AMAROK</div>
+            <div class="card-compat">Volkswagen Amarok DC</div>
+            <div class="card-precio">$ 1.402.965</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTP1/1.webp" alt="TAPA PLEGABLE KRAKEN VW AMAROK DC" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTP1</div>
+            <div class="card-nombre">TAPA PLEGABLE KRAKEN VW AMAROK DC</div>
+            <div class="card-compat">Volkswagen Amarok DC</div>
+            <div class="card-precio">$ 1.987.500</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTP7/1.webp" alt="TAPA PLEGABLE KRAKEN VW AMAROK V6 EXTREME" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTP7</div>
+            <div class="card-nombre">TAPA PLEGABLE KRAKEN VW AMAROK V6 EXTREME</div>
+            <div class="card-compat">Volkswagen Amarok V6 Extreme</div>
+            <div class="card-precio">$ 1.987.500</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTR1/1.webp" alt="TAPA RETRÁCTIL KRAKEN VW AMAROK DC" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTR1</div>
+            <div class="card-nombre">TAPA RETRÁCTIL KRAKEN VW AMAROK DC</div>
+            <div class="card-compat">Volkswagen Amarok DC</div>
+            <div class="card-precio">$ 2.113.316</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTR7/1.webp" alt="TAPA RETRÁCTIL KRAKEN VW AMAROK V6 EXTREME" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTR7</div>
+            <div class="card-nombre">TAPA RETRÁCTIL KRAKEN VW AMAROK V6 EXTREME</div>
+            <div class="card-compat">Volkswagen Amarok V6 Extreme</div>
+            <div class="card-precio">$ 2.113.316</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTR15/1.webp" alt="TAPA RETRÁCTIL KRAKEN VW AMAROK 2024+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTR15</div>
+            <div class="card-nombre">TAPA RETRÁCTIL KRAKEN VW AMAROK 2024+</div>
+            <div class="card-compat">Volkswagen Amarok 2024→</div>
+            <div class="card-precio">$ 2.113.316</div>
+          </div>
+        </div>
+        </div>
+      </section>
+  </div>
+
+  <footer class="footer">
+    Precios en pesos argentinos con IVA incluido · Sujeto a cambios sin previo aviso · monstertrail.com.ar
+  </footer>
+
+</body>
+</html>

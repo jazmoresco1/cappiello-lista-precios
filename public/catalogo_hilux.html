@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MonsterTrail — Toyota Hilux</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --rojo:   #9c1905;
+      --negro:  #1a1a1a;
+      --blanco: #ffffff;
+      --gris:   #f4f4f4;
+      --gris2:  #e0e0e0;
+      --gris3:  #888;
+      --card-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f0f0f0;
+      color: var(--negro);
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--rojo);
+      padding: 18px 32px 14px;
+      display: flex;
+      align-items: flex-end;
+      gap: 20px;
+      border-bottom: 5px solid var(--negro);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 36px;
+      color: var(--blanco);
+      letter-spacing: 1px;
+      line-height: 1;
+    }
+    .header-sep {
+      width: 2px; height: 36px;
+      background: rgba(255,255,255,0.3);
+    }
+    .header-vehicle {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: 22px;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 0.5px;
+      line-height: 1;
+    }
+    .header-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+      margin-top: 3px;
+    }
+    .header-count {
+      margin-left: auto;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    /* ── CONTENIDO ── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 20px 40px;
+    }
+
+    /* ── CATEGORÍA ── */
+    .category {
+      margin-bottom: 28px;
+    }
+    .cat-header {
+      background: var(--negro);
+      color: var(--blanco);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      border-radius: 2px;
+    }
+    .cat-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 1px;
+    }
+    .cat-count {
+      font-size: 11px;
+      color: rgba(255,255,255,0.55);
+    }
+
+    /* ── GRILLA ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--blanco);
+      border-radius: 4px;
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--gris2);
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+    .card:hover {
+      box-shadow: 0 4px 16px rgba(156,25,5,0.15);
+      transform: translateY(-2px);
+    }
+    .card-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: var(--gris);
+      overflow: hidden;
+      position: relative;
+    }
+    .card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .card-img-placeholder {
+      display: none;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--gris3);
+      background: var(--gris);
+    }
+    .card-body {
+      padding: 8px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .card-id {
+      font-size: 9px;
+      color: var(--gris3);
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+    .card-nombre {
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 4px;
+      flex: 1;
+    }
+    .card-compat {
+      font-size: 9px;
+      color: var(--gris3);
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    .card-precio {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--rojo);
+      letter-spacing: 0.5px;
+      border-top: 1px solid var(--gris2);
+      padding-top: 6px;
+      margin-top: auto;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 10px;
+      color: var(--gris3);
+      border-top: 1px solid var(--gris2);
+    }
+
+    @media print {
+      .header { position: static; }
+      .card:hover { transform: none; box-shadow: var(--card-shadow); }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div>
+      <div class="header-logo">MONSTERTRAIL</div>
+    </div>
+    <div class="header-sep"></div>
+    <div>
+      <div class="header-vehicle">Catálogo — Toyota Hilux</div>
+      <div class="header-sub">Accesorios 4×4 y Pick-Up</div>
+    </div>
+    <div class="header-count">
+      95 productos<br>
+      <span style="font-size:10px">Precios con IVA incluido</span>
+    </div>
+  </header>
+
+  <div class="container">
+    
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">ALFOMBRAS</span>
+          <span class="cat-count">2 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ZTTH/74/1.webp" alt="CUBRE ALFOMBRAS TOYOTA HILUX D/C HABITÁCULO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ZTTH/74</div>
+            <div class="card-nombre">CUBRE ALFOMBRAS TOYOTA HILUX D/C HABITÁCULO</div>
+            <div class="card-compat">Toyota Hilux D/C 2016→</div>
+            <div class="card-precio">$ 440.675</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ZTTH CS/76/1.webp" alt="CUBRE ALFOMBRAS TOYOTA HILUX CABINA SIMPLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ZTTH CS/76</div>
+            <div class="card-nombre">CUBRE ALFOMBRAS TOYOTA HILUX CABINA SIMPLE</div>
+            <div class="card-compat">Toyota Hilux Cabina Simple 2016→</div>
+            <div class="card-precio">$ 352.540</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">BARRA EXTREME PLUS</span>
+          <span class="cat-count">4 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BPI502/1.webp" alt="BARRA EXTREME PLUS INOXIDABLE TOYOTA HILUX CABINA DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BPI502</div>
+            <div class="card-nombre">BARRA EXTREME PLUS INOXIDABLE TOYOTA HILUX CABINA DOBLE</div>
+            <div class="card-compat">Toyota Hilux Cabina Doble 2005–2015</div>
+            <div class="card-precio">$ 547.965</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BPI506/1.webp" alt="BARRA EXTREME PLUS INOXIDABLE TOYOTA HILUX CABINA DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BPI506</div>
+            <div class="card-nombre">BARRA EXTREME PLUS INOXIDABLE TOYOTA HILUX CABINA DOBLE</div>
+            <div class="card-compat">Toyota Hilux Cabina Doble 2016→</div>
+            <div class="card-precio">$ 547.965</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BPN602/1.webp" alt="BARRA EXTREME PLUS NEGRA TOYOTA HILUX CABINA SIMPLE/DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BPN602</div>
+            <div class="card-nombre">BARRA EXTREME PLUS NEGRA TOYOTA HILUX CABINA SIMPLE/DOBLE</div>
+            <div class="card-compat">Toyota Hilux Cab. Simple/Doble 2005–2015</div>
+            <div class="card-precio">$ 387.952</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BPN606/1.webp" alt="BARRA EXTREME PLUS NEGRA TOYOTA HILUX CABINA DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BPN606</div>
+            <div class="card-nombre">BARRA EXTREME PLUS NEGRA TOYOTA HILUX CABINA DOBLE</div>
+            <div class="card-compat">Toyota Hilux Cabina Doble 2016→</div>
+            <div class="card-precio">$ 387.952</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">BARRAS MODULARES</span>
+          <span class="cat-count">1 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BTM905/1.webp" alt="BARRA DE TRABAJO MODULAR TOYOTA HILUX CABINA DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BTM905</div>
+            <div class="card-nombre">BARRA DE TRABAJO MODULAR TOYOTA HILUX CABINA DOBLE</div>
+            <div class="card-compat">Toyota Hilux Cabina Doble 2016→</div>
+            <div class="card-precio">$ 471.972</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">BARRAS DE TRABAJO</span>
+          <span class="cat-count">5 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BTD805/1.webp" alt="BARRA DE TRABAJO TOYOTA HILUX CABINA DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BTD805</div>
+            <div class="card-nombre">BARRA DE TRABAJO TOYOTA HILUX CABINA DOBLE</div>
+            <div class="card-compat">Toyota Hilux Cabina Doble 2005→</div>
+            <div class="card-precio">$ 496.819</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BTS800/1.webp" alt="BARRA DE TRABAJO TOYOTA HILUX CABINA SIMPLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BTS800</div>
+            <div class="card-nombre">BARRA DE TRABAJO TOYOTA HILUX CABINA SIMPLE</div>
+            <div class="card-compat">Toyota Hilux Cabina Simple 2005–2015</div>
+            <div class="card-precio">$ 590.450</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/BTSC805/1.webp" alt="BARRA DE TRABAJO TOYOTA HILUX CABINA SIMPLE CON CUBRELUNETA" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">BTSC805</div>
+            <div class="card-nombre">BARRA DE TRABAJO TOYOTA HILUX CABINA SIMPLE CON CUBRELUNETA</div>
+            <div class="card-compat">Toyota Hilux Cabina Simple 2016→ (con cubreluneta)</div>
+            <div class="card-precio">$ 590.450</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KBA-TH/1.webp" alt="BARRA SPORTBAR KRAKEN OFF ROAD TOYOTA HILUX" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KBA-TH</div>
+            <div class="card-nombre">BARRA SPORTBAR KRAKEN OFF ROAD TOYOTA HILUX</div>
+            <div class="card-compat">Toyota Hilux</div>
+            <div class="card-precio">$ 992.997</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KPAR2/1.webp" alt="PARRILLA KRAKEN OFF ROAD UNIVERSAL PICK-UPS" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KPAR2</div>
+            <div class="card-nombre">PARRILLA KRAKEN OFF ROAD UNIVERSAL PICK-UPS</div>
+            <div class="card-compat">Ranger 23+, Hilux 16+, Ranger 12–22, Frontier, Alaskan, RAM 1500, S10</div>
+            <div class="card-precio">$ 693.232</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">BAÚL</span>
+          <span class="cat-count">6 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1129A/1.webp" alt="BARRAS LONGITUDINALES NEGRAS ADHESIVAS BEPO TOYOTA HILUX 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1129A</div>
+            <div class="card-nombre">BARRAS LONGITUDINALES NEGRAS ADHESIVAS BEPO TOYOTA HILUX 2016+</div>
+            <div class="card-compat">Toyota Hilux 2016→ (adhesivas)</div>
+            <div class="card-precio">$ 474.774</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1129C/1.webp" alt="BARRAS LONGITUDINALES PULIDAS ADHESIVAS BEPO TOYOTA HILUX 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1129C</div>
+            <div class="card-nombre">BARRAS LONGITUDINALES PULIDAS ADHESIVAS BEPO TOYOTA HILUX 2016+</div>
+            <div class="card-compat">Toyota Hilux 2016→ (adhesivas)</div>
+            <div class="card-precio">$ 448.566</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KBL2-IZQ/1.webp" alt="BAÚL LATERAL RETRÁCTIL KRAKEN TOYOTA HILUX 2016+ IZQUIERDO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KBL2-IZQ</div>
+            <div class="card-nombre">BAÚL LATERAL RETRÁCTIL KRAKEN TOYOTA HILUX 2016+ IZQUIERDO</div>
+            <div class="card-compat">Toyota Hilux 2016→ — lado izquierdo (conductor)</div>
+            <div class="card-precio">$ 674.412</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KBL2-DER/1.webp" alt="BAÚL LATERAL RETRÁCTIL KRAKEN TOYOTA HILUX 2016+ DERECHO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KBL2-DER</div>
+            <div class="card-nombre">BAÚL LATERAL RETRÁCTIL KRAKEN TOYOTA HILUX 2016+ DERECHO</div>
+            <div class="card-compat">Toyota Hilux 2016→ — lado derecho (acompañante)</div>
+            <div class="card-precio">$ 674.412</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KBL3-IZQ/1.webp" alt="BAÚL LATERAL RETRÁCTIL KRAKEN TOYOTA HILUX 2005/2015 IZQUIERDO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KBL3-IZQ</div>
+            <div class="card-nombre">BAÚL LATERAL RETRÁCTIL KRAKEN TOYOTA HILUX 2005/2015 IZQUIERDO</div>
+            <div class="card-compat">Toyota Hilux 2005–2015 — lado izquierdo (conductor)</div>
+            <div class="card-precio">$ 674.412</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KBL3-DER/1.webp" alt="BAÚL LATERAL RETRÁCTIL KRAKEN TOYOTA HILUX 2005/2015 DERECHO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KBL3-DER</div>
+            <div class="card-nombre">BAÚL LATERAL RETRÁCTIL KRAKEN TOYOTA HILUX 2005/2015 DERECHO</div>
+            <div class="card-compat">Toyota Hilux 2005–2015 — lado derecho (acompañante)</div>
+            <div class="card-precio">$ 674.412</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">COBERTORES DE CAJA</span>
+          <span class="cat-count">6 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/112N/1.webp" alt="COBERTOR PROFORM TOYOTA HILUX D/C S/P 2005/2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">112N</div>
+            <div class="card-nombre">COBERTOR PROFORM TOYOTA HILUX D/C S/P 2005/2015</div>
+            <div class="card-compat">Toyota Hilux D/C Sobre Perfil 2005–2015</div>
+            <div class="card-precio">$ 401.675</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/113N/1.webp" alt="COBERTOR PROFORM TOYOTA HILUX D/C S/P 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">113N</div>
+            <div class="card-nombre">COBERTOR PROFORM TOYOTA HILUX D/C S/P 2016+</div>
+            <div class="card-compat">Toyota Hilux D/C Sobre Perfil 2016→</div>
+            <div class="card-precio">$ 401.672</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/119N/1.webp" alt="COBERTOR PROFORM TOYOTA HILUX D/C B/P 2005/2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">119N</div>
+            <div class="card-nombre">COBERTOR PROFORM TOYOTA HILUX D/C B/P 2005/2015</div>
+            <div class="card-compat">Toyota Hilux D/C Bajo Perfil 2005–2015</div>
+            <div class="card-precio">$ 401.674</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/120N/1.webp" alt="COBERTOR PROFORM TOYOTA HILUX D/C B/P 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">120N</div>
+            <div class="card-nombre">COBERTOR PROFORM TOYOTA HILUX D/C B/P 2016+</div>
+            <div class="card-compat">Toyota Hilux D/C Bajo Perfil 2016→</div>
+            <div class="card-precio">$ 401.672</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/144N/1.webp" alt="COBERTOR PROFORM TOYOTA HILUX STD 2005/2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">144N</div>
+            <div class="card-nombre">COBERTOR PROFORM TOYOTA HILUX STD 2005/2015</div>
+            <div class="card-compat">Toyota Hilux Standard 2005–2015</div>
+            <div class="card-precio">$ 455.625</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/145N/1.webp" alt="COBERTOR PROFORM TOYOTA HILUX C/S 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">145N</div>
+            <div class="card-nombre">COBERTOR PROFORM TOYOTA HILUX C/S 2016+</div>
+            <div class="card-compat">Toyota Hilux Cabina Simple 2016→</div>
+            <div class="card-precio">$ 471.101</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">CUBRECARTER</span>
+          <span class="cat-count">3 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ASP148/1.webp" alt="PROTECTOR CÁRTER TOYOTA HILUX" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ASP148</div>
+            <div class="card-nombre">PROTECTOR CÁRTER TOYOTA HILUX</div>
+            <div class="card-compat">Toyota Hilux 2005–2015</div>
+            <div class="card-precio">$ 169.408</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ASP170/1.webp" alt="PROTECTOR CAJA DE VELOCIDAD TOYOTA HILUX CABINA DOBLE 4X4" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ASP170</div>
+            <div class="card-nombre">PROTECTOR CAJA DE VELOCIDAD TOYOTA HILUX CABINA DOBLE 4X4</div>
+            <div class="card-compat">Toyota Hilux Cabina Doble 4x4 2016→</div>
+            <div class="card-precio">$ 151.239</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ASP178/1.webp" alt="PROTECTOR CÁRTER TOYOTA HILUX CABINA SIMPLE 4X2 / CABINA DOBLE 4X2-4X4" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ASP178</div>
+            <div class="card-nombre">PROTECTOR CÁRTER TOYOTA HILUX CABINA SIMPLE 4X2 / CABINA DOBLE 4X2-4X4</div>
+            <div class="card-compat">Toyota Hilux Cab. Simple 4x2 / Cab. Doble 4x2 / Cab. Doble 4x4 2016→</div>
+            <div class="card-precio">$ 151.239</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">DEFENSAS BAJAS</span>
+          <span class="cat-count">6 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/DBI604/1.webp" alt="DEFENSA BAJA INOXIDABLE TOYOTA HILUX" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">DBI604</div>
+            <div class="card-nombre">DEFENSA BAJA INOXIDABLE TOYOTA HILUX</div>
+            <div class="card-compat">Toyota Hilux 2005–2015</div>
+            <div class="card-precio">$ 386.033</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/DBI609/1.webp" alt="DEFENSA BAJA INOXIDABLE TOYOTA HILUX CABINA SIMPLE/DOBLE / SW4" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">DBI609</div>
+            <div class="card-nombre">DEFENSA BAJA INOXIDABLE TOYOTA HILUX CABINA SIMPLE/DOBLE / SW4</div>
+            <div class="card-compat">Toyota Hilux Cab. Simple/Doble 2016–2020 / SW4 2016–2020</div>
+            <div class="card-precio">$ 386.033</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/DBI615/1.webp" alt="DEFENSA BAJA INOXIDABLE TOYOTA HILUX / SW4" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">DBI615</div>
+            <div class="card-nombre">DEFENSA BAJA INOXIDABLE TOYOTA HILUX / SW4</div>
+            <div class="card-compat">Toyota Hilux / SW4 2021→</div>
+            <div class="card-precio">$ 386.033</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/DBN104/1.webp" alt="DEFENSA BAJA NEGRA TOYOTA HILUX" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">DBN104</div>
+            <div class="card-nombre">DEFENSA BAJA NEGRA TOYOTA HILUX</div>
+            <div class="card-compat">Toyota Hilux 2005–2015</div>
+            <div class="card-precio">$ 219.614</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/DBN109/1.webp" alt="DEFENSA BAJA NEGRA TOYOTA HILUX CABINA SIMPLE/DOBLE / SW4" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">DBN109</div>
+            <div class="card-nombre">DEFENSA BAJA NEGRA TOYOTA HILUX CABINA SIMPLE/DOBLE / SW4</div>
+            <div class="card-compat">Toyota Hilux Cab. Simple/Doble 2016–2020 / SW4 2016–2020</div>
+            <div class="card-precio">$ 219.614</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/DBN115/1.webp" alt="DEFENSA BAJA NEGRA TOYOTA HILUX" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">DBN115</div>
+            <div class="card-nombre">DEFENSA BAJA NEGRA TOYOTA HILUX</div>
+            <div class="card-compat">Toyota Hilux 2021→</div>
+            <div class="card-precio">$ 219.614</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">DEFLECTORES</span>
+          <span class="cat-count">13 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O3079/1.webp" alt="DEFLECTOR CAPOT TOYOTA HILUX SRX 2021+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O3079</div>
+            <div class="card-nombre">DEFLECTOR CAPOT TOYOTA HILUX SRX 2021+</div>
+            <div class="card-compat">Toyota Hilux SRX 2021→</div>
+            <div class="card-precio">$ 57.505</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O3050TA/1.webp" alt="DEFLECTOR CAPOT TOYOTA HILUX 2005/2011 CON TUBO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O3050TA</div>
+            <div class="card-nombre">DEFLECTOR CAPOT TOYOTA HILUX 2005/2011 CON TUBO</div>
+            <div class="card-compat">Toyota Hilux 2005–2011 con tubo</div>
+            <div class="card-precio">$ 58.677</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O3065/1.webp" alt="DEFLECTOR CAPOT TOYOTA HILUX 2012/2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O3065</div>
+            <div class="card-nombre">DEFLECTOR CAPOT TOYOTA HILUX 2012/2015</div>
+            <div class="card-compat">Toyota Hilux 2012–2015</div>
+            <div class="card-precio">$ 41.318</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O3050/1.webp" alt="DEFLECTOR CAPOT TOYOTA HILUX 2005/2011 SIN TUBO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O3050</div>
+            <div class="card-nombre">DEFLECTOR CAPOT TOYOTA HILUX 2005/2011 SIN TUBO</div>
+            <div class="card-compat">Toyota Hilux 2005–2011 sin tubo</div>
+            <div class="card-precio">$ 43.054</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O3068/1.webp" alt="DEFLECTOR CAPOT TOYOTA HILUX 2016/2020" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O3068</div>
+            <div class="card-nombre">DEFLECTOR CAPOT TOYOTA HILUX 2016/2020</div>
+            <div class="card-compat">Toyota Hilux 2016–2020</div>
+            <div class="card-precio">$ 57.505</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O2130A/1.webp" alt="DEFLECTOR VENTANILLA ADHESIVO TOYOTA HILUX NUEVA DEL. 2016/2020" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O2130A</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA ADHESIVO TOYOTA HILUX NUEVA DEL. 2016/2020</div>
+            <div class="card-compat">Toyota Hilux Nueva 2016–2020 — delantero</div>
+            <div class="card-precio">$ 35.888</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O2130TA/1.webp" alt="DEFLECTOR VENTANILLA ADHESIVO TOYOTA HILUX NUEVA TRAS. 2016/2020" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O2130TA</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA ADHESIVO TOYOTA HILUX NUEVA TRAS. 2016/2020</div>
+            <div class="card-compat">Toyota Hilux Nueva 2016–2020 — trasero</div>
+            <div class="card-precio">$ 28.497</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/G2105A/1.webp" alt="DEFLECTOR VENTANILLA ADHESIVO TOYOTA HILUX DEL. 1995/2004" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">G2105A</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA ADHESIVO TOYOTA HILUX DEL. 1995/2004</div>
+            <div class="card-compat">Toyota Hilux 1995–2004 — delantero</div>
+            <div class="card-precio">$ 31.734</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O2108A/1.webp" alt="DEFLECTOR VENTANILLA ADHESIVO TOYOTA HILUX C/S 2005/2017" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O2108A</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA ADHESIVO TOYOTA HILUX C/S 2005/2017</div>
+            <div class="card-compat">Toyota Hilux Cabina Simple 2005–2017</div>
+            <div class="card-precio">$ 38.336</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O2109A/1.webp" alt="DEFLECTOR VENTANILLA ADHESIVO TOYOTA HILUX DEL. 2005/2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O2109A</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA ADHESIVO TOYOTA HILUX DEL. 2005/2015</div>
+            <div class="card-compat">Toyota Hilux 2005–2015 — delantero</div>
+            <div class="card-precio">$ 35.888</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/O2109TA/1.webp" alt="DEFLECTOR VENTANILLA ADHESIVO TOYOTA HILUX TRAS. 2005/2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">O2109TA</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA ADHESIVO TOYOTA HILUX TRAS. 2005/2015</div>
+            <div class="card-compat">Toyota Hilux 2005–2015 — trasero</div>
+            <div class="card-precio">$ 28.497</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/G2105/1.webp" alt="DEFLECTOR VENTANILLA COLIZA TOYOTA HILUX D/C DEL. 2000/2004" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">G2105</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA COLIZA TOYOTA HILUX D/C DEL. 2000/2004</div>
+            <div class="card-compat">Toyota Hilux D/C 2000–2004 — delantero</div>
+            <div class="card-precio">$ 31.734</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/G2108/1.webp" alt="DEFLECTOR VENTANILLA COLIZA TOYOTA HILUX C/S 2005/2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">G2108</div>
+            <div class="card-nombre">DEFLECTOR VENTANILLA COLIZA TOYOTA HILUX C/S 2005/2015</div>
+            <div class="card-compat">Toyota Hilux Cabina Simple 2005–2015</div>
+            <div class="card-precio">$ 25.345</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">ELECTRÓNICA DP-20</span>
+          <span class="cat-count">2 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/7903/1.webp" alt="APERTURA AUTOMÁTICA PORTÓN TRASERO DP-20 TOYOTA HILUX" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">7903</div>
+            <div class="card-nombre">APERTURA AUTOMÁTICA PORTÓN TRASERO DP-20 TOYOTA HILUX</div>
+            <div class="card-compat">Toyota Hilux</div>
+            <div class="card-precio">$ 449.249</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/3631/1.webp" alt="CIERRE CENTRALIZADO PORTÓN DP-20 TOYOTA HILUX 2018+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">3631</div>
+            <div class="card-nombre">CIERRE CENTRALIZADO PORTÓN DP-20 TOYOTA HILUX 2018+</div>
+            <div class="card-compat">Toyota Hilux 2018→</div>
+            <div class="card-precio">$ 94.866</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">ENGANCHES LIVIANOS</span>
+          <span class="cat-count">3 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ETY7754/1.webp" alt="ENGANCHE ST1 TOYOTA HILUX PARAGOLPES PINTADO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ETY7754</div>
+            <div class="card-nombre">ENGANCHE ST1 TOYOTA HILUX PARAGOLPES PINTADO</div>
+            <div class="card-compat">Toyota Hilux Paragolpes Pintado 2005–2015</div>
+            <div class="card-precio">$ 164.885</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ETY7755/1.webp" alt="ENGANCHE ST1 TOYOTA HILUX PARAGOLPES CROMADO" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ETY7755</div>
+            <div class="card-nombre">ENGANCHE ST1 TOYOTA HILUX PARAGOLPES CROMADO</div>
+            <div class="card-compat">Toyota Hilux Paragolpes Cromado 2005–2015</div>
+            <div class="card-precio">$ 164.287</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/ETY7782/1.webp" alt="ENGANCHE ST1 TOYOTA HILUX CABINA DOBLE" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">ETY7782</div>
+            <div class="card-nombre">ENGANCHE ST1 TOYOTA HILUX CABINA DOBLE</div>
+            <div class="card-compat">Toyota Hilux Cabina Doble 2016→</div>
+            <div class="card-precio">$ 180.716</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">ENGANCHES PESADOS</span>
+          <span class="cat-count">5 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SE016/1.webp" alt="ENGANCHE ST5 TOYOTA HILUX MOD. →04" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SE016</div>
+            <div class="card-nombre">ENGANCHE ST5 TOYOTA HILUX MOD. →04</div>
+            <div class="card-compat">Toyota Hilux →2004</div>
+            <div class="card-precio">$ 266.430</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SE039/1.webp" alt="ENGANCHE ST5 TOYOTA HILUX PARAGOLPES PINTADO MOD. 05-15" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SE039</div>
+            <div class="card-nombre">ENGANCHE ST5 TOYOTA HILUX PARAGOLPES PINTADO MOD. 05-15</div>
+            <div class="card-compat">Toyota Hilux Paragolpes Pintado 2005–2015</div>
+            <div class="card-precio">$ 273.051</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SE040/1.webp" alt="ENGANCHE ST5 TOYOTA HILUX PARAGOLPES CROMADO MOD. 05-15" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SE040</div>
+            <div class="card-nombre">ENGANCHE ST5 TOYOTA HILUX PARAGOLPES CROMADO MOD. 05-15</div>
+            <div class="card-compat">Toyota Hilux Paragolpes Cromado 2005–2015</div>
+            <div class="card-precio">$ 273.051</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SE049/1.webp" alt="ENGANCHE ST5 TOYOTA FORTUNER (CHILE) / HILUX SW4 MOD. 05-15" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SE049</div>
+            <div class="card-nombre">ENGANCHE ST5 TOYOTA FORTUNER (CHILE) / HILUX SW4 MOD. 05-15</div>
+            <div class="card-compat">Toyota Fortuner (Chile) / Toyota Hilux SW4 (excede línea paragolpe) 2005–2015</div>
+            <div class="card-precio">$ 266.311</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SE097/1.webp" alt="ENGANCHE ST5 TOYOTA HILUX CABINA DOBLE MOD. 16+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SE097</div>
+            <div class="card-nombre">ENGANCHE ST5 TOYOTA HILUX CABINA DOBLE MOD. 16+</div>
+            <div class="card-compat">Toyota Hilux Cabina Doble 2016→</div>
+            <div class="card-precio">$ 301.346</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">ESTRIBOS</span>
+          <span class="cat-count">11 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SEA150/1.webp" alt="SOPORTES ESTRIBO BLACKTREND TOYOTA HILUX D/C 2005-2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SEA150</div>
+            <div class="card-nombre">SOPORTES ESTRIBO BLACKTREND TOYOTA HILUX D/C 2005-2015</div>
+            <div class="card-compat">Toyota Hilux D/C 2005–2015</div>
+            <div class="card-precio">$ 144.555</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SEA158/1.webp" alt="SOPORTES ESTRIBO BLACKTREND TOYOTA HILUX D/C 16+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SEA158</div>
+            <div class="card-nombre">SOPORTES ESTRIBO BLACKTREND TOYOTA HILUX D/C 16+</div>
+            <div class="card-compat">Toyota Hilux D/C 2016→</div>
+            <div class="card-precio">$ 144.555</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SEA050/1.webp" alt="SOPORTES ESTRIBOS OPTIMUS/STATUS/STRONG TOYOTA HILUX D/C 05-15" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SEA050</div>
+            <div class="card-nombre">SOPORTES ESTRIBOS OPTIMUS/STATUS/STRONG TOYOTA HILUX D/C 05-15</div>
+            <div class="card-compat">Toyota Hilux D/C 2005–2015</div>
+            <div class="card-precio">$ 137.671</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/SEA058/1.webp" alt="SOPORTES ESTRIBOS OPTIMUS/STATUS/STRONG TOYOTA HILUX 16+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">SEA058</div>
+            <div class="card-nombre">SOPORTES ESTRIBOS OPTIMUS/STATUS/STRONG TOYOTA HILUX 16+</div>
+            <div class="card-compat">Toyota Hilux D/C 2016→</div>
+            <div class="card-precio">$ 137.671</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1222-B15780/1.webp" alt="ESTRIBO G3 PULIDO BEPO TOYOTA HILUX 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1222-B15780</div>
+            <div class="card-nombre">ESTRIBO G3 PULIDO BEPO TOYOTA HILUX 2016+</div>
+            <div class="card-compat">Toyota Hilux D/C 2016→</div>
+            <div class="card-precio">$ 505.673</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1222-B15136/1.webp" alt="ESTRIBO G3 PULIDO BEPO TOYOTA HILUX 2005/2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1222-B15136</div>
+            <div class="card-nombre">ESTRIBO G3 PULIDO BEPO TOYOTA HILUX 2005/2015</div>
+            <div class="card-compat">Toyota Hilux D/C 2005–2015</div>
+            <div class="card-precio">$ 505.673</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1222A-B15780/1.webp" alt="ESTRIBO G3 NEGRO BEPO TOYOTA HILUX 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1222A-B15780</div>
+            <div class="card-nombre">ESTRIBO G3 NEGRO BEPO TOYOTA HILUX 2016+</div>
+            <div class="card-compat">Toyota Hilux D/C 2016→</div>
+            <div class="card-precio">$ 505.673</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1222A-B15136/1.webp" alt="ESTRIBO G3 NEGRO BEPO TOYOTA HILUX 05/15" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1222A-B15136</div>
+            <div class="card-nombre">ESTRIBO G3 NEGRO BEPO TOYOTA HILUX 05/15</div>
+            <div class="card-compat">Toyota Hilux D/C 2005–2015</div>
+            <div class="card-precio">$ 505.673</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1237/1.webp" alt="ESTRIBO PLÁSTICO INYECTADO BEPO TOYOTA HILUX 2005/2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1237</div>
+            <div class="card-nombre">ESTRIBO PLÁSTICO INYECTADO BEPO TOYOTA HILUX 2005/2015</div>
+            <div class="card-compat">Toyota Hilux D/C 2005–2015</div>
+            <div class="card-precio">$ 670.210</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B1232/1.webp" alt="ESTRIBO PLÁSTICO INYECTADO BEPO TOYOTA HILUX 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B1232</div>
+            <div class="card-nombre">ESTRIBO PLÁSTICO INYECTADO BEPO TOYOTA HILUX 2016+</div>
+            <div class="card-compat">Toyota Hilux D/C 2016→</div>
+            <div class="card-precio">$ 670.210</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/7500/1.webp" alt="ESTRIBO ELÉCTRICO DP-20 TOYOTA HILUX 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">7500</div>
+            <div class="card-nombre">ESTRIBO ELÉCTRICO DP-20 TOYOTA HILUX 2016+</div>
+            <div class="card-compat">Toyota Hilux 2016→</div>
+            <div class="card-precio">$ 2.175.459</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">KIT ANTIRROBO AUXILIO</span>
+          <span class="cat-count">3 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/N.100.0/1.webp" alt="KIT ANTIRROBO AUXILIO TOYOTA HILUX" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">N.100.0</div>
+            <div class="card-nombre">KIT ANTIRROBO AUXILIO TOYOTA HILUX</div>
+            <div class="card-compat">Toyota Hilux 2005–2015</div>
+            <div class="card-precio">$ 204.792</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/C.070.0/1.webp" alt="KIT ANTIRROBO AUXILIO TOYOTA HILUX DX" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">C.070.0</div>
+            <div class="card-nombre">KIT ANTIRROBO AUXILIO TOYOTA HILUX DX</div>
+            <div class="card-compat">Toyota Hilux DX 2016–2025</div>
+            <div class="card-precio">$ 204.792</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/L.116.0/1.webp" alt="KIT ANTIRROBO AUXILIO TOYOTA HILUX SR/SRV/SRX/GR4" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">L.116.0</div>
+            <div class="card-nombre">KIT ANTIRROBO AUXILIO TOYOTA HILUX SR/SRV/SRX/GR4</div>
+            <div class="card-compat">Toyota Hilux SR / SRV / SRX / GR4 2016–2025</div>
+            <div class="card-precio">$ 204.792</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">LOMOS DE CAJA</span>
+          <span class="cat-count">3 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B960C/1.webp" alt="LOMO LATERAL DE CAJA BEPO TOYOTA HILUX 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B960C</div>
+            <div class="card-nombre">LOMO LATERAL DE CAJA BEPO TOYOTA HILUX 2016+</div>
+            <div class="card-compat">Toyota Hilux 2016→</div>
+            <div class="card-precio">$ 90.644</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B960D/1.webp" alt="LOMO DE PORTÓN BEPO TOYOTA HILUX 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B960D</div>
+            <div class="card-nombre">LOMO DE PORTÓN BEPO TOYOTA HILUX 2016+</div>
+            <div class="card-compat">Toyota Hilux 2016→</div>
+            <div class="card-precio">$ 61.924</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/B960B/1.webp" alt="LOMO DE PORTÓN BEPO TOYOTA HILUX 2005/2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">B960B</div>
+            <div class="card-nombre">LOMO DE PORTÓN BEPO TOYOTA HILUX 2005/2015</div>
+            <div class="card-compat">Toyota Hilux 2005–2015</div>
+            <div class="card-precio">$ 61.924</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">LONAS FLASHCOVER</span>
+          <span class="cat-count">13 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/061FF/1.webp" alt="LONA FLASHCOVER FORCE TOYOTA HILUX 1998 A 2004" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">061FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE TOYOTA HILUX 1998 A 2004</div>
+            <div class="card-compat">Toyota Hilux 1998–2004</div>
+            <div class="card-precio">$ 444.878</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/101FF/1.webp" alt="LONA FLASHCOVER FORCE TOYOTA HILUX D/C 2005 A 2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">101FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE TOYOTA HILUX D/C 2005 A 2015</div>
+            <div class="card-compat">Toyota Hilux D/C 2005–2015</div>
+            <div class="card-precio">$ 394.023</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/102FF/1.webp" alt="LONA FLASHCOVER FORCE TOYOTA HILUX D/C 2005 A 2015 CON BARRA" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">102FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE TOYOTA HILUX D/C 2005 A 2015 CON BARRA</div>
+            <div class="card-compat">Toyota Hilux D/C 2005–2015 con barra antivuelco</div>
+            <div class="card-precio">$ 444.878</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/194FF/1.webp" alt="LONA FLASHCOVER FORCE TOYOTA HILUX D/C 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">194FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE TOYOTA HILUX D/C 2016+</div>
+            <div class="card-compat">Toyota Hilux D/C 2016→</div>
+            <div class="card-precio">$ 394.023</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/209FF/1.webp" alt="LONA FLASHCOVER FORCE TOYOTA HILUX D/C 2016+ LIMITED C/BARRA" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">209FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE TOYOTA HILUX D/C 2016+ LIMITED C/BARRA</div>
+            <div class="card-compat">Toyota Hilux D/C 2016→ Limited con barra antivuelco</div>
+            <div class="card-precio">$ 444.878</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/103FF/1.webp" alt="LONA FLASHCOVER FORCE TOYOTA HILUX CABINA SIMPLE 2005 A 2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">103FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE TOYOTA HILUX CABINA SIMPLE 2005 A 2015</div>
+            <div class="card-compat">Toyota Hilux Cabina Simple 2005–2015</div>
+            <div class="card-precio">$ 506.212</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/961FF/1.webp" alt="LONA FLASHCOVER FORCE TOYOTA HILUX CABINA SIMPLE 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">961FF</div>
+            <div class="card-nombre">LONA FLASHCOVER FORCE TOYOTA HILUX CABINA SIMPLE 2016+</div>
+            <div class="card-compat">Toyota Hilux Cabina Simple 2016→</div>
+            <div class="card-precio">$ 506.212</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/101RP/1.webp" alt="LONA FLASHCOVER ROLLER TOYOTA HILUX D/C 2005 A 2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">101RP</div>
+            <div class="card-nombre">LONA FLASHCOVER ROLLER TOYOTA HILUX D/C 2005 A 2015</div>
+            <div class="card-compat">Toyota Hilux D/C 2005–2015</div>
+            <div class="card-precio">$ 473.472</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/102RP/1.webp" alt="LONA FLASHCOVER ROLLER TOYOTA HILUX D/C 2005 A 2015 CON BARRA" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">102RP</div>
+            <div class="card-nombre">LONA FLASHCOVER ROLLER TOYOTA HILUX D/C 2005 A 2015 CON BARRA</div>
+            <div class="card-compat">Toyota Hilux D/C 2005–2015 con barra antivuelco</div>
+            <div class="card-precio">$ 533.348</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/194RP/1.webp" alt="LONA FLASHCOVER ROLLER TOYOTA HILUX D/C 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">194RP</div>
+            <div class="card-nombre">LONA FLASHCOVER ROLLER TOYOTA HILUX D/C 2016+</div>
+            <div class="card-compat">Toyota Hilux D/C 2016→</div>
+            <div class="card-precio">$ 473.472</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/209RP/1.webp" alt="LONA FLASHCOVER ROLLER TOYOTA HILUX D/C 2016+ LIMITED C/BARRA" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">209RP</div>
+            <div class="card-nombre">LONA FLASHCOVER ROLLER TOYOTA HILUX D/C 2016+ LIMITED C/BARRA</div>
+            <div class="card-compat">Toyota Hilux D/C 2016→ Limited con barra antivuelco</div>
+            <div class="card-precio">$ 533.348</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/103RP/1.webp" alt="LONA FLASHCOVER ROLLER TOYOTA HILUX CABINA SIMPLE 2005 A 2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">103RP</div>
+            <div class="card-nombre">LONA FLASHCOVER ROLLER TOYOTA HILUX CABINA SIMPLE 2005 A 2015</div>
+            <div class="card-compat">Toyota Hilux Cabina Simple 2005–2015</div>
+            <div class="card-precio">$ 586.467</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/961RP/1.webp" alt="LONA FLASHCOVER ROLLER TOYOTA HILUX CABINA SIMPLE 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">961RP</div>
+            <div class="card-nombre">LONA FLASHCOVER ROLLER TOYOTA HILUX CABINA SIMPLE 2016+</div>
+            <div class="card-compat">Toyota Hilux Cabina Simple 2016→</div>
+            <div class="card-precio">$ 586.467</div>
+          </div>
+        </div>
+        </div>
+      </section>
+      <section class="category">
+        <div class="cat-header">
+          <span class="cat-name">TAPAS RÍGIDAS</span>
+          <span class="cat-count">9 productos</span>
+        </div>
+        <div class="cards-grid">
+          
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/TAPTT1004/1.webp" alt="TAPA TOP TIGER TOYOTA HILUX 16+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">TAPTT1004</div>
+            <div class="card-nombre">TAPA TOP TIGER TOYOTA HILUX 16+</div>
+            <div class="card-compat">Toyota Hilux D/C 2016→</div>
+            <div class="card-precio">$ 1.257.750</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/TAPTT1011/1.webp" alt="TAPA TOP TIGER TOYOTA HILUX D/C 2005-2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">TAPTT1011</div>
+            <div class="card-nombre">TAPA TOP TIGER TOYOTA HILUX D/C 2005-2015</div>
+            <div class="card-compat">Toyota Hilux D/C 2005–2015</div>
+            <div class="card-precio">$ 1.257.750</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTT2/1.webp" alt="TAPA PLEGABLE TRICOVER TOYOTA HILUX 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTT2</div>
+            <div class="card-nombre">TAPA PLEGABLE TRICOVER TOYOTA HILUX 2016+</div>
+            <div class="card-compat">Toyota Hilux 2016→</div>
+            <div class="card-precio">$ 1.402.965</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTT31/1.webp" alt="TAPA PLEGABLE TRICOVER TOYOTA HILUX 2005/2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTT31</div>
+            <div class="card-nombre">TAPA PLEGABLE TRICOVER TOYOTA HILUX 2005/2015</div>
+            <div class="card-compat">Toyota Hilux 2005–2015</div>
+            <div class="card-precio">$ 1.402.965</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTP2/1.webp" alt="TAPA PLEGABLE KRAKEN TOYOTA HILUX" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTP2</div>
+            <div class="card-nombre">TAPA PLEGABLE KRAKEN TOYOTA HILUX</div>
+            <div class="card-compat">Toyota Hilux</div>
+            <div class="card-precio">$ 1.987.500</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTP32/1.webp" alt="TAPA PLEGABLE KRAKEN TOYOTA HILUX 2025+ C/ALERÓN" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTP32</div>
+            <div class="card-nombre">TAPA PLEGABLE KRAKEN TOYOTA HILUX 2025+ C/ALERÓN</div>
+            <div class="card-compat">Toyota Hilux 2025→ con alerón</div>
+            <div class="card-precio">$ 1.987.500</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTR2/1.webp" alt="TAPA RETRÁCTIL KRAKEN TOYOTA HILUX 2005/2015" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTR2</div>
+            <div class="card-nombre">TAPA RETRÁCTIL KRAKEN TOYOTA HILUX 2005/2015</div>
+            <div class="card-compat">Toyota Hilux 2005–2015</div>
+            <div class="card-precio">$ 2.113.316</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTR14/1.webp" alt="TAPA RETRÁCTIL KRAKEN TOYOTA HILUX 2023+ C/BARRA PLÁSTICA" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTR14</div>
+            <div class="card-nombre">TAPA RETRÁCTIL KRAKEN TOYOTA HILUX 2023+ C/BARRA PLÁSTICA</div>
+            <div class="card-compat">Toyota Hilux 2023→ con barra plástica</div>
+            <div class="card-precio">$ 2.317.596</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="assets/KTR216+/1.webp" alt="TAPA RETRÁCTIL KRAKEN TOYOTA HILUX 2016+" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-img-placeholder">Sin imagen</div>
+          </div>
+          <div class="card-body">
+            <div class="card-id">KTR216+</div>
+            <div class="card-nombre">TAPA RETRÁCTIL KRAKEN TOYOTA HILUX 2016+</div>
+            <div class="card-compat">Toyota Hilux 2016→</div>
+            <div class="card-precio">$ 2.111.816</div>
+          </div>
+        </div>
+        </div>
+      </section>
+  </div>
+
+  <footer class="footer">
+    Precios en pesos argentinos con IVA incluido · Sujeto a cambios sin previo aviso · monstertrail.com.ar
+  </footer>
+
+</body>
+</html>

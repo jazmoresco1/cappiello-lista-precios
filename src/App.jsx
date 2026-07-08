@@ -2548,7 +2548,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                               </div>
                               <div className="pr">
                                 <span className="prl">Minorista</span>
-                                <span className="pref" style={{color:"var(--ac)"}}>{ARS(Math.round(p.listaVenta*1.26))}</span>
+                                <span className="pref" style={{color:"var(--ac)"}}>{ARS(Math.round(p.listaVenta*1.30))}</span>
                               </div>
                               {unlocked && (
                                 <div className="pr">
@@ -2559,7 +2559,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                               <div className="pr">
                                 <span className="prl">{cuotas.label}</span>
                                 <div style={{textAlign:"right"}}>
-                                  <span className="prq">{ARS(Math.round(p.listaVenta*1.26*cuotas.multiplicador/cuotas.cant))}/mes</span>
+                                  <span className="prq">{ARS(Math.round(p.listaVenta*1.30*cuotas.multiplicador/cuotas.cant))}/mes</span>
                                   <div style={{fontSize:10,color:"var(--tx2)",marginTop:1}}>sobre precio minorista</div>
                                 </div>
                               </div>
@@ -2667,8 +2667,8 @@ Sin texto adicional, sin markdown, solo el JSON.`;
               <div className="mb">
                 <div className="pbox">
                   <div className="pbi"><span className="pbl" style={{fontWeight:700}}>Precio Mayorista (+25%)</span><span className="pbv-big">{ARS(Math.round(modal.listaVenta*1.25))}</span></div>
-                  <div className="pbi"><span className="pbl" style={{fontWeight:700,color:"var(--ac)"}}>Precio Minorista (+26%)</span><span className="pbv-big" style={{color:"var(--ac)"}}>{ARS(Math.round(modal.listaVenta*1.26))}</span></div>
-                  <div className="pbi"><span className="pbl">{cuotas.label} s/ minorista</span><span className="pbv-med">{ARS(Math.round(modal.listaVenta*1.26*cuotas.multiplicador/cuotas.cant))}/mes</span></div>
+                  <div className="pbi"><span className="pbl" style={{fontWeight:700,color:"var(--ac)"}}>Precio Minorista (+30%)</span><span className="pbv-big" style={{color:"var(--ac)"}}>{ARS(Math.round(modal.listaVenta*1.30))}</span></div>
+                  <div className="pbi"><span className="pbl">{cuotas.label} s/ minorista</span><span className="pbv-med">{ARS(Math.round(modal.listaVenta*1.30*cuotas.multiplicador/cuotas.cant))}/mes</span></div>
                   {unlocked && <>
                     <div style={{borderTop:"1px solid #2a2a2a",margin:"8px 0",paddingTop:8}}>
                       <div className="pbi"><span className="pbl" style={{color:"var(--tx2)"}}>🔒 Neto efectivo</span><span className="pbv-sm">{ARS(venta)}</span></div>
@@ -3057,4 +3057,3 @@ Sin texto adicional, sin markdown, solo el JSON.`;
     </div>
   );
 }
-

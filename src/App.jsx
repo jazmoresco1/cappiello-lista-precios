@@ -1539,12 +1539,14 @@ const PROVEEDORES_INFO = {
 };
 
 const CUOTAS_MP = [
-  { cant:3,  label:"3 cuotas",  tasa:13.10, multiplicador:1.1884 },
-  { cant:6,  label:"6 cuotas",  tasa:20.85, multiplicador:1.3374 },
-  { cant:9,  label:"9 cuotas",  tasa:28.50, multiplicador:1.5264 },
-  { cant:12, label:"12 cuotas", tasa:35.00, multiplicador:1.7346 },
+  { cant:2,  label:"2 cuotas",  tasa:3.5,  multiplicador:1.0683 },
+  { cant:3,  label:"3 cuotas",  tasa:4.9,  multiplicador:1.1023 },
+  { cant:6,  label:"6 cuotas",  tasa:10.3, multiplicador:1.2207 },
+  { cant:9,  label:"9 cuotas",  tasa:15.3, multiplicador:1.3696 },
+  { cant:12, label:"12 cuotas", tasa:19.5, multiplicador:1.5355 },
+  { cant:18, label:"18 cuotas", tasa:26.1, multiplicador:1.8651 },
 ];
-const CUOTAS_DEFAULT = CUOTAS_MP[3]; // 12 cuotas por defecto
+const CUOTAS_DEFAULT = CUOTAS_MP.find(c => c.cant === 12); // 12 cuotas por defecto
 
 /* ═══════════════════════════════════════════════════════════════════
    COMBOS — Reglas de descuento automático
@@ -2546,7 +2548,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                               </div>
                               <div className="pr">
                                 <span className="prl">Minorista</span>
-                                <span className="pref" style={{color:"var(--ac)"}}>{ARS(Math.round(p.listaVenta*1.50))}</span>
+                                <span className="pref" style={{color:"var(--ac)"}}>{ARS(Math.round(p.listaVenta*1.30))}</span>
                               </div>
                               {unlocked && (
                                 <div className="pr">
@@ -2557,7 +2559,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                               <div className="pr">
                                 <span className="prl">{cuotas.label}</span>
                                 <div style={{textAlign:"right"}}>
-                                  <span className="prq">{ARS(Math.round(p.listaVenta*1.50*cuotas.multiplicador/cuotas.cant))}/mes</span>
+                                  <span className="prq">{ARS(Math.round(p.listaVenta*1.30*cuotas.multiplicador/cuotas.cant))}/mes</span>
                                   <div style={{fontSize:10,color:"var(--tx2)",marginTop:1}}>sobre precio minorista</div>
                                 </div>
                               </div>
@@ -2665,8 +2667,8 @@ Sin texto adicional, sin markdown, solo el JSON.`;
               <div className="mb">
                 <div className="pbox">
                   <div className="pbi"><span className="pbl" style={{fontWeight:700}}>Precio Mayorista (+25%)</span><span className="pbv-big">{ARS(Math.round(modal.listaVenta*1.25))}</span></div>
-                  <div className="pbi"><span className="pbl" style={{fontWeight:700,color:"var(--ac)"}}>Precio Minorista (+50%)</span><span className="pbv-big" style={{color:"var(--ac)"}}>{ARS(Math.round(modal.listaVenta*1.50))}</span></div>
-                  <div className="pbi"><span className="pbl">{cuotas.label} s/ minorista</span><span className="pbv-med">{ARS(Math.round(modal.listaVenta*1.50*cuotas.multiplicador/cuotas.cant))}/mes</span></div>
+                  <div className="pbi"><span className="pbl" style={{fontWeight:700,color:"var(--ac)"}}>Precio Minorista (+30%)</span><span className="pbv-big" style={{color:"var(--ac)"}}>{ARS(Math.round(modal.listaVenta*1.30))}</span></div>
+                  <div className="pbi"><span className="pbl">{cuotas.label} s/ minorista</span><span className="pbv-med">{ARS(Math.round(modal.listaVenta*1.30*cuotas.multiplicador/cuotas.cant))}/mes</span></div>
                   {unlocked && <>
                     <div style={{borderTop:"1px solid #2a2a2a",margin:"8px 0",paddingTop:8}}>
                       <div className="pbi"><span className="pbl" style={{color:"var(--tx2)"}}>🔒 Neto efectivo</span><span className="pbv-sm">{ARS(venta)}</span></div>

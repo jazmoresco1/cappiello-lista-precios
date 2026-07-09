@@ -1483,46 +1483,46 @@ const PRODUCTOS = PRODUCTOS_INICIALES.map((p) => {
    Los productos con descuentoOverride ignoran el descuento de acá.
    ═══════════════════════════════════════════════════════════════════ */
 const CONFIG_INICIAL = {
-  "Steel Tiger|Tapas Rígidas":     { descuento:3, iva:10.5, markup:50 },
-  "Steel Tiger|Estribos":          { descuento:7, iva:10.5, markup:50 },
-  "Steel Tiger|Enganches Pesados": { descuento:7, iva:10.5, markup:50 },
-  "Steel Tiger|Enganches Livianos":{ descuento:7, iva:10.5, markup:50 },
-  "Steel Tiger|Defensas Bajas":    { descuento:7, iva:10.5, markup:50 },
-  "Steel Tiger|Cubrecarter":       { descuento:3, iva:10.5, markup:50 },
-  "Steel Tiger|Baúl":     { descuento:3, iva:10.5, markup:50 },
-  "Steel Tiger|Barras de Trabajo":  { descuento:7, iva:10.5, markup:50 },
-  "Steel Tiger|Barra Extreme Plus": { descuento:7, iva:10.5, markup:50 },
-  "Steel Tiger|Barras Modulares":   { descuento:7, iva:10.5, markup:50 },
-  "Steel Tiger|Amortiguadores":     { descuento:3, iva:10.5, markup:50 },
+  "Steel Tiger|Tapas Rígidas":     { descuento:3, iva:10.5, markup:30 },
+  "Steel Tiger|Estribos":          { descuento:7, iva:10.5, markup:30 },
+  "Steel Tiger|Enganches Pesados": { descuento:7, iva:10.5, markup:30 },
+  "Steel Tiger|Enganches Livianos":{ descuento:7, iva:10.5, markup:30 },
+  "Steel Tiger|Defensas Bajas":    { descuento:7, iva:10.5, markup:30 },
+  "Steel Tiger|Cubrecarter":       { descuento:3, iva:10.5, markup:30 },
+  "Steel Tiger|Baúl":     { descuento:3, iva:10.5, markup:30 },
+  "Steel Tiger|Barras de Trabajo":  { descuento:7, iva:10.5, markup:30 },
+  "Steel Tiger|Barra Extreme Plus": { descuento:7, iva:10.5, markup:30 },
+  "Steel Tiger|Barras Modulares":   { descuento:7, iva:10.5, markup:30 },
+  "Steel Tiger|Amortiguadores":     { descuento:3, iva:10.5, markup:30 },
   // ── Ziel Technology ──
-  "Ziel Technology|Alfombras":  { descuento:0, iva:21, markup:50 },
-  "Ziel Technology|Cobertores de Caja":{ descuento:0, iva:21, markup:50 },
-  "Ziel Technology|Bandeja de Baúl":  { descuento:0, iva:21, markup:50 },
-  "Ziel Technology|Accesorios ZT":    { descuento:0, iva:21, markup:50 },
+  "Ziel Technology|Alfombras":  { descuento:0, iva:21, markup:30 },
+  "Ziel Technology|Cobertores de Caja":{ descuento:0, iva:21, markup:30 },
+  "Ziel Technology|Bandeja de Baúl":  { descuento:0, iva:21, markup:30 },
+  "Ziel Technology|Accesorios ZT":    { descuento:0, iva:21, markup:30 },
   // ── Padlock ──
-  "Padlock|Kit Antirrobo Auxilio":    { descuento:0, iva:10.5, markup:50 },
+  "Padlock|Kit Antirrobo Auxilio":    { descuento:0, iva:10.5, markup:30 },
   // ── Flashcover ──
-  "Flashcover|Lonas Flashcover":      { descuento:0, iva:0, markup:50 },
+  "Flashcover|Lonas Flashcover":      { descuento:0, iva:0, markup:30 },
   // ── Kraken ──
-  "Kraken|Tapas Rígidas":              { descuento:0, iva:0, markup:50 },
+  "Kraken|Tapas Rígidas":              { descuento:0, iva:0, markup:30 },
   // ── Bepo ──
-  "Bepo|Estribos":                    { descuento:0, iva:10.5, markup:50 },
-  "Bepo|Barras de Trabajo":           { descuento:0, iva:10.5, markup:50 },
-  "Bepo|Baúl":              { descuento:0, iva:10.5, markup:50 },
-  "Bepo|Lomos de Caja":               { descuento:0, iva:10.5, markup:50 },
+  "Bepo|Estribos":                    { descuento:0, iva:10.5, markup:30 },
+  "Bepo|Barras de Trabajo":           { descuento:0, iva:10.5, markup:30 },
+  "Bepo|Baúl":              { descuento:0, iva:10.5, markup:30 },
+  "Bepo|Lomos de Caja":               { descuento:0, iva:10.5, markup:30 },
   // ── Kraken (barras) ──
-  "Kraken|Barras de Trabajo":         { descuento:0, iva:0, markup:50 },
-  "Kraken|Baúl":             { descuento:0, iva:0, markup:50 },
+  "Kraken|Barras de Trabajo":         { descuento:0, iva:0, markup:30 },
+  "Kraken|Baúl":             { descuento:0, iva:0, markup:30 },
   // ── DP-20 ──
-  "DP-20|Electrónica DP-20":          { descuento:0, iva:21, markup:50 },
+  "DP-20|Electrónica DP-20":          { descuento:0, iva:21, markup:30 },
   // ── Original Cars 4x4 ──
-  "Original Cars 4x4|Deflectores":    { descuento:0, iva:10.5, markup:50 },
+  "Original Cars 4x4|Deflectores":    { descuento:0, iva:10.5, markup:30 },
   
   // ── Coversax ──
-  "Coversax|Fundas de Asientos":      { descuento:0, iva:21, markup:50 },
+  "Coversax|Fundas de Asientos":      { descuento:0, iva:21, markup:30 },
   // ── ProForm ──
-  "Truckliner|Cobertores de Caja":        { descuento:0, iva:10.5, markup:50 },
-  "DP-20|Estribos":                   { descuento:0, iva:21, markup:50 },
+  "Truckliner|Cobertores de Caja":        { descuento:0, iva:10.5, markup:30 },
+  "DP-20|Estribos":                   { descuento:0, iva:21, markup:30 },
 };
 
 const PROVEEDORES_INFO = {
@@ -2548,7 +2548,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                               </div>
                               <div className="pr">
                                 <span className="prl">Minorista</span>
-                                <span className="pref" style={{color:"var(--ac)"}}>{ARS(Math.round(p.listaVenta*1.35))}</span>
+                                <span className="pref" style={{color:"var(--ac)"}}>{ARS(Math.round(venta))}</span>
                               </div>
                               {unlocked && (
                                 <div className="pr">
@@ -2559,7 +2559,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                               <div className="pr">
                                 <span className="prl">{cuotas.label}</span>
                                 <div style={{textAlign:"right"}}>
-                                  <span className="prq">{ARS(Math.round(p.listaVenta*1.35*cuotas.multiplicador/cuotas.cant))}/mes</span>
+                                  <span className="prq">{ARS(Math.round(venta*cuotas.multiplicador/cuotas.cant))}/mes</span>
                                   <div style={{fontSize:10,color:"var(--tx2)",marginTop:1}}>sobre precio minorista</div>
                                 </div>
                               </div>
@@ -2667,8 +2667,8 @@ Sin texto adicional, sin markdown, solo el JSON.`;
               <div className="mb">
                 <div className="pbox">
                   <div className="pbi"><span className="pbl" style={{fontWeight:700}}>Precio Mayorista (+25%)</span><span className="pbv-big">{ARS(Math.round(modal.listaVenta*1.25))}</span></div>
-                  <div className="pbi"><span className="pbl" style={{fontWeight:700,color:"var(--ac)"}}>Precio Minorista (+35%)</span><span className="pbv-big" style={{color:"var(--ac)"}}>{ARS(Math.round(modal.listaVenta*1.35))}</span></div>
-                  <div className="pbi"><span className="pbl">{cuotas.label} s/ minorista</span><span className="pbv-med">{ARS(Math.round(modal.listaVenta*1.35*cuotas.multiplicador/cuotas.cant))}/mes</span></div>
+                  <div className="pbi"><span className="pbl" style={{fontWeight:700,color:"var(--ac)"}}>Precio Minorista</span><span className="pbv-big" style={{color:"var(--ac)"}}>{ARS(Math.round(venta))}</span></div>
+                  <div className="pbi"><span className="pbl">{cuotas.label} s/ minorista</span><span className="pbv-med">{ARS(Math.round(venta*cuotas.multiplicador/cuotas.cant))}/mes</span></div>
                   {unlocked && <>
                     <div style={{borderTop:"1px solid #2a2a2a",margin:"8px 0",paddingTop:8}}>
                       <div className="pbi"><span className="pbl" style={{color:"var(--tx2)"}}>🔒 Neto efectivo</span><span className="pbv-sm">{ARS(venta)}</span></div>
@@ -3057,4 +3057,3 @@ Sin texto adicional, sin markdown, solo el JSON.`;
     </div>
   );
 }
-

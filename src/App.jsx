@@ -1549,6 +1549,23 @@ const CUOTAS_MP = [
 const CUOTAS_DEFAULT = CUOTAS_MP.find(c => c.cant === 12); // 12 cuotas por defecto
 
 /* ═══════════════════════════════════════════════════════════════════
+   COMISIONES DE VENDEDORES
+   Categorías de forma de pago sobre las que se define la comisión.
+   "efectivo" + una por cada plan de cuotas de CUOTAS_MP.
+   ═══════════════════════════════════════════════════════════════════ */
+const FORMAS_PAGO = [
+  { key:"efectivo", label:"Efectivo" },
+  ...CUOTAS_MP.map(c => ({ key:String(c.cant), label:c.label })),
+];
+
+// URL del Webhook de n8n que recibe las ventas guardadas desde el cotizador.
+// Creá un nodo "Webhook" en n8n (método POST) y pegá acá la URL que te da.
+const N8N_WEBHOOK_VENTAS_URL = "https://TU-N8N.ejemplo.com/webhook/ventas-cotizador";
+// Token simple para que el webhook no quede abierto a cualquiera. Tiene que
+// coincidir con el valor que compares en el nodo "IF" de n8n (ver guía).
+const N8N_WEBHOOK_TOKEN = "mt2026-webhook";
+
+/* ═══════════════════════════════════════════════════════════════════
    COMBOS — Reglas de descuento automático
    Cuando el cotizador detecta estas combinaciones, sugiere el descuento.
    Para agregar un combo: copiá un bloque y completá los campos.
@@ -1964,6 +1981,8 @@ export default function ListaPrecios() {
   const handlePin = () => {
     if (pinInput === ADMIN_PIN) {
       setUnlocked(true); setPinOpen(false); setPinInput(""); setPinError(false);
+      if (pinTarget === "vendedores") { setVendPanelOpen(true); }
+      setPinTarget(null);
     } else {
       setPinError(true); setPinInput("");
     }
@@ -1980,6 +1999,50 @@ export default function ListaPrecios() {
   const [cotComboAct, setCotCombo]  = useState([]); // combos activos aplicados
   const [cotBusq, setCotBusq]       = useState("");
   const [cotNombre, setCotNombre]   = useState("");
+  const [cotVendedorId, setCotVendedorId] = useState("");
+  const [cotFormaPago, setCotFormaPago]   = useState("efectivo"); // "efectivo" | "2" | "3" | "6" | "9" | "12" | "18"
+  const [guardando, setGuardando]   = useState(false);
+  const [guardadoMsg, setGuardadoMsg] = useState(null); // {ok:true/false, texto}
+
+  // ── VENDEDORES Y COMISIONES (protegido con la misma clave de arriba) ──
+  const [vendedores, setVend] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("vendedores_v1") || "[]"); } catch { return []; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem("vendedores_v1", JSON.stringify(vendedores)); } catch {}
+  }, [vendedores]);
+
+  const [vendPanelOpen, setVendPanelOpen] = useState(false);
+  const [pinTarget, setPinTarget] = useState(null); // "vendedores" | null — a donde ir despues de ingresar la clave
+  const [vendEditId, setVendEditId] = useState(null); // id del vendedor en edicion, o "nuevo"
+  const [vendForm, setVendForm] = useState(null); // {nombre, comisiones:{efectivo:0,"2":0,...}}
+
+  const abrirVendedores = () => {
+    if (unlocked) setVendPanelOpen(true);
+    else { setPinTarget("vendedores"); setPinOpen(true); }
+  };
+
+  const nuevoVendedorForm = () => ({
+    nombre: "",
+    comisiones: Object.fromEntries(FORMAS_PAGO.map(f => [f.key, 0])),
+  });
+
+  const guardarVendedor = () => {
+    if (!vendForm?.nombre?.trim()) return;
+    if (vendEditId === "nuevo") {
+      setVend(prev => [...prev, { id: "v_" + Date.now(), ...vendForm }]);
+    } else {
+      setVend(prev => prev.map(v => v.id === vendEditId ? { ...v, ...vendForm } : v));
+    }
+    setVendEditId(null); setVendForm(null);
+  };
+
+  const borrarVendedor = (id) => {
+    if (confirm("¿Borrar este vendedor?")) {
+      setVend(prev => prev.filter(v => v.id !== id));
+      if (cotVendedorId === id) setCotVendedorId("");
+    }
+  };
 
   const cambiarFamilia = (f) => {
     setFamilia(f);
@@ -2306,6 +2369,65 @@ Sin texto adicional, sin markdown, solo el JSON.`;
     return { lineas, subtotal, descTotal, totalEF, cuota };
   }, [cotItems, cotDescGlobal, cotComboAct, cuotas]);
 
+  // Monto final de la venta segun la forma de pago elegida para ESTA cotizacion
+  // (efectivo = totalEF, o el total financiado del plan de cuotas elegido)
+  const cotMontoFinal = useMemo(() => {
+    if (cotFormaPago === "efectivo") return cotTotales.totalEF;
+    const plan = CUOTAS_MP.find(c => String(c.cant) === cotFormaPago);
+    return plan ? cotTotales.totalEF * plan.multiplicador : cotTotales.totalEF;
+  }, [cotFormaPago, cotTotales.totalEF]);
+
+  // Comision del vendedor elegido, segun la forma de pago de esta cotizacion
+  const cotVendedor = vendedores.find(v => v.id === cotVendedorId) || null;
+  const cotComisionPct = cotVendedor ? (cotVendedor.comisiones?.[cotFormaPago] ?? 0) : 0;
+  const cotComisionMonto = cotMontoFinal * cotComisionPct / 100;
+
+  // Guarda la venta: la manda al Webhook de n8n para que quede en la hoja Ventas.
+  const guardarVenta = async () => {
+    if (cotItems.length === 0) return;
+    setGuardando(true);
+    setGuardadoMsg(null);
+
+    const formaPagoLabel = FORMAS_PAGO.find(f => f.key === cotFormaPago)?.label || cotFormaPago;
+
+    const payload = {
+      fecha: new Date().toISOString(),
+      canal: "Cotizador",
+      cliente: cotNombre || null,
+      vendedor: cotVendedor ? { id: cotVendedor.id, nombre: cotVendedor.nombre } : null,
+      forma_pago: formaPagoLabel,
+      comision_vendedor_pct: cotComisionPct,
+      comision_vendedor_monto: cotComisionMonto,
+      descuento_total_pct: cotTotales.descTotal,
+      subtotal: cotTotales.subtotal,
+      total_efectivo: cotTotales.totalEF,
+      monto_final: cotMontoFinal,
+      items: cotTotales.lineas.map(i => ({
+        sku: i.id,
+        nombre: i.nombre,
+        cantidad: i.qty,
+        descuento_item_pct: i.descItem,
+        precio_unitario: i.precioFinal,
+        total: i.total,
+      })),
+    };
+
+    try {
+      const resp = await fetch(N8N_WEBHOOK_VENTAS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-App-Token": N8N_WEBHOOK_TOKEN },
+        body: JSON.stringify(payload),
+      });
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      setGuardadoMsg({ ok: true, texto: "Venta guardada ✓" });
+    } catch (err) {
+      setGuardadoMsg({ ok: false, texto: "No se pudo guardar (revisá la conexión con n8n)" });
+    } finally {
+      setGuardando(false);
+      setTimeout(() => setGuardadoMsg(null), 4000);
+    }
+  };
+
   const cotBusqRes = useMemo(() => {
     if (!cotBusq.trim()) return [];
     const q = cotBusq.toLowerCase();
@@ -2362,14 +2484,16 @@ Sin texto adicional, sin markdown, solo el JSON.`;
 
       {/* MODAL PIN */}
       {pinOpen && (
-        <div className="ovl" onClick={e=>e.target===e.currentTarget&&(setPinOpen(false),setPinInput(""),setPinError(false))}>
+        <div className="ovl" onClick={e=>e.target===e.currentTarget&&(setPinOpen(false),setPinInput(""),setPinError(false),setPinTarget(null))}>
           <div className="mdl" style={{maxWidth:320,padding:24}}>
             <div className="mhd" style={{marginBottom:16}}>
               <div className="mtt">Acceso interno</div>
-              <button className="mx" onClick={()=>{setPinOpen(false);setPinInput("");setPinError(false);}}>✕</button>
+              <button className="mx" onClick={()=>{setPinOpen(false);setPinInput("");setPinError(false);setPinTarget(null);}}>✕</button>
             </div>
             <p style={{fontSize:13,color:"var(--tx2)",marginBottom:16}}>
-              Ingresá la clave para ver stock, costos y datos de proveedor.
+              {pinTarget==="vendedores"
+                ? "Ingresá la clave para configurar vendedores y comisiones."
+                : "Ingresá la clave para ver stock, costos y datos de proveedor."}
             </p>
             <input
               autoFocus type="password" placeholder="Clave…"
@@ -2402,6 +2526,10 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         <button className="hdr-btn" onClick={()=>setCotOpen(v=>!v)}
           style={{background:cotItems.length?"var(--ac)":"#222",borderColor:cotItems.length?"var(--ac)":"#333",color:"#fff"}}>
           🧾 Cotizar {cotItems.length>0 && <span className="cot-badge">{cotItems.length}</span>}
+        </button>
+        <button className="hdr-btn" onClick={abrirVendedores}
+          title="Vendedores y comisiones (requiere clave)">
+          👤 Vendedores
         </button>
         <button className="hdr-btn" onClick={()=>unlocked?setUnlocked(false):setPinOpen(true)}
           title={unlocked?"Bloquear acceso interno":"Acceso interno"}
@@ -2984,6 +3112,32 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                 <span style={{fontSize:12,color:"var(--tx2)"}}>%</span>
               </div>
 
+              {/* Vendedor y forma de pago de ESTA venta */}
+              <div style={{display:"flex",gap:8,marginBottom:12}}>
+                <select
+                  value={cotVendedorId}
+                  onChange={e=>setCotVendedorId(e.target.value)}
+                  style={{flex:1,border:"1px solid var(--bd)",borderRadius:6,padding:"7px 8px",fontFamily:"'DM Sans',sans-serif",fontSize:12,background:"var(--sf2)",color:"var(--tx)",outline:"none"}}
+                >
+                  <option value="">Sin vendedor</option>
+                  {vendedores.map(v=><option key={v.id} value={v.id}>{v.nombre}</option>)}
+                </select>
+                <select
+                  value={cotFormaPago}
+                  onChange={e=>setCotFormaPago(e.target.value)}
+                  style={{flex:1,border:"1px solid var(--bd)",borderRadius:6,padding:"7px 8px",fontFamily:"'DM Sans',sans-serif",fontSize:12,background:"var(--sf2)",color:"var(--tx)",outline:"none"}}
+                >
+                  {FORMAS_PAGO.map(f=><option key={f.key} value={f.key}>{f.label}</option>)}
+                </select>
+              </div>
+
+              {cotVendedor && (
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:"var(--sf2)",border:"1px solid var(--bd)",borderRadius:8,padding:"8px 10px",marginBottom:12,fontSize:12}}>
+                  <span style={{color:"var(--tx2)"}}>Comisión {cotVendedor.nombre} ({cotComisionPct}%)</span>
+                  <span style={{fontWeight:700,color:"var(--ac)"}}>{ARS(cotComisionMonto)}</span>
+                </div>
+              )}
+
               <div className="cot-totales">
                 <div className="cot-tot-row">
                   <span className="cot-tot-label">Subtotal</span>
@@ -3022,7 +3176,24 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                 </div>
               </div>
 
+              {guardadoMsg && (
+                <div style={{marginBottom:8,padding:"7px 10px",borderRadius:6,fontSize:12,textAlign:"center",
+                  background: guardadoMsg.ok ? "var(--ok-bg)" : "#3a1414",
+                  color: guardadoMsg.ok ? "var(--ok)" : "#e57373",
+                  border: `1px solid ${guardadoMsg.ok ? "var(--ok)" : "#c0392b"}`}}>
+                  {guardadoMsg.texto}
+                </div>
+              )}
+
               <div className="cot-actions">
+                <button className="cot-btn-print" disabled={guardando} onClick={async ()=>{
+                  await guardarVenta();
+                }} style={{flex:1,padding:10,background:"var(--ok)",color:"#fff",border:"none",borderRadius:8,fontSize:13,fontWeight:600,cursor:guardando?"default":"pointer",fontFamily:"'DM Sans',sans-serif",opacity:guardando?0.7:1}}>
+                  {guardando ? "Guardando…" : "💾 Guardar venta"}
+                </button>
+              </div>
+
+              <div className="cot-actions" style={{marginTop:8}}>
                 <button className="cot-btn-print" onClick={()=>{
                   const lineas = cotTotales.lineas.map(i=>
                     `${i.id} — ${i.nombre}\n  ${i.qty} u × ${ARS(i.precioFinal)}${i.descItem>0?` (dto ${i.descItem}%)`:""} = ${ARS(i.total)}`
@@ -3047,11 +3218,88 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                   🖨 Imprimir cotización
                 </button>
                 <button className="cot-btn-clear" onClick={()=>{
-                  if(confirm("¿Limpiar cotización?")){ setCotItems([]); setCotCombo([]); setCotDG(0); setCotNombre(""); }
+                  if(confirm("¿Limpiar cotización?")){ setCotItems([]); setCotCombo([]); setCotDG(0); setCotNombre(""); setCotVendedorId(""); setCotFormaPago("efectivo"); }
                 }}>🗑</button>
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* ── PANEL VENDEDORES Y COMISIONES (protegido con clave) ────── */}
+      {vendPanelOpen && unlocked && (
+        <div className="img-panel">
+          <div className="img-head">
+            <div>
+              <div className="img-head-title">👤 Vendedores y comisiones</div>
+              <div className="img-head-sub">Comisión % preestablecida por vendedor, según forma de pago</div>
+            </div>
+            <button className="cot-x" onClick={()=>{setVendPanelOpen(false);setVendEditId(null);setVendForm(null);}}>✕</button>
+          </div>
+
+          <div className="img-body">
+            {vendEditId ? (
+              /* ── Formulario alta/edición ── */
+              <div className="img-detail">
+                <div className="img-detail-header">
+                  <div className="img-detail-name">{vendEditId==="nuevo" ? "Nuevo vendedor" : "Editar vendedor"}</div>
+                  <button className="img-back" onClick={()=>{setVendEditId(null);setVendForm(null);}}>← Volver</button>
+                </div>
+
+                <input className="cot-nombre-inp" placeholder="Nombre del vendedor"
+                  value={vendForm?.nombre||""} onChange={e=>setVendForm(f=>({...f,nombre:e.target.value}))}/>
+
+                <div className="img-section-title" style={{marginTop:4}}>Comisión % por forma de pago</div>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
+                  {FORMAS_PAGO.map(fp=>(
+                    <div key={fp.key} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:6,background:"var(--sf2)",border:"1px solid var(--bd)",borderRadius:7,padding:"7px 9px"}}>
+                      <span style={{fontSize:11,color:"var(--tx2)"}}>{fp.label}</span>
+                      <div style={{display:"flex",alignItems:"center",gap:3}}>
+                        <input type="number" min="0" max="100" step="0.5"
+                          value={vendForm?.comisiones?.[fp.key] ?? 0}
+                          onChange={e=>setVendForm(f=>({...f,comisiones:{...f.comisiones,[fp.key]:parseFloat(e.target.value)||0}}))}
+                          style={{width:48,border:"1px solid var(--bd)",borderRadius:5,padding:"3px 5px",fontSize:12,textAlign:"center",fontFamily:"'DM Sans',sans-serif",background:"var(--sf)",color:"var(--tx)",outline:"none"}}/>
+                        <span style={{fontSize:11,color:"var(--tx2)"}}>%</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <button className="img-auto-btn" onClick={guardarVendedor}>Guardar vendedor</button>
+              </div>
+            ) : (
+              /* ── Lista de vendedores ── */
+              <>
+                <button className="img-auto-btn" style={{marginBottom:14}}
+                  onClick={()=>{setVendEditId("nuevo");setVendForm(nuevoVendedorForm());}}>
+                  + Agregar vendedor
+                </button>
+
+                {vendedores.length===0 ? (
+                  <div className="cot-empty">
+                    <div style={{fontSize:32,marginBottom:8}}>👤</div>
+                    <div>Todavía no cargaste vendedores</div>
+                  </div>
+                ) : (
+                  <div className="img-prod-list">
+                    {vendedores.map(v=>(
+                      <div key={v.id} className="img-prod-row" style={{cursor:"default"}}>
+                        <div className="img-prod-thumb-empty">👤</div>
+                        <div className="img-prod-info">
+                          <div className="img-prod-name">{v.nombre}</div>
+                          <div className="img-prod-count">
+                            Efectivo {v.comisiones?.efectivo ?? 0}% · 12 cuotas {v.comisiones?.["12"] ?? 0}%
+                          </div>
+                        </div>
+                        <button className="img-back" onClick={()=>{setVendEditId(v.id);setVendForm({nombre:v.nombre,comisiones:{...nuevoVendedorForm().comisiones,...v.comisiones}});}}>✎</button>
+                        <button className="cot-item-del" onClick={()=>borrarVendedor(v.id)}>✕</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>

@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import SCRAPED_IMAGES from "./scraped-images.js";
+import { supabase } from "./supabaseClient.js";
 
 /* ═══════════════════════════════════════════════════════════════════
    DATOS DE PRODUCTOS
@@ -1558,12 +1559,9 @@ const FORMAS_PAGO = [
   ...CUOTAS_MP.map(c => ({ key:String(c.cant), label:c.label })),
 ];
 
-// URL del Webhook de n8n que recibe las ventas guardadas desde el cotizador.
-// Creá un nodo "Webhook" en n8n (método POST) y pegá acá la URL que te da.
-const N8N_WEBHOOK_VENTAS_URL = "https://TU-N8N.ejemplo.com/webhook/ventas-cotizador";
-// Token simple para que el webhook no quede abierto a cualquiera. Tiene que
-// coincidir con el valor que compares en el nodo "IF" de n8n (ver guía).
-const N8N_WEBHOOK_TOKEN = "mt2026-webhook";
+// Las ventas del cotizador se guardan directo en Supabase (tablas "ventas" y
+// "venta_items"), ver src/supabaseClient.js. n8n ya no recibe estas ventas por
+// Webhook; lee/escribe la misma base de datos para sus automatizaciones.
 
 /* ═══════════════════════════════════════════════════════════════════
    COMBOS — Reglas de descuento automático
@@ -1982,6 +1980,7 @@ export default function ListaPrecios() {
     if (pinInput === ADMIN_PIN) {
       setUnlocked(true); setPinOpen(false); setPinInput(""); setPinError(false);
       if (pinTarget === "vendedores") { setVendPanelOpen(true); }
+      if (pinTarget === "stock") { setStockPanelOpen(true); }
       setPinTarget(null);
     } else {
       setPinError(true); setPinInput("");
@@ -2005,17 +2004,36 @@ export default function ListaPrecios() {
   const [guardadoMsg, setGuardadoMsg] = useState(null); // {ok:true/false, texto}
 
   // ── VENDEDORES Y COMISIONES (protegido con la misma clave de arriba) ──
-  const [vendedores, setVend] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("vendedores_v1") || "[]"); } catch { return []; }
-  });
-  useEffect(() => {
-    try { localStorage.setItem("vendedores_v1", JSON.stringify(vendedores)); } catch {}
-  }, [vendedores]);
+  // Viven en Supabase (tablas "vendedores" + "vendedor_comisiones"), no en localStorage.
+  const [vendedores, setVend] = useState([]);
+  const [vendLoading, setVendLoading] = useState(false);
+
+  const cargarVendedores = useCallback(async () => {
+    setVendLoading(true);
+    const { data, error } = await supabase
+      .from("vendedores")
+      .select("id, nombre, activo, vendedor_comisiones(forma_pago, porcentaje)")
+      .eq("activo", true)
+      .order("nombre");
+    if (error) {
+      console.error("Error cargando vendedores:", error);
+    } else {
+      setVend((data || []).map(v => ({
+        id: v.id,
+        nombre: v.nombre,
+        comisiones: Object.fromEntries((v.vendedor_comisiones || []).map(c => [c.forma_pago, c.porcentaje])),
+      })));
+    }
+    setVendLoading(false);
+  }, []);
+
+  useEffect(() => { cargarVendedores(); }, [cargarVendedores]);
 
   const [vendPanelOpen, setVendPanelOpen] = useState(false);
   const [pinTarget, setPinTarget] = useState(null); // "vendedores" | null — a donde ir despues de ingresar la clave
   const [vendEditId, setVendEditId] = useState(null); // id del vendedor en edicion, o "nuevo"
   const [vendForm, setVendForm] = useState(null); // {nombre, comisiones:{efectivo:0,"2":0,...}}
+  const [vendGuardando, setVendGuardando] = useState(false);
 
   const abrirVendedores = () => {
     if (unlocked) setVendPanelOpen(true);
@@ -2027,21 +2045,113 @@ export default function ListaPrecios() {
     comisiones: Object.fromEntries(FORMAS_PAGO.map(f => [f.key, 0])),
   });
 
-  const guardarVendedor = () => {
+  const guardarVendedor = async () => {
     if (!vendForm?.nombre?.trim()) return;
-    if (vendEditId === "nuevo") {
-      setVend(prev => [...prev, { id: "v_" + Date.now(), ...vendForm }]);
-    } else {
-      setVend(prev => prev.map(v => v.id === vendEditId ? { ...v, ...vendForm } : v));
+    setVendGuardando(true);
+    try {
+      let vendedorId = vendEditId === "nuevo" ? null : vendEditId;
+
+      if (!vendedorId) {
+        const { data, error } = await supabase
+          .from("vendedores")
+          .insert({ nombre: vendForm.nombre.trim() })
+          .select("id")
+          .single();
+        if (error) throw error;
+        vendedorId = data.id;
+      } else {
+        const { error } = await supabase
+          .from("vendedores")
+          .update({ nombre: vendForm.nombre.trim() })
+          .eq("id", vendedorId);
+        if (error) throw error;
+      }
+
+      const filas = Object.entries(vendForm.comisiones || {}).map(([forma_pago, porcentaje]) => ({
+        vendedor_id: vendedorId,
+        forma_pago,
+        porcentaje: Number(porcentaje) || 0,
+      }));
+      const { error: errComis } = await supabase
+        .from("vendedor_comisiones")
+        .upsert(filas, { onConflict: "vendedor_id,forma_pago" });
+      if (errComis) throw errComis;
+
+      await cargarVendedores();
+      setVendEditId(null); setVendForm(null);
+    } catch (err) {
+      console.error(err);
+      alert("No se pudo guardar el vendedor (revisá la conexión con Supabase).");
+    } finally {
+      setVendGuardando(false);
     }
-    setVendEditId(null); setVendForm(null);
   };
 
-  const borrarVendedor = (id) => {
-    if (confirm("¿Borrar este vendedor?")) {
-      setVend(prev => prev.filter(v => v.id !== id));
-      if (cotVendedorId === id) setCotVendedorId("");
+  const borrarVendedor = async (id) => {
+    if (!confirm("¿Borrar este vendedor?")) return;
+    const { error } = await supabase.from("vendedores").delete().eq("id", id);
+    if (error) {
+      console.error(error);
+      alert("No se pudo borrar (puede tener ventas asociadas).");
+      return;
     }
+    if (cotVendedorId === id) setCotVendedorId("");
+    await cargarVendedores();
+  };
+
+  // ── STOCK (protegido con la misma clave) ──────────────────────────
+  const [stockPanelOpen, setStockPanelOpen] = useState(false);
+  const [stockBusq, setStockBusq]     = useState("");
+  const [stockResultados, setStockResultados] = useState([]);
+  const [stockBuscando, setStockBuscando] = useState(false);
+  const [stockSel, setStockSel]       = useState(null); // producto elegido
+  const [stockDelta, setStockDelta]   = useState("");
+  const [stockNota, setStockNota]     = useState("");
+  const [stockTipo, setStockTipo]     = useState("compra_manual"); // "compra_manual" | "factura_proveedor" | "ajuste"
+  const [stockGuardando, setStockGuardando] = useState(false);
+  const [stockMsg, setStockMsg]       = useState(null);
+
+  const abrirStock = () => {
+    if (unlocked) setStockPanelOpen(true);
+    else { setPinTarget("stock"); setPinOpen(true); }
+  };
+
+  const buscarProductoStock = async (q) => {
+    setStockBusq(q);
+    setStockSel(null);
+    if (!q.trim()) { setStockResultados([]); return; }
+    setStockBuscando(true);
+    const { data, error } = await supabase
+      .from("productos")
+      .select("id, sku, nombre, stock")
+      .or(`sku.ilike.%${q}%,nombre.ilike.%${q}%`)
+      .order("nombre")
+      .limit(20);
+    setStockBuscando(false);
+    if (error) { console.error(error); return; }
+    setStockResultados(data || []);
+  };
+
+  const registrarMovimientoStock = async () => {
+    const cantidad = parseInt(stockDelta, 10);
+    if (!stockSel || !cantidad) return;
+    setStockGuardando(true);
+    setStockMsg(null);
+    const { data, error } = await supabase.rpc("registrar_movimiento_stock", {
+      p_sku: stockSel.sku,
+      p_delta: cantidad,
+      p_tipo: stockTipo,
+      p_nota: stockNota || null,
+    });
+    setStockGuardando(false);
+    if (error) {
+      console.error(error);
+      setStockMsg({ ok: false, texto: "No se pudo registrar el movimiento." });
+      return;
+    }
+    setStockMsg({ ok: true, texto: `Stock actualizado: ${stockSel.nombre} → ${data} unidades` });
+    setStockSel(s => s ? { ...s, stock: data } : s);
+    setStockDelta(""); setStockNota("");
   };
 
   const cambiarFamilia = (f) => {
@@ -2382,7 +2492,8 @@ Sin texto adicional, sin markdown, solo el JSON.`;
   const cotComisionPct = cotVendedor ? (cotVendedor.comisiones?.[cotFormaPago] ?? 0) : 0;
   const cotComisionMonto = cotMontoFinal * cotComisionPct / 100;
 
-  // Guarda la venta: la manda al Webhook de n8n para que quede en la hoja Ventas.
+  // Guarda la venta directo en Supabase: una fila en "ventas" + una fila por
+  // producto en "venta_items".
   const guardarVenta = async () => {
     if (cotItems.length === 0) return;
     setGuardando(true);
@@ -2390,38 +2501,54 @@ Sin texto adicional, sin markdown, solo el JSON.`;
 
     const formaPagoLabel = FORMAS_PAGO.find(f => f.key === cotFormaPago)?.label || cotFormaPago;
 
-    const payload = {
-      fecha: new Date().toISOString(),
-      canal: "Cotizador",
-      cliente: cotNombre || null,
-      vendedor: cotVendedor ? { id: cotVendedor.id, nombre: cotVendedor.nombre } : null,
-      forma_pago: formaPagoLabel,
-      comision_vendedor_pct: cotComisionPct,
-      comision_vendedor_monto: cotComisionMonto,
-      descuento_total_pct: cotTotales.descTotal,
-      subtotal: cotTotales.subtotal,
-      total_efectivo: cotTotales.totalEF,
-      monto_final: cotMontoFinal,
-      items: cotTotales.lineas.map(i => ({
+    try {
+      const { data: venta, error: errVenta } = await supabase
+        .from("ventas")
+        .insert({
+          fecha: new Date().toISOString(),
+          canal: "cotizador",
+          cliente: cotNombre || null,
+          vendedor_id: cotVendedor ? cotVendedor.id : null,
+          forma_pago: formaPagoLabel,
+          comision_vendedor_pct: cotComisionPct,
+          comision_vendedor_monto: cotComisionMonto,
+          subtotal: cotTotales.subtotal,
+          total: cotMontoFinal,
+        })
+        .select("id")
+        .single();
+      if (errVenta) throw errVenta;
+
+      const items = cotTotales.lineas.map(i => ({
+        venta_id: venta.id,
         sku: i.id,
         nombre: i.nombre,
         cantidad: i.qty,
-        descuento_item_pct: i.descItem,
         precio_unitario: i.precioFinal,
-        total: i.total,
-      })),
-    };
+        monto_total: i.total,
+        comision_ml: 0,
+        costo_envio: 0,
+        monto_neto_recibido: i.total,
+      }));
+      const { error: errItems } = await supabase.from("venta_items").insert(items);
+      if (errItems) throw errItems;
 
-    try {
-      const resp = await fetch(N8N_WEBHOOK_VENTAS_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-App-Token": N8N_WEBHOOK_TOKEN },
-        body: JSON.stringify(payload),
-      });
-      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      // Descuenta stock por cada producto vendido (si el SKU todavia no esta
+      // cargado en la tabla "productos", la funcion no hace nada y no rompe
+      // el guardado de la venta).
+      for (const i of cotTotales.lineas) {
+        supabase.rpc("registrar_movimiento_stock", {
+          p_sku: i.id,
+          p_delta: -Math.abs(i.qty),
+          p_tipo: "venta",
+          p_referencia: venta.id,
+        }).then(({ error }) => { if (error) console.error("Stock no descontado para", i.id, error); });
+      }
+
       setGuardadoMsg({ ok: true, texto: "Venta guardada ✓" });
     } catch (err) {
-      setGuardadoMsg({ ok: false, texto: "No se pudo guardar (revisá la conexión con n8n)" });
+      console.error(err);
+      setGuardadoMsg({ ok: false, texto: "No se pudo guardar (revisá la conexión con Supabase)" });
     } finally {
       setGuardando(false);
       setTimeout(() => setGuardadoMsg(null), 4000);
@@ -2530,6 +2657,10 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         <button className="hdr-btn" onClick={abrirVendedores}
           title="Vendedores y comisiones (requiere clave)">
           👤 Vendedores
+        </button>
+        <button className="hdr-btn" onClick={abrirStock}
+          title="Cargar / ajustar stock (requiere clave)">
+          📦 Stock
         </button>
         <button className="hdr-btn" onClick={()=>unlocked?setUnlocked(false):setPinOpen(true)}
           title={unlocked?"Bloquear acceso interno":"Acceso interno"}
@@ -3265,7 +3396,9 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                   ))}
                 </div>
 
-                <button className="img-auto-btn" onClick={guardarVendedor}>Guardar vendedor</button>
+                <button className="img-auto-btn" onClick={guardarVendedor} disabled={vendGuardando}>
+                  {vendGuardando ? "Guardando…" : "Guardar vendedor"}
+                </button>
               </div>
             ) : (
               /* ── Lista de vendedores ── */
@@ -3298,6 +3431,84 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                   </div>
                 )}
               </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── PANEL STOCK (protegido con clave) ───────────────────────── */}
+      {stockPanelOpen && unlocked && (
+        <div className="img-panel">
+          <div className="img-head">
+            <div>
+              <div className="img-head-title">📦 Stock</div>
+              <div className="img-head-sub">Buscá un producto por SKU o nombre para cargar o ajustar su stock</div>
+            </div>
+            <button className="cot-x" onClick={()=>{setStockPanelOpen(false);setStockSel(null);setStockBusq("");setStockResultados([]);setStockMsg(null);}}>✕</button>
+          </div>
+
+          <div className="img-body">
+            <input className="cot-nombre-inp" placeholder="Buscar por SKU o nombre..."
+              value={stockBusq} onChange={e=>buscarProductoStock(e.target.value)} />
+
+            {stockBuscando && <div className="cot-empty" style={{padding:12}}>Buscando…</div>}
+
+            {!stockSel && stockResultados.length > 0 && (
+              <div className="img-prod-list" style={{marginTop:10}}>
+                {stockResultados.map(p=>(
+                  <div key={p.id} className="img-prod-row" style={{cursor:"pointer"}}
+                    onClick={()=>{setStockSel(p);setStockResultados([]);setStockBusq(p.nombre);}}>
+                    <div className="img-prod-thumb-empty">📦</div>
+                    <div className="img-prod-info">
+                      <div className="img-prod-name">{p.nombre}</div>
+                      <div className="img-prod-count">SKU {p.sku} · Stock actual: {p.stock}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {!stockBuscando && stockBusq.trim() && stockResultados.length === 0 && !stockSel && (
+              <div className="cot-empty" style={{padding:12}}>
+                No encontré ese producto en la base (todavía puede no estar cargado en Supabase).
+              </div>
+            )}
+
+            {stockSel && (
+              <div className="img-detail" style={{marginTop:10}}>
+                <div className="img-detail-header">
+                  <div className="img-detail-name">{stockSel.nombre}</div>
+                  <button className="img-back" onClick={()=>{setStockSel(null);setStockBusq("");}}>← Volver a buscar</button>
+                </div>
+                <div style={{fontSize:12,color:"var(--tx2)",marginBottom:10}}>
+                  SKU {stockSel.sku} · Stock actual: <strong>{stockSel.stock}</strong> unidades
+                </div>
+
+                <div className="img-section-title">Tipo de movimiento</div>
+                <select className="cot-nombre-inp" value={stockTipo} onChange={e=>setStockTipo(e.target.value)} style={{marginBottom:10}}>
+                  <option value="compra_manual">Carga manual</option>
+                  <option value="factura_proveedor">Factura de proveedor</option>
+                  <option value="ajuste">Ajuste (ej: rotura, faltante)</option>
+                </select>
+
+                <div className="img-section-title">Cantidad (positivo suma, negativo resta)</div>
+                <input className="cot-nombre-inp" type="number" placeholder="ej: 10 o -2"
+                  value={stockDelta} onChange={e=>setStockDelta(e.target.value)} style={{marginBottom:10}} />
+
+                <div className="img-section-title">Nota (opcional)</div>
+                <input className="cot-nombre-inp" placeholder="ej: Factura 0001-00023456"
+                  value={stockNota} onChange={e=>setStockNota(e.target.value)} style={{marginBottom:14}} />
+
+                <button className="img-auto-btn" onClick={registrarMovimientoStock} disabled={stockGuardando || !stockDelta}>
+                  {stockGuardando ? "Guardando…" : "Registrar movimiento"}
+                </button>
+
+                {stockMsg && (
+                  <div style={{marginTop:10,fontSize:12,color: stockMsg.ok ? "var(--ac)" : "#e55"}}>
+                    {stockMsg.texto}
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>

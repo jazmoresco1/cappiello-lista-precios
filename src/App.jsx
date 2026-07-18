@@ -2502,6 +2502,17 @@ Sin texto adicional, sin markdown, solo el JSON.`;
     const formaPagoLabel = FORMAS_PAGO.find(f => f.key === cotFormaPago)?.label || cotFormaPago;
 
     try {
+      // Trae el costo real de cada producto vendido (tabla "productos", columna
+      // costo_base) para poder calcular la ganancia real de la venta física,
+      // igual que ya se hace para las ventas de Mercado Libre.
+      const skusVenta = [...new Set(cotTotales.lineas.map(i => i.id))];
+      const { data: costos, error: errCostos } = await supabase
+        .from("productos")
+        .select("sku, costo_base")
+        .in("sku", skusVenta);
+      if (errCostos) console.error("No se pudo traer el costo de los productos (la venta se guarda igual, sin ganancia calculada)", errCostos);
+      const costoPorSku = Object.fromEntries((costos || []).map(p => [p.sku, p.costo_base]));
+
       const { data: venta, error: errVenta } = await supabase
         .from("ventas")
         .insert({
@@ -2519,17 +2530,30 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         .single();
       if (errVenta) throw errVenta;
 
-      const items = cotTotales.lineas.map(i => ({
-        venta_id: venta.id,
-        sku: i.id,
-        nombre: i.nombre,
-        cantidad: i.qty,
-        precio_unitario: i.precioFinal,
-        monto_total: i.total,
-        comision_ml: 0,
-        costo_envio: 0,
-        monto_neto_recibido: i.total,
-      }));
+      const items = cotTotales.lineas.map(i => {
+        const costoUnitario = costoPorSku[i.id] ?? null;
+        const costoTotal = costoUnitario !== null ? costoUnitario * i.qty : null;
+        // Ganancia real del item = lo que efectivamente entró (sin comisión de
+        // ML, no aplica en local) menos el costo real del proveedor. La
+        // comisión del vendedor ya queda registrada aparte, en la cabecera
+        // de la venta (comision_vendedor_monto).
+        const gananciaReal = costoTotal !== null ? i.total - costoTotal : null;
+        return {
+          venta_id: venta.id,
+          sku: i.id,
+          nombre: i.nombre,
+          cantidad: i.qty,
+          precio_unitario: i.precioFinal,
+          monto_total: i.total,
+          comision_ml: 0,
+          costo_envio: 0,
+          monto_neto_recibido: i.total,
+          costo_unitario: costoUnitario,
+          ganancia_real: gananciaReal,
+          metodo_match: costoUnitario !== null ? "sku_exacto" : "sin_match",
+          alerta: costoUnitario === null ? "No se encontró costo para este SKU en productos" : null,
+        };
+      });
       const { error: errItems } = await supabase.from("venta_items").insert(items);
       if (errItems) throw errItems;
 

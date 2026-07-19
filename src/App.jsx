@@ -1981,6 +1981,9 @@ export default function ListaPrecios() {
       setUnlocked(true); setPinOpen(false); setPinInput(""); setPinError(false);
       if (pinTarget === "vendedores") { setVendPanelOpen(true); }
       if (pinTarget === "stock") { setStockPanelOpen(true); }
+      if (pinTarget === "ventas") { setVentasPanelOpen(true); cargarVentas(); }
+      if (pinTarget === "socios") { setSociosPanelOpen(true); cargarReparto(); }
+      if (pinTarget === "facturas") { setFacturasPanelOpen(true); cargarFacturas(); }
       setPinTarget(null);
     } else {
       setPinError(true); setPinInput("");
@@ -2152,6 +2155,117 @@ export default function ListaPrecios() {
     setStockMsg({ ok: true, texto: `Stock actualizado: ${stockSel.nombre} → ${data} unidades` });
     setStockSel(s => s ? { ...s, stock: data } : s);
     setStockDelta(""); setStockNota("");
+  };
+
+  // ── VENTAS Y GANANCIA REAL (protegido con la misma clave) ──────────
+  // Junta ventas de Mercado Libre (filas planas en "ventas") y ventas
+  // físicas del cotizador ("ventas" + "venta_items") de los últimos 30
+  // días, y calcula la ganancia real total (no el precio de lista).
+  const [ventasPanelOpen, setVentasPanelOpen] = useState(false);
+  const [ventasLoading, setVentasLoading]     = useState(false);
+  const [ventasResumen, setVentasResumen]     = useState(null);
+  const [ventasLista, setVentasLista]         = useState([]);
+
+  const abrirVentas = () => {
+    if (unlocked) { setVentasPanelOpen(true); cargarVentas(); }
+    else { setPinTarget("ventas"); setPinOpen(true); }
+  };
+
+  const cargarVentas = async () => {
+    setVentasLoading(true);
+    const desde = new Date(); desde.setDate(desde.getDate() - 30);
+    const desdeISO = desde.toISOString();
+
+    const [{ data: ml, error: errMl }, { data: fis, error: errFis }] = await Promise.all([
+      supabase.from("ventas")
+        .select("fecha,nombre,cantidad,monto_total_venta,ganancia_real")
+        .eq("canal", "mercado_libre")
+        .gte("fecha", desdeISO)
+        .order("fecha", { ascending: false })
+        .limit(300),
+      supabase.from("ventas")
+        .select("fecha,cliente,venta_items(nombre,cantidad,monto_total,ganancia_real)")
+        .eq("canal", "cotizador")
+        .gte("fecha", desdeISO)
+        .order("fecha", { ascending: false })
+        .limit(200),
+    ]);
+    if (errMl) console.error("Error cargando ventas ML:", errMl);
+    if (errFis) console.error("Error cargando ventas físicas:", errFis);
+
+    const filasMl = (ml || []).map(v => ({
+      fecha: v.fecha, canal: "Mercado Libre", nombre: v.nombre,
+      cantidad: v.cantidad, monto: v.monto_total_venta, ganancia: v.ganancia_real,
+    }));
+    const filasFis = (fis || []).flatMap(v =>
+      (v.venta_items || []).map(it => ({
+        fecha: v.fecha, canal: "Local", nombre: it.nombre,
+        cantidad: it.cantidad, monto: it.monto_total, ganancia: it.ganancia_real,
+      }))
+    );
+    const todas = [...filasMl, ...filasFis].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+    const totalVentas   = todas.reduce((s, f) => s + (Number(f.monto) || 0), 0);
+    const conGanancia   = todas.filter(f => f.ganancia !== null && f.ganancia !== undefined);
+    const totalGanancia = conGanancia.reduce((s, f) => s + Number(f.ganancia), 0);
+
+    setVentasLista(todas.slice(0, 80));
+    setVentasResumen({
+      totalVentas, totalGanancia,
+      cantidad: todas.length,
+      sinGanancia: todas.length - conGanancia.length,
+    });
+    setVentasLoading(false);
+  };
+
+  // ── SOCIOS / REPARTO (protegido con la misma clave) ─────────────────
+  // Lee la vista "v_reparto_socios" ya armada en Supabase: ganancia de
+  // contenedor1 asignada a cada socio, menos los gastos que le cargaron.
+  const [sociosPanelOpen, setSociosPanelOpen] = useState(false);
+  const [sociosLoading, setSociosLoading]     = useState(false);
+  const [reparto, setReparto]                 = useState([]);
+
+  const abrirSocios = () => {
+    if (unlocked) { setSociosPanelOpen(true); cargarReparto(); }
+    else { setPinTarget("socios"); setPinOpen(true); }
+  };
+
+  const cargarReparto = async () => {
+    setSociosLoading(true);
+    const { data, error } = await supabase.from("v_reparto_socios").select("*");
+    if (error) console.error("Error cargando reparto de socios:", error);
+    setReparto(data || []);
+    setSociosLoading(false);
+  };
+
+  // ── FACTURAS DE PROVEEDOR / OCR (protegido con la misma clave) ─────
+  const [facturasPanelOpen, setFacturasPanelOpen] = useState(false);
+  const [facturasLoading, setFacturasLoading]     = useState(false);
+  const [facturas, setFacturas]                   = useState([]);
+  const [facturaSel, setFacturaSel]               = useState(null);
+
+  const abrirFacturas = () => {
+    if (unlocked) { setFacturasPanelOpen(true); cargarFacturas(); }
+    else { setPinTarget("facturas"); setPinOpen(true); }
+  };
+
+  const cargarFacturas = async () => {
+    setFacturasLoading(true);
+    const { data, error } = await supabase
+      .from("facturas_proveedor")
+      .select("id,proveedor,numero_factura,fecha_factura,archivo_nombre,total_items,items_con_diferencia,estado,creado_en,productos_detectados")
+      .order("creado_en", { ascending: false })
+      .limit(50);
+    if (error) console.error("Error cargando facturas:", error);
+    setFacturas(data || []);
+    setFacturasLoading(false);
+  };
+
+  const marcarFacturaRevisada = async (id) => {
+    const { error } = await supabase.from("facturas_proveedor").update({ estado: "revisado" }).eq("id", id);
+    if (error) { console.error(error); alert("No se pudo marcar como revisada."); return; }
+    await cargarFacturas();
+    setFacturaSel(f => (f && f.id === id) ? { ...f, estado: "revisado" } : f);
   };
 
   const cambiarFamilia = (f) => {
@@ -2642,8 +2756,10 @@ Sin texto adicional, sin markdown, solo el JSON.`;
               <button className="mx" onClick={()=>{setPinOpen(false);setPinInput("");setPinError(false);setPinTarget(null);}}>✕</button>
             </div>
             <p style={{fontSize:13,color:"var(--tx2)",marginBottom:16}}>
-              {pinTarget==="vendedores"
-                ? "Ingresá la clave para configurar vendedores y comisiones."
+              {pinTarget==="vendedores" ? "Ingresá la clave para configurar vendedores y comisiones."
+                : pinTarget==="ventas" ? "Ingresá la clave para ver ventas y ganancia real."
+                : pinTarget==="socios" ? "Ingresá la clave para ver el reparto entre socios."
+                : pinTarget==="facturas" ? "Ingresá la clave para ver las facturas de proveedor."
                 : "Ingresá la clave para ver stock, costos y datos de proveedor."}
             </p>
             <input
@@ -2685,6 +2801,18 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         <button className="hdr-btn" onClick={abrirStock}
           title="Cargar / ajustar stock (requiere clave)">
           📦 Stock
+        </button>
+        <button className="hdr-btn" onClick={abrirVentas}
+          title="Ventas y ganancia real (requiere clave)">
+          📊 Ventas
+        </button>
+        <button className="hdr-btn" onClick={abrirSocios}
+          title="Reparto de ganancia y gastos entre socios (requiere clave)">
+          🤝 Socios
+        </button>
+        <button className="hdr-btn" onClick={abrirFacturas}
+          title="Facturas de proveedor leídas por IA (requiere clave)">
+          🧾 Facturas
         </button>
         <button className="hdr-btn" onClick={()=>unlocked?setUnlocked(false):setPinOpen(true)}
           title={unlocked?"Bloquear acceso interno":"Acceso interno"}
@@ -3532,6 +3660,175 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                     {stockMsg.texto}
                   </div>
                 )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── PANEL VENTAS Y GANANCIA REAL (protegido con clave) ──────── */}
+      {ventasPanelOpen && unlocked && (
+        <div className="img-panel">
+          <div className="img-head">
+            <div>
+              <div className="img-head-title">📊 Ventas y ganancia real</div>
+              <div className="img-head-sub">Mercado Libre + ventas físicas, últimos 30 días</div>
+            </div>
+            <button className="cot-x" onClick={()=>setVentasPanelOpen(false)}>✕</button>
+          </div>
+
+          <div className="img-body">
+            {ventasLoading ? (
+              <div className="cot-empty" style={{padding:12}}>Cargando…</div>
+            ) : !ventasResumen || ventasResumen.cantidad===0 ? (
+              <div className="cot-empty">
+                <div style={{fontSize:32,marginBottom:8}}>📊</div>
+                <div>Todavía no hay ventas guardadas en los últimos 30 días</div>
+              </div>
+            ) : (
+              <>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
+                  <div style={{background:"var(--sf2)",border:"1px solid var(--bd)",borderRadius:8,padding:"10px 12px"}}>
+                    <div style={{fontSize:11,color:"var(--tx2)"}}>Total vendido</div>
+                    <div style={{fontSize:18,fontWeight:700}}>{ARS(ventasResumen.totalVentas)}</div>
+                  </div>
+                  <div style={{background:"var(--sf2)",border:"1px solid var(--bd)",borderRadius:8,padding:"10px 12px"}}>
+                    <div style={{fontSize:11,color:"var(--tx2)"}}>Ganancia real</div>
+                    <div style={{fontSize:18,fontWeight:700,color:"var(--ac)"}}>{ARS(ventasResumen.totalGanancia)}</div>
+                  </div>
+                </div>
+                <div style={{fontSize:11,color:"var(--tx2)",marginBottom:14}}>
+                  {ventasResumen.cantidad} {ventasResumen.cantidad===1?"venta":"ventas"}
+                  {ventasResumen.sinGanancia>0 && ` · ${ventasResumen.sinGanancia} sin costo cargado (ganancia no calculada)`}
+                </div>
+
+                <div className="img-prod-list">
+                  {ventasLista.map((v,i)=>(
+                    <div key={i} className="img-prod-row" style={{cursor:"default"}}>
+                      <div className="img-prod-thumb-empty">{v.canal==="Mercado Libre"?"🛒":"🏬"}</div>
+                      <div className="img-prod-info">
+                        <div className="img-prod-name">{v.nombre || "(sin nombre)"}</div>
+                        <div className="img-prod-count">
+                          {new Date(v.fecha).toLocaleDateString("es-AR")} · {v.canal} · x{v.cantidad} · {ARS(v.monto||0)}
+                          {v.ganancia!=null && <> · ganancia {ARS(v.ganancia)}</>}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── PANEL SOCIOS / REPARTO (protegido con clave) ────────────── */}
+      {sociosPanelOpen && unlocked && (
+        <div className="img-panel">
+          <div className="img-head">
+            <div>
+              <div className="img-head-title">🤝 Reparto entre socios</div>
+              <div className="img-head-sub">Ganancia de contenedor1 y gastos asignados, por socio</div>
+            </div>
+            <button className="cot-x" onClick={()=>setSociosPanelOpen(false)}>✕</button>
+          </div>
+
+          <div className="img-body">
+            {sociosLoading ? (
+              <div className="cot-empty" style={{padding:12}}>Cargando…</div>
+            ) : reparto.length===0 ? (
+              <div className="cot-empty">
+                <div style={{fontSize:32,marginBottom:8}}>🤝</div>
+                <div>Todavía no hay ganancia ni gastos de contenedor1 para repartir</div>
+              </div>
+            ) : (
+              <div className="img-prod-list">
+                {reparto.map(r=>(
+                  <div key={r.socio_id} className="img-prod-row" style={{cursor:"default"}}>
+                    <div className="img-prod-thumb-empty">👤</div>
+                    <div className="img-prod-info">
+                      <div className="img-prod-name">{r.socio}</div>
+                      <div className="img-prod-count">
+                        Ganancia {ARS(r.ganancia_asignada||0)} · Gastos {ARS(r.gasto_asignado||0)}
+                      </div>
+                    </div>
+                    <div style={{fontWeight:700,color:"var(--ac)",whiteSpace:"nowrap"}}>{ARS(r.neto||0)}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── PANEL FACTURAS DE PROVEEDOR / OCR (protegido con clave) ─── */}
+      {facturasPanelOpen && unlocked && (
+        <div className="img-panel">
+          <div className="img-head">
+            <div>
+              <div className="img-head-title">🧾 Facturas de proveedor</div>
+              <div className="img-head-sub">Leídas automáticamente por IA desde la carpeta de Drive</div>
+            </div>
+            <button className="cot-x" onClick={()=>{setFacturasPanelOpen(false);setFacturaSel(null);}}>✕</button>
+          </div>
+
+          <div className="img-body">
+            {facturaSel ? (
+              <div className="img-detail">
+                <div className="img-detail-header">
+                  <div className="img-detail-name">{facturaSel.proveedor || facturaSel.archivo_nombre || "Factura"}</div>
+                  <button className="img-back" onClick={()=>setFacturaSel(null)}>← Volver</button>
+                </div>
+                <div style={{fontSize:12,color:"var(--tx2)",marginBottom:10}}>
+                  {facturaSel.numero_factura && <>Nº {facturaSel.numero_factura} · </>}
+                  {facturaSel.fecha_factura && <>{new Date(facturaSel.fecha_factura).toLocaleDateString("es-AR")} · </>}
+                  Estado: {facturaSel.estado}
+                </div>
+                <div className="img-section-title">Productos detectados</div>
+                <div className="img-prod-list" style={{marginBottom:14}}>
+                  {(Array.isArray(facturaSel.productos_detectados) ? facturaSel.productos_detectados : []).map((it,i)=>(
+                    <div key={i} className="img-prod-row" style={{cursor:"default"}}>
+                      <div className="img-prod-info">
+                        <div className="img-prod-name">{it.descripcion || it.nombre || "(sin descripción)"}</div>
+                        <div className="img-prod-count">
+                          x{it.cantidad ?? "?"} · {it.precio_unitario!=null ? ARS(it.precio_unitario) : "—"} c/u
+                          {it.importe!=null && <> · total {ARS(it.importe)}</>}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {(!Array.isArray(facturaSel.productos_detectados) || facturaSel.productos_detectados.length===0) && (
+                    <div className="cot-empty" style={{padding:12}}>No se detectaron productos en esta factura.</div>
+                  )}
+                </div>
+                {facturaSel.estado !== "revisado" && (
+                  <button className="img-auto-btn" onClick={()=>marcarFacturaRevisada(facturaSel.id)}>
+                    Marcar como revisada
+                  </button>
+                )}
+              </div>
+            ) : facturasLoading ? (
+              <div className="cot-empty" style={{padding:12}}>Cargando…</div>
+            ) : facturas.length===0 ? (
+              <div className="cot-empty">
+                <div style={{fontSize:32,marginBottom:8}}>🧾</div>
+                <div>Todavía no se leyó ninguna factura</div>
+                <div style={{fontSize:11,marginTop:4}}>Subí una foto o PDF a la carpeta "Facturas Proveedores" de Drive</div>
+              </div>
+            ) : (
+              <div className="img-prod-list">
+                {facturas.map(f=>(
+                  <div key={f.id} className="img-prod-row" style={{cursor:"pointer"}} onClick={()=>setFacturaSel(f)}>
+                    <div className="img-prod-thumb-empty">{f.estado==="revisado"?"✅":"🧾"}</div>
+                    <div className="img-prod-info">
+                      <div className="img-prod-name">{f.proveedor || f.archivo_nombre || "Factura"}</div>
+                      <div className="img-prod-count">
+                        {f.fecha_factura ? new Date(f.fecha_factura).toLocaleDateString("es-AR") : new Date(f.creado_en).toLocaleDateString("es-AR")}
+                        {" · "}{f.total_items ?? 0} productos · {f.estado}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>

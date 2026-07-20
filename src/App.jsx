@@ -2178,13 +2178,13 @@ export default function ListaPrecios() {
 
     const [{ data: ml, error: errMl }, { data: fis, error: errFis }] = await Promise.all([
       supabase.from("ventas")
-        .select("fecha,nombre,cantidad,monto_total_venta,ganancia_real")
+        .select("id,fecha,nombre,cantidad,monto_total_venta,ganancia_real")
         .eq("canal", "mercado_libre")
         .gte("fecha", desdeISO)
         .order("fecha", { ascending: false })
         .limit(300),
       supabase.from("ventas")
-        .select("fecha,cliente,venta_items(nombre,cantidad,monto_total,ganancia_real)")
+        .select("fecha,cliente,venta_items(id,nombre,cantidad,monto_total,ganancia_real)")
         .eq("canal", "cotizador")
         .gte("fecha", desdeISO)
         .order("fecha", { ascending: false })
@@ -2194,11 +2194,13 @@ export default function ListaPrecios() {
     if (errFis) console.error("Error cargando ventas físicas:", errFis);
 
     const filasMl = (ml || []).map(v => ({
+      id: v.id, tabla: "ventas",
       fecha: v.fecha, canal: "Mercado Libre", nombre: v.nombre,
       cantidad: v.cantidad, monto: v.monto_total_venta, ganancia: v.ganancia_real,
     }));
     const filasFis = (fis || []).flatMap(v =>
       (v.venta_items || []).map(it => ({
+        id: it.id, tabla: "venta_items",
         fecha: v.fecha, canal: "Local", nombre: it.nombre,
         cantidad: it.cantidad, monto: it.monto_total, ganancia: it.ganancia_real,
       }))
@@ -2216,6 +2218,16 @@ export default function ListaPrecios() {
       sinGanancia: todas.length - conGanancia.length,
     });
     setVentasLoading(false);
+  };
+
+  // Borra un movimiento de venta (fila de "ventas" si es de Mercado Libre,
+  // o fila de "venta_items" si es de una venta física del cotizador).
+  // Requiere que la tabla tenga una policy de RLS que permita DELETE.
+  const borrarMovimiento = async (row) => {
+    if (!window.confirm(`¿Borrar este movimiento?\n\n${row.nombre || "(sin nombre)"} · ${ARS(row.monto || 0)}\n\nEsta acción no se puede deshacer.`)) return;
+    const { error } = await supabase.from(row.tabla).delete().eq("id", row.id);
+    if (error) { alert("No se pudo borrar: " + error.message); return; }
+    await cargarVentas();
   };
 
   // ── SOCIOS / REPARTO (protegido con la misma clave) ─────────────────
@@ -3704,7 +3716,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
 
                 <div className="img-prod-list">
                   {ventasLista.map((v,i)=>(
-                    <div key={i} className="img-prod-row" style={{cursor:"default"}}>
+                    <div key={v.id||i} className="img-prod-row" style={{cursor:"default"}}>
                       <div className="img-prod-thumb-empty">{v.canal==="Mercado Libre"?"🛒":"🏬"}</div>
                       <div className="img-prod-info">
                         <div className="img-prod-name">{v.nombre || "(sin nombre)"}</div>
@@ -3713,6 +3725,13 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                           {v.ganancia!=null && <> · ganancia {ARS(v.ganancia)}</>}
                         </div>
                       </div>
+                      {v.id && (
+                        <button className="cot-x" title="Borrar movimiento"
+                          onClick={()=>borrarMovimiento(v)}
+                          style={{marginLeft:8,color:"#c0392b",borderColor:"#c0392b"}}>
+                          🗑
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>

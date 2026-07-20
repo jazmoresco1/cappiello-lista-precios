@@ -1,0 +1,54 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 4 * * *"
+            }
+          ]
+        }
+      },
+      "id": "backup-trigger",
+      "name": "Todos los dias a las 4am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const SUPA_URL = $env.SUPABASE_URL;\nconst SUPA_KEY = $env.SUPABASE_KEY;\n\n// Tablas base del sistema (no vistas, esas se recalculan solas de estas).\nconst TABLAS = ['productos', 'ventas', 'venta_items', 'socios', 'facturas_proveedor', 'mp_movimientos', 'configuracion_precios', 'config_cuotas_ml'];\n\nconst backup = { fecha: new Date().toISOString(), tablas: {} };\nconst resumen = [];\n\nfor (const tabla of TABLAS) {\n  const resp = await this.helpers.httpRequest({\n    method: 'GET',\n    url: `${SUPA_URL}/rest/v1/${tabla}`,\n    qs: { select: '*', limit: 20000 },\n    headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY },\n    json: true,\n    returnFullResponse: true,\n    ignoreHttpStatusErrors: true,\n  });\n  if (resp.statusCode >= 200 && resp.statusCode < 300) {\n    backup.tablas[tabla] = resp.body;\n    resumen.push({ tabla, filas: resp.body.length, resultado: 'OK' });\n  } else {\n    resumen.push({ tabla, filas: 0, resultado: `ERROR ${resp.statusCode}: ` + JSON.stringify(resp.body) });\n  }\n}\n\nconst hoy = new Date().toISOString().slice(0, 10); // YYYY-MM-DD\nconst nombreArchivo = `backup-${hoy}.json`;\nconst contenido = JSON.stringify(backup);\n\n// Sube el snapshot al bucket privado \"backups\" de Supabase Storage.\n// x-upsert:true permite reemplazar si se corre 2 veces el mismo dia.\nconst upload = await this.helpers.httpRequest({\n  method: 'POST',\n  url: `${SUPA_URL}/storage/v1/object/backups/${nombreArchivo}`,\n  headers: {\n    apikey: SUPA_KEY,\n    Authorization: 'Bearer ' + SUPA_KEY,\n    'Content-Type': 'application/json',\n    'x-upsert': 'true',\n  },\n  body: contenido,\n  returnFullResponse: true,\n  ignoreHttpStatusErrors: true,\n});\n\nreturn [{ json: {\n  archivo: nombreArchivo,\n  tamano_bytes: contenido.length,\n  resumen_tablas: resumen,\n  upload_status: upload.statusCode,\n  upload_ok: upload.statusCode >= 200 && upload.statusCode < 300,\n  upload_resultado: upload.body,\n} }];"
+      },
+      "id": "backup-code",
+      "name": "Hacer Backup",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Todos los dias a las 4am": {
+      "main": [
+        [
+          {
+            "node": "Hacer Backup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "1313c69018e57f5e5c23af0d9586124648ad2e7bb887bc38ed4c83e958b6dddc"
+  }
+}

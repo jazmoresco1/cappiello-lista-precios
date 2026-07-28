@@ -14,6 +14,7 @@ import VentasPanel from "./components/VentasPanel.jsx";
 import SociosPanel from "./components/SociosPanel.jsx";
 import FacturasPanel from "./components/FacturasPanel.jsx";
 import GastosPanel from "./components/GastosPanel.jsx";
+import RadarPanel from "./components/RadarPanel.jsx";
 import PinModal from "./components/PinModal.jsx";
 import ProductModal from "./components/ProductModal.jsx";
 import ImageManagerPanel from "./components/ImageManagerPanel.jsx";
@@ -44,6 +45,7 @@ export default function ListaPrecios() {
       if (pinTarget === "socios") { setSociosPanelOpen(true); cargarReparto(); }
       if (pinTarget === "facturas") { setFacturasPanelOpen(true); cargarFacturas(); }
       if (pinTarget === "gastos") { setGastosPanelOpen(true); cargarGastos(); }
+      if (pinTarget === "radar") { setRadarPanelOpen(true); cargarRadar(); }
       setPinTarget(null);
     } else {
       setPinError(true); setPinInput("");
@@ -455,6 +457,33 @@ export default function ListaPrecios() {
     const { error } = await supabase.from("costos_fijos_variables").delete().eq("id", id);
     if (error) { alert("No se pudo borrar: " + error.message); return; }
     await cargarGastos();
+  };
+
+  // ── RADAR DE COMPETENCIA (Fase 7, protegido con la misma clave) ────
+  // Lee las vistas ya armadas sobre "competencia_ventas_dia" (que un
+  // proceso externo actualiza todos los días): tu posición por categoría
+  // y los competidores con más ventas, del último día cargado.
+  const [radarPanelOpen, setRadarPanelOpen] = useState(false);
+  const [radarLoading, setRadarLoading]     = useState(false);
+  const [radarPropio, setRadarPropio]       = useState([]);
+  const [radarTop, setRadarTop]             = useState([]);
+
+  const abrirRadar = () => {
+    if (unlocked) { setRadarPanelOpen(true); cargarRadar(); }
+    else { setPinTarget("radar"); setPinOpen(true); }
+  };
+
+  const cargarRadar = async () => {
+    setRadarLoading(true);
+    const [{ data: propio, error: errPropio }, { data: top, error: errTop }] = await Promise.all([
+      supabase.from("v_radar_competencia_propio").select("*"),
+      supabase.from("v_radar_competencia_top").select("*"),
+    ]);
+    if (errPropio) console.error("Error cargando posición propia del radar:", errPropio);
+    if (errTop) console.error("Error cargando top de competencia:", errTop);
+    setRadarPropio(propio || []);
+    setRadarTop(top || []);
+    setRadarLoading(false);
   };
 
   const cambiarFamilia = (f) => {
@@ -949,7 +978,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         cfgOpen={cfgOpen} setCfgOpen={setCfgOpen} setImgOpen={setImgOpen} setImgSP={setImgSP}
         setCotOpen={setCotOpen} cotItems={cotItems}
         abrirVendedores={abrirVendedores} abrirStock={abrirStock} abrirVentas={abrirVentas}
-        abrirSocios={abrirSocios} abrirFacturas={abrirFacturas} abrirGastos={abrirGastos}
+        abrirSocios={abrirSocios} abrirFacturas={abrirFacturas} abrirGastos={abrirGastos} abrirRadar={abrirRadar}
         unlocked={unlocked} setUnlocked={setUnlocked} setPinOpen={setPinOpen}
         cuotas={cuotas} setCuotas={setCuotas}
         familias={familias} familia={familia} cambiarFamilia={cambiarFamilia}
@@ -1068,6 +1097,14 @@ Sin texto adicional, sin markdown, solo el JSON.`;
           gastos={gastos} socios={socios}
           onClose={()=>setGastosPanelOpen(false)}
           onGuardar={guardarGasto} onBorrar={borrarGasto}
+        />
+      )}
+
+      {/* ── PANEL RADAR DE COMPETENCIA (protegido con clave) ────────── */}
+      {radarPanelOpen && unlocked && (
+        <RadarPanel
+          radarLoading={radarLoading} radarPropio={radarPropio} radarTop={radarTop}
+          onClose={()=>setRadarPanelOpen(false)}
         />
       )}
     </div>

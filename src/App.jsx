@@ -236,13 +236,13 @@ export default function ListaPrecios() {
 
     const [{ data: ml, error: errMl }, { data: fis, error: errFis }] = await Promise.all([
       supabase.from("ventas")
-        .select("id,fecha,nombre,cantidad,monto_total_venta,ganancia_real")
+        .select("id,fecha,nombre,cantidad,monto_total_venta,comision_ml,costo_envio,costo_unitario_proveedor,ganancia_real,editado_manual")
         .eq("canal", "mercado_libre")
         .gte("fecha", desdeISO)
         .order("fecha", { ascending: false })
         .limit(300),
       supabase.from("ventas")
-        .select("fecha,cliente,venta_items(id,nombre,cantidad,monto_total,ganancia_real)")
+        .select("fecha,cliente,venta_items(id,nombre,cantidad,monto_total,comision_ml,costo_envio,costo_unitario,ganancia_real,editado_manual)")
         .eq("canal", "cotizador")
         .gte("fecha", desdeISO)
         .order("fecha", { ascending: false })
@@ -255,12 +255,16 @@ export default function ListaPrecios() {
       id: v.id, tabla: "ventas",
       fecha: v.fecha, canal: "Mercado Libre", nombre: v.nombre,
       cantidad: v.cantidad, monto: v.monto_total_venta, ganancia: v.ganancia_real,
+      comisionMl: v.comision_ml, costoEnvio: v.costo_envio, costoUnitario: v.costo_unitario_proveedor,
+      editadoManual: v.editado_manual,
     }));
     const filasFis = (fis || []).flatMap(v =>
       (v.venta_items || []).map(it => ({
         id: it.id, tabla: "venta_items",
         fecha: v.fecha, canal: "Local", nombre: it.nombre,
         cantidad: it.cantidad, monto: it.monto_total, ganancia: it.ganancia_real,
+        comisionMl: it.comision_ml, costoEnvio: it.costo_envio, costoUnitario: it.costo_unitario,
+        editadoManual: it.editado_manual,
       }))
     );
     const todas = [...filasMl, ...filasFis].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
@@ -285,6 +289,47 @@ export default function ListaPrecios() {
     if (!window.confirm(`¿Borrar este movimiento?\n\n${row.nombre || "(sin nombre)"} · ${ARS(row.monto || 0)}\n\nEsta acción no se puede deshacer.`)) return;
     const { error } = await supabase.from(row.tabla).delete().eq("id", row.id);
     if (error) { alert("No se pudo borrar: " + error.message); return; }
+    await cargarVentas();
+  };
+
+  // Edita a mano el costo de envío y el costo de proveedor de una venta
+  // (fila de "ventas" si es de Mercado Libre, o de "venta_items" si es
+  // física) y recalcula la ganancia real con esos valores. Queda marcada
+  // como "editado_manual" para que la próxima sincronización de Mercado
+  // Libre no la pise (ver permitir_editar_costos_venta.sql).
+  const [editandoVentaId, setEditandoVentaId] = useState(null);
+  const [editandoVentaGuardando, setEditandoVentaGuardando] = useState(false);
+
+  const guardarEdicionVenta = async (row, nuevoCostoEnvio, nuevoCostoUnitario) => {
+    setEditandoVentaGuardando(true);
+    const costoEnvio = Number(nuevoCostoEnvio) || 0;
+    const costoUnitario = Number(nuevoCostoUnitario) || 0;
+    const costoTotalProveedor = costoUnitario * row.cantidad;
+    const montoNetoRecibido = row.monto - (row.comisionMl || 0) - costoEnvio;
+    const gananciaReal = montoNetoRecibido - costoTotalProveedor;
+
+    const cambios = row.tabla === "ventas"
+      ? {
+          costo_envio: costoEnvio,
+          costo_unitario_proveedor: costoUnitario,
+          costo_total_proveedor: costoTotalProveedor,
+          monto_neto_recibido: montoNetoRecibido,
+          ganancia_real: gananciaReal,
+          margen_pct: row.monto ? (gananciaReal / row.monto) * 100 : null,
+          editado_manual: true,
+        }
+      : {
+          costo_envio: costoEnvio,
+          costo_unitario: costoUnitario,
+          monto_neto_recibido: montoNetoRecibido,
+          ganancia_real: gananciaReal,
+          editado_manual: true,
+        };
+
+    const { error } = await supabase.from(row.tabla).update(cambios).eq("id", row.id);
+    setEditandoVentaGuardando(false);
+    if (error) { alert("No se pudo guardar: " + error.message); return; }
+    setEditandoVentaId(null);
     await cargarVentas();
   };
 
@@ -919,6 +964,8 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         <VentasPanel
           ventasLoading={ventasLoading} ventasResumen={ventasResumen} ventasLista={ventasLista}
           onClose={()=>setVentasPanelOpen(false)} onBorrar={borrarMovimiento}
+          editandoVentaId={editandoVentaId} setEditandoVentaId={setEditandoVentaId}
+          editandoVentaGuardando={editandoVentaGuardando} onGuardarEdicion={guardarEdicionVenta}
         />
       )}
 

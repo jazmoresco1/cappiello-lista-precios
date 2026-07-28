@@ -15,6 +15,7 @@ import SociosPanel from "./components/SociosPanel.jsx";
 import FacturasPanel from "./components/FacturasPanel.jsx";
 import GastosPanel from "./components/GastosPanel.jsx";
 import RadarPanel from "./components/RadarPanel.jsx";
+import DashboardPanel from "./components/DashboardPanel.jsx";
 import PinModal from "./components/PinModal.jsx";
 import ProductModal from "./components/ProductModal.jsx";
 import ImageManagerPanel from "./components/ImageManagerPanel.jsx";
@@ -46,6 +47,7 @@ export default function ListaPrecios() {
       if (pinTarget === "facturas") { setFacturasPanelOpen(true); cargarFacturas(); }
       if (pinTarget === "gastos") { setGastosPanelOpen(true); cargarGastos(); }
       if (pinTarget === "radar") { setRadarPanelOpen(true); cargarRadar(); }
+      if (pinTarget === "dashboard") { setDashboardPanelOpen(true); cargarDashboard(dashDias); }
       setPinTarget(null);
     } else {
       setPinError(true); setPinInput("");
@@ -484,6 +486,69 @@ export default function ListaPrecios() {
     setRadarPropio(propio || []);
     setRadarTop(top || []);
     setRadarLoading(false);
+  };
+
+  // ── DASHBOARD (Fase 8, protegido con la misma clave) ────────────────
+  // Combina lo que ya cargan los otros paneles (ventas, gastos, reparto
+  // de socios, radar de competencia) en un solo panel con filtros
+  // dinámicos (fecha, canal, familia, socio), en vez de tener que abrir
+  // cada panel por separado.
+  const [dashboardPanelOpen, setDashboardPanelOpen] = useState(false);
+  const [dashboardLoading, setDashboardLoading]     = useState(false);
+  const [dashDias, setDashDias]       = useState(30); // 7 | 30 | 90 | 0 (todo)
+  const [dashCanal, setDashCanal]     = useState("todos"); // todos | mercado_libre | cotizador
+  const [dashFamilia, setDashFamilia] = useState("todas");
+  const [dashSocio, setDashSocio]     = useState("todos");
+  const [dashVentas, setDashVentas]   = useState([]); // filas planas ML + físicas, ya con sku
+
+  const abrirDashboard = () => {
+    if (unlocked) { setDashboardPanelOpen(true); cargarDashboard(dashDias); }
+    else { setPinTarget("dashboard"); setPinOpen(true); }
+  };
+
+  const cargarDashboard = async (dias) => {
+    setDashboardLoading(true);
+    const desdeISO = dias > 0
+      ? (() => { const d = new Date(); d.setDate(d.getDate() - dias); return d.toISOString(); })()
+      : "2000-01-01T00:00:00Z";
+
+    const [{ data: ml, error: errMl }, { data: fis, error: errFis }] = await Promise.all([
+      supabase.from("ventas")
+        .select("fecha,sku,nombre,cantidad,monto_total_venta,ganancia_real")
+        .eq("canal", "mercado_libre")
+        .gte("fecha", desdeISO)
+        .order("fecha", { ascending: false })
+        .limit(1000),
+      supabase.from("ventas")
+        .select("fecha,venta_items(sku,nombre,cantidad,monto_total,ganancia_real)")
+        .eq("canal", "cotizador")
+        .gte("fecha", desdeISO)
+        .order("fecha", { ascending: false })
+        .limit(500),
+    ]);
+    if (errMl) console.error("Error cargando ventas ML para el dashboard:", errMl);
+    if (errFis) console.error("Error cargando ventas físicas para el dashboard:", errFis);
+
+    const filasMl = (ml || []).map(v => ({
+      fecha: v.fecha, canal: "mercado_libre", sku: v.sku, nombre: v.nombre,
+      cantidad: v.cantidad, monto: v.monto_total_venta, ganancia: v.ganancia_real,
+    }));
+    const filasFis = (fis || []).flatMap(v =>
+      (v.venta_items || []).map(it => ({
+        fecha: v.fecha, canal: "cotizador", sku: it.sku, nombre: it.nombre,
+        cantidad: it.cantidad, monto: it.monto_total, ganancia: it.ganancia_real,
+      }))
+    );
+    setDashVentas([...filasMl, ...filasFis]);
+
+    // Reusa los loaders de los otros paneles para no duplicar queries.
+    await Promise.all([cargarGastos(), cargarReparto(), cargarRadar()]);
+    setDashboardLoading(false);
+  };
+
+  const cambiarDashDias = (dias) => {
+    setDashDias(dias);
+    cargarDashboard(dias);
   };
 
   const cambiarFamilia = (f) => {
@@ -936,6 +1001,102 @@ Sin texto adicional, sin markdown, solo el JSON.`;
     return {venta, cuota, desc};
   };
 
+  // ── Cálculos derivados del Dashboard (Fase 8) ───────────────────────
+  // Mapea cada familia propia a la categoría equivalente que releva el
+  // radar de competencia (hoy el radar solo cubre 9 categorías amplias de
+  // ML, no las ~20 familias del catálogo — por eso el resto queda sin
+  // comparación posible todavía).
+  const MAPA_FAMILIA_COMPETENCIA = {
+    "Estribos": "Estribos",
+    "Defensas Bajas": "Defensas",
+    "Enganches Pesados": "Enganches",
+    "Enganches Livianos": "Enganches",
+    "Cobertores de Caja": "Accesorios para Caja de Carga",
+  };
+
+  const skuToFamilia = useMemo(
+    () => Object.fromEntries(PRODUCTOS.map(p => [p.id, p.familia])),
+    []
+  );
+
+  const dashVentasFiltradas = useMemo(() => {
+    return dashVentas.filter(v => {
+      if (dashCanal !== "todos" && v.canal !== dashCanal) return false;
+      if (dashFamilia !== "todas" && skuToFamilia[v.sku] !== dashFamilia) return false;
+      return true;
+    });
+  }, [dashVentas, dashCanal, dashFamilia, skuToFamilia]);
+
+  const dashKpis = useMemo(() => {
+    const totalVentas = dashVentasFiltradas.reduce((s, v) => s + (Number(v.monto) || 0), 0);
+    const conGanancia = dashVentasFiltradas.filter(v => v.ganancia != null);
+    const totalGanancia = conGanancia.reduce((s, v) => s + Number(v.ganancia), 0);
+    return { totalVentas, totalGanancia, cantidad: dashVentasFiltradas.length };
+  }, [dashVentasFiltradas]);
+
+  const dashGastosPeriodo = useMemo(() => {
+    const desde = dashDias > 0
+      ? (() => { const d = new Date(); d.setDate(d.getDate() - dashDias); return d; })()
+      : new Date(0);
+    return gastos
+      .filter(g => new Date(g.fecha) >= desde)
+      .reduce((s, g) => s + (Number(g.monto) || 0), 0);
+  }, [gastos, dashDias]);
+
+  const dashPorFamilia = useMemo(() => {
+    const mapa = {};
+    for (const v of dashVentasFiltradas) {
+      const fam = skuToFamilia[v.sku] || "Sin categoría";
+      if (!mapa[fam]) mapa[fam] = { familia: fam, cantidad: 0, monto: 0, ganancia: 0 };
+      mapa[fam].cantidad += Number(v.cantidad) || 0;
+      mapa[fam].monto += Number(v.monto) || 0;
+      mapa[fam].ganancia += v.ganancia != null ? Number(v.ganancia) : 0;
+    }
+    return Object.values(mapa).sort((a, b) => b.monto - a.monto);
+  }, [dashVentasFiltradas, skuToFamilia]);
+
+  const dashRepartoFiltrado = useMemo(() => {
+    if (dashSocio === "todos") return reparto;
+    return reparto.filter(r => r.socio_id === dashSocio);
+  }, [reparto, dashSocio]);
+
+  // Compara tu precio minorista promedio contra el precio promedio de los
+  // competidores top, para cada familia que tiene categoría equivalente
+  // en el radar (ver MAPA_FAMILIA_COMPETENCIA).
+  const dashComparativaCompetencia = useMemo(() => {
+    const familiasAComparar = dashFamilia !== "todas"
+      ? [dashFamilia]
+      : Object.keys(MAPA_FAMILIA_COMPETENCIA);
+
+    return familiasAComparar
+      .filter(fam => MAPA_FAMILIA_COMPETENCIA[fam])
+      .map(fam => {
+        const categoriaRadar = MAPA_FAMILIA_COMPETENCIA[fam];
+        const productosFam = PRODUCTOS.filter(p => p.familia === fam);
+        const preciosPropios = productosFam.map(p => getPrecios(p).venta);
+        const tuPrecioProm = preciosPropios.length
+          ? preciosPropios.reduce((s, v) => s + v, 0) / preciosPropios.length
+          : null;
+
+        const competidores = radarTop.filter(r => r.categoria_nombre === categoriaRadar);
+        const preciosComp = competidores.map(c => c.precio).filter(p => p != null);
+        const compPrecioProm = preciosComp.length
+          ? preciosComp.reduce((s, v) => s + v, 0) / preciosComp.length
+          : null;
+
+        const propio = radarPropio.find(r => r.categoria_nombre === categoriaRadar);
+
+        return {
+          familia: fam, categoriaRadar,
+          tuPrecioProm, compPrecioProm,
+          diferenciaPct: (tuPrecioProm != null && compPrecioProm)
+            ? ((tuPrecioProm - compPrecioProm) / compPrecioProm) * 100
+            : null,
+          tuPosicion: propio?.posicion ?? null,
+        };
+      });
+  }, [dashFamilia, radarTop, radarPropio, cuotas, config, overrides]);
+
   const filtrados = useMemo(()=>{
     if(busqueda.trim()){
       // Divide la búsqueda en palabras y busca que estén TODAS presentes
@@ -979,6 +1140,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         setCotOpen={setCotOpen} cotItems={cotItems}
         abrirVendedores={abrirVendedores} abrirStock={abrirStock} abrirVentas={abrirVentas}
         abrirSocios={abrirSocios} abrirFacturas={abrirFacturas} abrirGastos={abrirGastos} abrirRadar={abrirRadar}
+        abrirDashboard={abrirDashboard}
         unlocked={unlocked} setUnlocked={setUnlocked} setPinOpen={setPinOpen}
         cuotas={cuotas} setCuotas={setCuotas}
         familias={familias} familia={familia} cambiarFamilia={cambiarFamilia}
@@ -1105,6 +1267,21 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         <RadarPanel
           radarLoading={radarLoading} radarPropio={radarPropio} radarTop={radarTop}
           onClose={()=>setRadarPanelOpen(false)}
+        />
+      )}
+
+      {/* ── PANEL DASHBOARD (protegido con clave) ───────────────────── */}
+      {dashboardPanelOpen && unlocked && (
+        <DashboardPanel
+          loading={dashboardLoading}
+          dias={dashDias} setDias={cambiarDashDias}
+          canal={dashCanal} setCanal={setDashCanal}
+          familiaSel={dashFamilia} setFamiliaSel={setDashFamilia} familias={familias}
+          socioSel={dashSocio} setSocioSel={setDashSocio} socios={socios}
+          kpis={dashKpis} gastosPeriodo={dashGastosPeriodo}
+          porFamilia={dashPorFamilia} reparto={dashRepartoFiltrado}
+          radarPropio={radarPropio} comparativaCompetencia={dashComparativaCompetencia}
+          onClose={()=>setDashboardPanelOpen(false)}
         />
       )}
     </div>

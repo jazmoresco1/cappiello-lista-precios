@@ -5,7 +5,7 @@ export default function TopBar({
   busqueda, setBusqueda, setBusqGlobal,
   cfgOpen, setCfgOpen, setImgOpen, setImgSP,
   setCotOpen, cotItems,
-  abrirVendedores, abrirStock, abrirVentas, abrirSocios, abrirFacturas, abrirGastos, abrirRadar,
+  abrirVendedores, abrirStock, abrirVentas, abrirSocios, abrirFacturas, abrirGastos, abrirRadar, abrirDashboard,
   unlocked, setUnlocked, setPinOpen,
   cuotas, setCuotas,
   familias, familia, cambiarFamilia,
@@ -57,6 +57,10 @@ export default function TopBar({
         <button className="hdr-btn" onClick={abrirRadar}
           title="Radar de competencia en Mercado Libre (requiere clave)">
           📡 Competencia
+        </button>
+        <button className="hdr-btn" onClick={abrirDashboard}
+          title="Dashboard con filtros dinámicos: ventas, gastos, socios y competencia (requiere clave)">
+          📊 Dashboard
         </button>
         <button className="hdr-btn" onClick={()=>unlocked?setUnlocked(false):setPinOpen(true)}
           title={unlocked?"Bloquear acceso interno":"Acceso interno"}

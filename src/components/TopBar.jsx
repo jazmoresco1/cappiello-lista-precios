@@ -5,7 +5,7 @@ export default function TopBar({
   busqueda, setBusqueda, setBusqGlobal,
   cfgOpen, setCfgOpen, setImgOpen, setImgSP,
   setCotOpen, cotItems,
-  abrirVendedores, abrirStock, abrirVentas, abrirSocios, abrirFacturas,
+  abrirVendedores, abrirStock, abrirVentas, abrirSocios, abrirFacturas, abrirGastos,
   unlocked, setUnlocked, setPinOpen,
   cuotas, setCuotas,
   familias, familia, cambiarFamilia,
@@ -49,6 +49,10 @@ export default function TopBar({
         <button className="hdr-btn" onClick={abrirFacturas}
           title="Facturas de proveedor leídas por IA (requiere clave)">
           🧾 Facturas
+        </button>
+        <button className="hdr-btn" onClick={abrirGastos}
+          title="Gastos fijos y variables de la empresa (requiere clave)">
+          💸 Gastos
         </button>
         <button className="hdr-btn" onClick={()=>unlocked?setUnlocked(false):setPinOpen(true)}
           title={unlocked?"Bloquear acceso interno":"Acceso interno"}

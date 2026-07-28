@@ -13,6 +13,7 @@ import StockPanel from "./components/StockPanel.jsx";
 import VentasPanel from "./components/VentasPanel.jsx";
 import SociosPanel from "./components/SociosPanel.jsx";
 import FacturasPanel from "./components/FacturasPanel.jsx";
+import GastosPanel from "./components/GastosPanel.jsx";
 import PinModal from "./components/PinModal.jsx";
 import ProductModal from "./components/ProductModal.jsx";
 import ImageManagerPanel from "./components/ImageManagerPanel.jsx";
@@ -42,6 +43,7 @@ export default function ListaPrecios() {
       if (pinTarget === "ventas") { setVentasPanelOpen(true); cargarVentas(); }
       if (pinTarget === "socios") { setSociosPanelOpen(true); cargarReparto(); }
       if (pinTarget === "facturas") { setFacturasPanelOpen(true); cargarFacturas(); }
+      if (pinTarget === "gastos") { setGastosPanelOpen(true); cargarGastos(); }
       setPinTarget(null);
     } else {
       setPinError(true); setPinInput("");
@@ -236,13 +238,13 @@ export default function ListaPrecios() {
 
     const [{ data: ml, error: errMl }, { data: fis, error: errFis }] = await Promise.all([
       supabase.from("ventas")
-        .select("id,fecha,nombre,cantidad,monto_total_venta,comision_ml,costo_envio,costo_unitario_proveedor,ganancia_real,editado_manual")
+        .select("id,fecha,nombre,cantidad,monto_total_venta,comision_ml,costo_envio,costo_unitario_proveedor,ganancia_real,editado_manual,ajuste_monto,ajuste_descripcion")
         .eq("canal", "mercado_libre")
         .gte("fecha", desdeISO)
         .order("fecha", { ascending: false })
         .limit(300),
       supabase.from("ventas")
-        .select("fecha,cliente,venta_items(id,nombre,cantidad,monto_total,comision_ml,costo_envio,costo_unitario,ganancia_real,editado_manual)")
+        .select("fecha,cliente,venta_items(id,nombre,cantidad,monto_total,comision_ml,costo_envio,costo_unitario,ganancia_real,editado_manual,ajuste_monto,ajuste_descripcion)")
         .eq("canal", "cotizador")
         .gte("fecha", desdeISO)
         .order("fecha", { ascending: false })
@@ -256,7 +258,7 @@ export default function ListaPrecios() {
       fecha: v.fecha, canal: "Mercado Libre", nombre: v.nombre,
       cantidad: v.cantidad, monto: v.monto_total_venta, ganancia: v.ganancia_real,
       comisionMl: v.comision_ml, costoEnvio: v.costo_envio, costoUnitario: v.costo_unitario_proveedor,
-      editadoManual: v.editado_manual,
+      editadoManual: v.editado_manual, ajusteMonto: v.ajuste_monto, ajusteDescripcion: v.ajuste_descripcion,
     }));
     const filasFis = (fis || []).flatMap(v =>
       (v.venta_items || []).map(it => ({
@@ -264,7 +266,7 @@ export default function ListaPrecios() {
         fecha: v.fecha, canal: "Local", nombre: it.nombre,
         cantidad: it.cantidad, monto: it.monto_total, ganancia: it.ganancia_real,
         comisionMl: it.comision_ml, costoEnvio: it.costo_envio, costoUnitario: it.costo_unitario,
-        editadoManual: it.editado_manual,
+        editadoManual: it.editado_manual, ajusteMonto: it.ajuste_monto, ajusteDescripcion: it.ajuste_descripcion,
       }))
     );
     const todas = [...filasMl, ...filasFis].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
@@ -300,13 +302,15 @@ export default function ListaPrecios() {
   const [editandoVentaId, setEditandoVentaId] = useState(null);
   const [editandoVentaGuardando, setEditandoVentaGuardando] = useState(false);
 
-  const guardarEdicionVenta = async (row, nuevoCostoEnvio, nuevoCostoUnitario) => {
+  const guardarEdicionVenta = async (row, nuevoCostoEnvio, nuevoCostoUnitario, nuevoAjusteMonto, nuevoAjusteDescripcion) => {
     setEditandoVentaGuardando(true);
     const costoEnvio = Number(nuevoCostoEnvio) || 0;
     const costoUnitario = Number(nuevoCostoUnitario) || 0;
+    const ajusteMonto = Number(nuevoAjusteMonto) || 0;
+    const ajusteDescripcion = (nuevoAjusteDescripcion || "").trim() || null;
     const costoTotalProveedor = costoUnitario * row.cantidad;
     const montoNetoRecibido = row.monto - (row.comisionMl || 0) - costoEnvio;
-    const gananciaReal = montoNetoRecibido - costoTotalProveedor;
+    const gananciaReal = montoNetoRecibido - costoTotalProveedor + ajusteMonto;
 
     const cambios = row.tabla === "ventas"
       ? {
@@ -316,6 +320,8 @@ export default function ListaPrecios() {
           monto_neto_recibido: montoNetoRecibido,
           ganancia_real: gananciaReal,
           margen_pct: row.monto ? (gananciaReal / row.monto) * 100 : null,
+          ajuste_monto: ajusteMonto,
+          ajuste_descripcion: ajusteDescripcion,
           editado_manual: true,
         }
       : {
@@ -323,6 +329,8 @@ export default function ListaPrecios() {
           costo_unitario: costoUnitario,
           monto_neto_recibido: montoNetoRecibido,
           ganancia_real: gananciaReal,
+          ajuste_monto: ajusteMonto,
+          ajuste_descripcion: ajusteDescripcion,
           editado_manual: true,
         };
 
@@ -381,6 +389,72 @@ export default function ListaPrecios() {
     if (error) { console.error(error); alert("No se pudo marcar como revisada."); return; }
     await cargarFacturas();
     setFacturaSel(f => (f && f.id === id) ? { ...f, estado: "revisado" } : f);
+  };
+
+  // ── GASTOS FIJOS/VARIABLES (Fase 4, protegido con la misma clave) ──
+  // Carga gastos de la empresa (alquiler, sueldos, etc.) y los reparte
+  // entre socios activos (tabla "gasto_socios"), para que entren en el
+  // cálculo de v_gastos_socios / v_reparto_socios que ya usa SociosPanel.
+  const [gastosPanelOpen, setGastosPanelOpen] = useState(false);
+  const [gastosLoading, setGastosLoading]     = useState(false);
+  const [gastosGuardando, setGastosGuardando] = useState(false);
+  const [gastos, setGastos]                   = useState([]);
+  const [socios, setSocios]                   = useState([]);
+
+  const abrirGastos = () => {
+    if (unlocked) { setGastosPanelOpen(true); cargarGastos(); }
+    else { setPinTarget("gastos"); setPinOpen(true); }
+  };
+
+  const cargarGastos = async () => {
+    setGastosLoading(true);
+    const [{ data: g, error: errG }, { data: s, error: errS }] = await Promise.all([
+      supabase.from("costos_fijos_variables")
+        .select("id,fecha,tipo,categoria,descripcion,monto,periodicidad")
+        .order("fecha", { ascending: false })
+        .limit(200),
+      supabase.from("socios").select("id,nombre").eq("activo", true).order("nombre"),
+    ]);
+    if (errG) console.error("Error cargando gastos:", errG);
+    if (errS) console.error("Error cargando socios:", errS);
+    setGastos(g || []);
+    setSocios(s || []);
+    setGastosLoading(false);
+  };
+
+  // Guarda un gasto nuevo y lo reparte entre los socios elegidos según el
+  // % que le dieron a cada uno en el formulario (repartoSocios: [{socio_id,porcentaje}]).
+  const guardarGasto = async (datos, repartoSocios) => {
+    setGastosGuardando(true);
+    const { data: gasto, error: errGasto } = await supabase
+      .from("costos_fijos_variables")
+      .insert(datos)
+      .select("id")
+      .single();
+    if (errGasto) {
+      setGastosGuardando(false);
+      alert("No se pudo guardar el gasto: " + errGasto.message);
+      return false;
+    }
+
+    const filasReparto = (repartoSocios || [])
+      .filter(r => r.porcentaje > 0)
+      .map(r => ({ costo_id: gasto.id, socio_id: r.socio_id, porcentaje: r.porcentaje }));
+    if (filasReparto.length > 0) {
+      const { error: errReparto } = await supabase.from("gasto_socios").insert(filasReparto);
+      if (errReparto) console.error("Gasto guardado, pero no se pudo repartir entre socios:", errReparto);
+    }
+
+    setGastosGuardando(false);
+    await cargarGastos();
+    return true;
+  };
+
+  const borrarGasto = async (id) => {
+    if (!window.confirm("¿Borrar este gasto? Esta acción no se puede deshacer.")) return;
+    const { error } = await supabase.from("costos_fijos_variables").delete().eq("id", id);
+    if (error) { alert("No se pudo borrar: " + error.message); return; }
+    await cargarGastos();
   };
 
   const cambiarFamilia = (f) => {
@@ -875,7 +949,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         cfgOpen={cfgOpen} setCfgOpen={setCfgOpen} setImgOpen={setImgOpen} setImgSP={setImgSP}
         setCotOpen={setCotOpen} cotItems={cotItems}
         abrirVendedores={abrirVendedores} abrirStock={abrirStock} abrirVentas={abrirVentas}
-        abrirSocios={abrirSocios} abrirFacturas={abrirFacturas}
+        abrirSocios={abrirSocios} abrirFacturas={abrirFacturas} abrirGastos={abrirGastos}
         unlocked={unlocked} setUnlocked={setUnlocked} setPinOpen={setPinOpen}
         cuotas={cuotas} setCuotas={setCuotas}
         familias={familias} familia={familia} cambiarFamilia={cambiarFamilia}
@@ -984,6 +1058,16 @@ Sin texto adicional, sin markdown, solo el JSON.`;
           facturasLoading={facturasLoading} facturas={facturas}
           onClose={()=>{setFacturasPanelOpen(false);setFacturaSel(null);}}
           onMarcarRevisada={marcarFacturaRevisada}
+        />
+      )}
+
+      {/* ── PANEL GASTOS FIJOS/VARIABLES (protegido con clave) ──────── */}
+      {gastosPanelOpen && unlocked && (
+        <GastosPanel
+          gastosLoading={gastosLoading} gastosGuardando={gastosGuardando}
+          gastos={gastos} socios={socios}
+          onClose={()=>setGastosPanelOpen(false)}
+          onGuardar={guardarGasto} onBorrar={borrarGasto}
         />
       )}
     </div>

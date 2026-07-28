@@ -7,11 +7,15 @@ export default function VentasPanel({
 }) {
   const [formEnvio, setFormEnvio] = useState("");
   const [formCosto, setFormCosto] = useState("");
+  const [formAjuste, setFormAjuste] = useState("");
+  const [formAjusteDesc, setFormAjusteDesc] = useState("");
 
   const empezarEdicion = (v) => {
     setEditandoVentaId(`${v.tabla}-${v.id}`);
     setFormEnvio(v.costoEnvio ?? 0);
     setFormCosto(v.costoUnitario ?? 0);
+    setFormAjuste(v.ajusteMonto ?? 0);
+    setFormAjusteDesc(v.ajusteDescripcion ?? "");
   };
 
   return (
@@ -65,6 +69,7 @@ export default function VentasPanel({
                       <div className="img-prod-count">
                         {new Date(v.fecha).toLocaleDateString("es-AR")} · {v.canal} · x{v.cantidad} · {ARS(v.monto||0)}
                         {v.ganancia!=null && <> · ganancia {ARS(v.ganancia)}</>}
+                        {!!v.ajusteMonto && <> · ajuste {v.ajusteMonto>0?"+":""}{ARS(v.ajusteMonto)}{v.ajusteDescripcion && ` (${v.ajusteDescripcion})`}</>}
                       </div>
                     </div>
                     {v.id && !editando && (
@@ -95,8 +100,19 @@ export default function VentasPanel({
                         <input type="number" value={formCosto} onChange={e=>setFormCosto(e.target.value)}
                           style={{width:110}} />
                       </label>
+                      <label style={{display:"flex",flexDirection:"column",fontSize:11,color:"var(--tx2)",gap:4}}>
+                        Ajuste (+/-)
+                        <input type="number" value={formAjuste} onChange={e=>setFormAjuste(e.target.value)}
+                          title="Un monto extra para sumar o restar de la ganancia, ej. -5000 para una devolución parcial"
+                          style={{width:110}} />
+                      </label>
+                      <label style={{display:"flex",flexDirection:"column",fontSize:11,color:"var(--tx2)",gap:4,flex:"1 1 180px"}}>
+                        Descripción del ajuste
+                        <input type="text" value={formAjusteDesc} onChange={e=>setFormAjusteDesc(e.target.value)}
+                          placeholder="ej. devolución parcial, gasto extra…" />
+                      </label>
                       <button className="cot-btn-print" style={{flex:"none",padding:"8px 14px"}} disabled={editandoVentaGuardando}
-                        onClick={()=>onGuardarEdicion(v, formEnvio, formCosto)}>
+                        onClick={()=>onGuardarEdicion(v, formEnvio, formCosto, formAjuste, formAjusteDesc)}>
                         {editandoVentaGuardando ? "Guardando…" : "Guardar"}
                       </button>
                       <button className="cot-btn-clear" onClick={()=>setEditandoVentaId(null)}>Cancelar</button>

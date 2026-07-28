@@ -500,6 +500,7 @@ export default function ListaPrecios() {
   const [dashFamilia, setDashFamilia] = useState("todas");
   const [dashSocio, setDashSocio]     = useState("todos");
   const [dashVentas, setDashVentas]   = useState([]); // filas planas ML + físicas, ya con sku
+  const [dashPosicionHist, setDashPosicionHist] = useState([]); // posición propia por categoría/día, para el gráfico
 
   const abrirDashboard = () => {
     if (unlocked) { setDashboardPanelOpen(true); cargarDashboard(dashDias); }
@@ -540,6 +541,20 @@ export default function ListaPrecios() {
       }))
     );
     setDashVentas([...filasMl, ...filasFis]);
+
+    // Historial de tu posición por categoría (para el gráfico de línea) —
+    // "competencia_ventas_dia" acumula una fila por categoría por día para
+    // es_propio=true desde que arrancó el radar, así que esto va a ir
+    // agarrando forma de a poco.
+    const { data: posHist, error: errPosHist } = await supabase
+      .from("competencia_ventas_dia")
+      .select("fecha,categoria_nombre,posicion")
+      .eq("es_propio", true)
+      .gte("fecha", desdeISO.slice(0, 10))
+      .order("fecha", { ascending: true })
+      .limit(2000);
+    if (errPosHist) console.error("Error cargando histórico de posición:", errPosHist);
+    setDashPosicionHist(posHist || []);
 
     // Reusa los loaders de los otros paneles para no duplicar queries.
     await Promise.all([cargarGastos(), cargarReparto(), cargarRadar()]);
@@ -1060,6 +1075,18 @@ Sin texto adicional, sin markdown, solo el JSON.`;
     return reparto.filter(r => r.socio_id === dashSocio);
   }, [reparto, dashSocio]);
 
+  // Ventas por día (monto y ganancia), para el gráfico de línea.
+  const dashVentasPorDia = useMemo(() => {
+    const mapa = {};
+    for (const v of dashVentasFiltradas) {
+      const dia = String(v.fecha).slice(0, 10);
+      if (!mapa[dia]) mapa[dia] = { fecha: dia, monto: 0, ganancia: 0 };
+      mapa[dia].monto += Number(v.monto) || 0;
+      mapa[dia].ganancia += v.ganancia != null ? Number(v.ganancia) : 0;
+    }
+    return Object.values(mapa).sort((a, b) => a.fecha.localeCompare(b.fecha));
+  }, [dashVentasFiltradas]);
+
   // Compara tu precio minorista promedio contra el precio promedio de los
   // competidores top, para cada familia que tiene categoría equivalente
   // en el radar (ver MAPA_FAMILIA_COMPETENCIA).
@@ -1086,6 +1113,10 @@ Sin texto adicional, sin markdown, solo el JSON.`;
 
         const propio = radarPropio.find(r => r.categoria_nombre === categoriaRadar);
 
+        const posicionHistorica = dashPosicionHist
+          .filter(h => h.categoria_nombre === categoriaRadar && h.posicion != null)
+          .map(h => ({ x: h.fecha.slice(5), y: h.posicion })); // "MM-DD"
+
         return {
           familia: fam, categoriaRadar,
           tuPrecioProm, compPrecioProm,
@@ -1093,9 +1124,10 @@ Sin texto adicional, sin markdown, solo el JSON.`;
             ? ((tuPrecioProm - compPrecioProm) / compPrecioProm) * 100
             : null,
           tuPosicion: propio?.posicion ?? null,
+          posicionHistorica,
         };
       });
-  }, [dashFamilia, radarTop, radarPropio, cuotas, config, overrides]);
+  }, [dashFamilia, radarTop, radarPropio, dashPosicionHist, cuotas, config, overrides]);
 
   const filtrados = useMemo(()=>{
     if(busqueda.trim()){
@@ -1280,6 +1312,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
           socioSel={dashSocio} setSocioSel={setDashSocio} socios={socios}
           kpis={dashKpis} gastosPeriodo={dashGastosPeriodo}
           porFamilia={dashPorFamilia} reparto={dashRepartoFiltrado}
+          ventasPorDia={dashVentasPorDia}
           radarPropio={radarPropio} comparativaCompetencia={dashComparativaCompetencia}
           onClose={()=>setDashboardPanelOpen(false)}
         />

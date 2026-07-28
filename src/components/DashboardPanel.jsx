@@ -1,4 +1,5 @@
 import { ARS } from "../utils.js";
+import LineChart from "./LineChart.jsx";
 
 function KpiCard({ label, value, accent, negative }) {
   return (
@@ -15,7 +16,7 @@ export default function DashboardPanel({
   loading, dias, setDias, canal, setCanal,
   familiaSel, setFamiliaSel, familias,
   socioSel, setSocioSel, socios,
-  kpis, gastosPeriodo, porFamilia, reparto,
+  kpis, gastosPeriodo, porFamilia, reparto, ventasPorDia,
   comparativaCompetencia, onClose,
 }) {
   const neto = (kpis.totalGanancia || 0) - (gastosPeriodo || 0);
@@ -79,6 +80,15 @@ export default function DashboardPanel({
             </div>
             <div style={{fontSize:11,color:"var(--tx2)",marginBottom:18}}>{kpis.cantidad} ventas en el período filtrado</div>
 
+            <div className="img-section-title" style={{marginTop:0}}>Ventas por día ($ vendido)</div>
+            <div style={{marginBottom:6}}>
+              <LineChart points={ventasPorDia.map(d => ({x: d.fecha.slice(5), y: d.monto}))} formatY={ARS} />
+            </div>
+            <div className="img-section-title">Ganancia por día</div>
+            <div style={{marginBottom:16}}>
+              <LineChart points={ventasPorDia.map(d => ({x: d.fecha.slice(5), y: d.ganancia}))} color="#2ecc71" formatY={ARS} />
+            </div>
+
             <div className="img-section-title">Ventas por familia</div>
             {porFamilia.length === 0 ? (
               <div className="cot-empty" style={{padding:10,fontSize:12,marginBottom:16}}>Sin ventas en este filtro.</div>
@@ -123,19 +133,18 @@ export default function DashboardPanel({
                   : `El radar no releva una categoría equivalente a "${familiaSel}" todavía.`}
               </div>
             ) : (
-              <div className="img-prod-list">
+              <div style={{display:"flex",flexDirection:"column",gap:10}}>
                 {comparativaCompetencia.map(c => (
-                  <div key={c.familia} className="img-prod-row" style={{cursor:"default"}}>
-                    <div className="img-prod-info">
-                      <div className="img-prod-name">
-                        {c.familia} <span style={{color:"var(--tx2)",fontWeight:400}}>→ {c.categoriaRadar}</span>
-                      </div>
-                      <div className="img-prod-count">
-                        Tu precio prom. {c.tuPrecioProm!=null ? ARS(c.tuPrecioProm) : "?"} · Competencia prom. {c.compPrecioProm!=null ? ARS(c.compPrecioProm) : "sin datos"}
-                        {c.diferenciaPct!=null && <> · {c.diferenciaPct>0?"+":""}{c.diferenciaPct.toFixed(1)}% vs ellos</>}
-                        {c.tuPosicion!=null && <> · posición #{c.tuPosicion}</>}
-                      </div>
+                  <div key={c.familia} style={{background:"var(--sf2)",border:"1px solid var(--bd)",borderRadius:8,padding:"10px 12px"}}>
+                    <div className="img-prod-name">
+                      {c.familia} <span style={{color:"var(--tx2)",fontWeight:400}}>→ {c.categoriaRadar}</span>
                     </div>
+                    <div className="img-prod-count" style={{marginBottom:8}}>
+                      Tu precio prom. {c.tuPrecioProm!=null ? ARS(c.tuPrecioProm) : "?"} · Competencia prom. {c.compPrecioProm!=null ? ARS(c.compPrecioProm) : "sin datos"}
+                      {c.diferenciaPct!=null && <> · {c.diferenciaPct>0?"+":""}{c.diferenciaPct.toFixed(1)}% vs ellos</>}
+                    </div>
+                    <div style={{fontSize:10,color:"var(--tx2)",marginBottom:2}}>Tu posición en el tiempo (línea más arriba = mejor posición)</div>
+                    <LineChart points={c.posicionHistorica} color="var(--ac)" height={70} formatY={v=>`#${v}`} invert />
                   </div>
                 ))}
               </div>

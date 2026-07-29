@@ -54,7 +54,7 @@ from pricing_common import (
 import requests
 
 COSTO_OPERATIVO_DEFAULT = 2500.0
-UMBRAL_ALERTA_PCT = 5.0
+UMBRAL_ALERTA_PCT = 1.0
 
 
 def encontrar_archivo() -> str:

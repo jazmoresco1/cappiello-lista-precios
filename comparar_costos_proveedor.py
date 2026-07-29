@@ -16,10 +16,10 @@ le paga al proveedor" que el sistema tiene asumido, y lo compara contra la
 columna "Prec. Neto c/Iva" del informe (el precio que el proveedor
 efectivamente facturó), tomando la línea más reciente de cada SKU.
 
-Solo se usan las líneas con Comprobante = "eFactura" (facturas reales) --
-las "Cotizacion" son presupuestos, no compras confirmadas. Las líneas de
-devolución (Comprobante que empieza con "Dev." o Cantidad negativa) se
-listan aparte, no entran en la comparación de precios.
+Se usan todas las líneas de compra ("eFactura" Y "Cotizacion" cuentan como
+compra real). Las líneas de devolución (Comprobante que empieza con "Dev."
+o Cantidad negativa) se listan aparte, no entran en la comparación de
+precios.
 
 Uso:
   python comparar_costos_proveedor.py "C:\\ruta\\al\\InfVentasDetallePorProductos.xls"
@@ -106,11 +106,11 @@ def main():
         ["Fecha", "Comprobante", "Producto", "Nombre Producto", "Cantidad", "Total"]
     ].sort_values("Fecha", ascending=False)
 
-    # ── Solo facturas reales para la comparación de precios ──
-    df_fact = df[df["Comprobante"] == "eFactura"].copy()
+    # ── Compras reales para la comparación de precios: todo lo que no sea
+    # devolución cuenta como compra (eFactura Y Cotizacion son compras) ──
+    df_fact = df[~es_devolucion].copy()
     if df_fact.empty:
-        print("⚠️  No hay ninguna línea de 'eFactura' en este informe -- nada para comparar "
-              "(quizás en este período solo hubo Cotizaciones).")
+        print("⚠️  No hay ninguna línea de compra en este informe -- nada para comparar.")
         return
 
     ultimo = (

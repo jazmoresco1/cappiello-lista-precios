@@ -1,0 +1,8 @@
+pandas
+numpy
+requests
+openpyxl
+xlrd
+pdfplumber
+google-api-python-client
+google-auth

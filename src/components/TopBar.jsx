@@ -6,6 +6,7 @@ export default function TopBar({
   cfgOpen, setCfgOpen, setImgOpen, setImgSP,
   setCotOpen, cotItems,
   abrirVendedores, abrirStock, abrirVentas, abrirSocios, abrirFacturas, abrirGastos, abrirRadar, abrirDashboard,
+  abrirControlProveedor,
   unlocked, setUnlocked, setPinOpen,
   cuotas, setCuotas,
   familias, familia, cambiarFamilia,
@@ -61,6 +62,10 @@ export default function TopBar({
         <button className="hdr-btn" onClick={abrirDashboard}
           title="Dashboard con filtros dinámicos: ventas, gastos, socios y competencia (requiere clave)">
           📊 Dashboard
+        </button>
+        <button className="hdr-btn" onClick={abrirControlProveedor}
+          title="Subir el informe del proveedor y controlar precios (requiere clave)">
+          🔍 Control Proveedor
         </button>
         <button className="hdr-btn" onClick={()=>unlocked?setUnlocked(false):setPinOpen(true)}
           title={unlocked?"Bloquear acceso interno":"Acceso interno"}

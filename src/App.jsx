@@ -16,6 +16,7 @@ import FacturasPanel from "./components/FacturasPanel.jsx";
 import GastosPanel from "./components/GastosPanel.jsx";
 import RadarPanel from "./components/RadarPanel.jsx";
 import DashboardPanel from "./components/DashboardPanel.jsx";
+import ControlProveedorPanel from "./components/ControlProveedorPanel.jsx";
 import PinModal from "./components/PinModal.jsx";
 import ProductModal from "./components/ProductModal.jsx";
 import ImageManagerPanel from "./components/ImageManagerPanel.jsx";
@@ -48,6 +49,7 @@ export default function ListaPrecios() {
       if (pinTarget === "gastos") { setGastosPanelOpen(true); cargarGastos(); }
       if (pinTarget === "radar") { setRadarPanelOpen(true); cargarRadar(); }
       if (pinTarget === "dashboard") { setDashboardPanelOpen(true); cargarDashboard(dashDias); }
+      if (pinTarget === "controlProveedor") { setControlProveedorOpen(true); }
       setPinTarget(null);
     } else {
       setPinError(true); setPinInput("");
@@ -564,6 +566,17 @@ export default function ListaPrecios() {
   const cambiarDashDias = (dias) => {
     setDashDias(dias);
     cargarDashboard(dias);
+  };
+
+  // ── CONTROL DE PROVEEDOR (protegido con la misma clave) ─────────────
+  // Panel donde subís a mano el informe de ventas que te manda el
+  // proveedor y se compara contra costo_base. Todo el parseo y la
+  // comparación viven dentro del componente (no escribe nada en Supabase).
+  const [controlProveedorOpen, setControlProveedorOpen] = useState(false);
+
+  const abrirControlProveedor = () => {
+    if (unlocked) setControlProveedorOpen(true);
+    else { setPinTarget("controlProveedor"); setPinOpen(true); }
   };
 
   const cambiarFamilia = (f) => {
@@ -1172,7 +1185,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         setCotOpen={setCotOpen} cotItems={cotItems}
         abrirVendedores={abrirVendedores} abrirStock={abrirStock} abrirVentas={abrirVentas}
         abrirSocios={abrirSocios} abrirFacturas={abrirFacturas} abrirGastos={abrirGastos} abrirRadar={abrirRadar}
-        abrirDashboard={abrirDashboard}
+        abrirDashboard={abrirDashboard} abrirControlProveedor={abrirControlProveedor}
         unlocked={unlocked} setUnlocked={setUnlocked} setPinOpen={setPinOpen}
         cuotas={cuotas} setCuotas={setCuotas}
         familias={familias} familia={familia} cambiarFamilia={cambiarFamilia}
@@ -1316,6 +1329,11 @@ Sin texto adicional, sin markdown, solo el JSON.`;
           radarPropio={radarPropio} comparativaCompetencia={dashComparativaCompetencia}
           onClose={()=>setDashboardPanelOpen(false)}
         />
+      )}
+
+      {/* ── PANEL CONTROL DE PROVEEDOR (protegido con clave) ────────── */}
+      {controlProveedorOpen && unlocked && (
+        <ControlProveedorPanel onClose={()=>setControlProveedorOpen(false)} />
       )}
     </div>
   );

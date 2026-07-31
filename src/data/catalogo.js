@@ -5,8 +5,13 @@
 export const CONFIG_INICIAL = {
   "Steel Tiger|Tapas Rígidas":     { descuento:3, iva:10.5, markup:30 },
   "Steel Tiger|Estribos":          { descuento:7, iva:10.5, markup:30 },
-  "Steel Tiger|Enganches Pesados": { descuento:7, iva:10.5, markup:40 },
-  "Steel Tiger|Enganches Livianos":{ descuento:7, iva:10.5, markup:40 },
+  // pisoVenta: precio final mínimo del enganche (no del acople -- por eso
+  // pisoVentaExcluyePrefijos deja afuera los acoples, que comparten esta
+  // misma config de familia). Calculado para que el combo enganche+acople
+  // más barato (ej. VW Amarok) se acerque al objetivo de combo (pesado
+  // $320.000 / liviano $220.000), usando el acople mediana como referencia.
+  "Steel Tiger|Enganches Pesados": { descuento:7, iva:10.5, markup:40, pisoVenta:226826, pisoVentaExcluyePrefijos:["ASE"] },
+  "Steel Tiger|Enganches Livianos":{ descuento:7, iva:10.5, markup:40, pisoVenta:170865, pisoVentaExcluyePrefijos:["EAC"] },
   "Steel Tiger|Defensas Bajas":    { descuento:7, iva:10.5, markup:30 },
   "Steel Tiger|Cubrecarter":       { descuento:3, iva:10.5, markup:30 },
   "Steel Tiger|Baúl":     { descuento:3, iva:10.5, markup:30 },

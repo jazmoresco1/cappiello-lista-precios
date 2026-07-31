@@ -884,7 +884,12 @@ Sin texto adicional, sin markdown, solo el JSON.`;
     setCotItems(prev => {
       const existe = prev.find(i => i.id === p.id);
       if (existe) return prev.map(i => i.id===p.id ? {...i, qty: i.qty+1} : i);
-      const { venta } = (() => { const cfg=getCfg(p.proveedor,p.familia); const desc=getDesc(p); const {venta}=calcular(p.listaVenta,desc,cfg.iva,cfg.markup,cfg.pisoGanancia,cfg.pisoVenta); return {venta}; })();
+      const { venta } = (() => {
+        const cfg=getCfg(p.proveedor,p.familia); const desc=getDesc(p);
+        const { pisoGanancia, pisoVenta } = pisosPara(p, cfg);
+        const {venta}=calcular(p.listaVenta,desc,cfg.iva,cfg.markup,pisoGanancia,pisoVenta);
+        return {venta};
+      })();
       return [...prev, { ...p, qty:1, descItem:0, precioBase:venta, precioManual:null }];
     });
     setCotOpen(true);
@@ -1075,10 +1080,20 @@ Sin texto adicional, sin markdown, solo el JSON.`;
                     : p.descuentoOverride !== undefined ? p.descuentoOverride
                     : getCfg(p.proveedor,p.familia).descuento;
 
+  // Los pisos (ganancia/precio final mínimo) de una config de familia no
+  // aplican a los productos cuyo id empiece con alguno de
+  // pisoVentaExcluyePrefijos (ej. los acoples de enganches, que comparten
+  // la config de familia con el enganche pero son mucho más baratos).
+  const pisosPara = (p, cfg) => {
+    const excluido = (cfg.pisoVentaExcluyePrefijos || []).some(pref => p.id.startsWith(pref));
+    return excluido ? { pisoGanancia: 0, pisoVenta: 0 } : { pisoGanancia: cfg.pisoGanancia, pisoVenta: cfg.pisoVenta };
+  };
+
   const getPrecios = p => {
     const cfg = getCfg(p.proveedor,p.familia);
     const desc = getDesc(p);
-    const {venta} = calcular(p.listaVenta, desc, cfg.iva, cfg.markup, cfg.pisoGanancia, cfg.pisoVenta);
+    const { pisoGanancia, pisoVenta } = pisosPara(p, cfg);
+    const {venta} = calcular(p.listaVenta, desc, cfg.iva, cfg.markup, pisoGanancia, pisoVenta);
     const cuota = venta * cuotas.multiplicador / cuotas.cant;
     return {venta, cuota, desc};
   };

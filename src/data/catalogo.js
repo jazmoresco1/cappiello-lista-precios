@@ -45,6 +45,29 @@ export const CONFIG_INICIAL = {
   "DP-20|Estribos":                   { descuento:0, iva:21, markup:30 },
 };
 
+/* ═══════════════════════════════════════════════════════════════════
+   KIT_DEDUCCION — Para enganches y estribos, el costo_base real que
+   sube pricing_todo.py viene con el costo promedio del acople/soporte
+   YA SUMADO adentro (kit). Para calcular el precio del producto
+   INDIVIDUAL (sin el kit) hay que restarle esto antes de aplicar
+   markup. "deduccion" está en las mismas unidades que costo_base
+   (proveedor neto × factor IVA, sin flete ni operativo).
+   excluirPrefijos/excluirCodigos: los propios acoples/soportes no
+   llevan esta resta (ellos SON el kit).
+   ═══════════════════════════════════════════════════════════════════ */
+export const KIT_DEDUCCION = {
+  "Steel Tiger|Enganches Pesados":  { deduccion: 65238, excluirPrefijos: ["ASE"] },
+  "Steel Tiger|Enganches Livianos": { deduccion: 35095, excluirPrefijos: ["EAC"] },
+  "Steel Tiger|Estribos": {
+    deduccion: 93954,
+    excluirCodigos: [
+      "SEA157", "SEA161", "SEA155", "SEA160", "SEA156", "SEA159",
+      "SEA150", "SEA158", "SEA154", "SEA056", "SEA057", "SEA059",
+      "SEA050", "SEA058", "SEA054", "SEA055", "SEA053", "SEA051", "SEA066",
+    ],
+  },
+};
+
 export const PROVEEDORES_INFO = {
   "Steel Tiger":      { web:"https://steeltiger.ar/" },
   "Ziel Technology":  { web:"https://zieltechnology.com.ar/" },

@@ -5,7 +5,7 @@ import "./App.css";
 import { PRODUCTOS } from "./data/productos.js";
 import {
   CONFIG_INICIAL, PROVEEDORES_INFO, CUOTAS_MP, CUOTAS_DEFAULT,
-  FORMAS_PAGO, SUBTAB_CFG,
+  FORMAS_PAGO, SUBTAB_CFG, KIT_DEDUCCION,
 } from "./data/catalogo.js";
 import { ARS, calcular, getColorBadge } from "./utils.js";
 import VendedoresPanel from "./components/VendedoresPanel.jsx";
@@ -30,6 +30,20 @@ export default function ListaPrecios() {
   const [overrides, setOvr]     = useState({});
   const [stock, setStock]       = useState({});
   const [editStock, setEditStk] = useState(null);
+
+  // ── COSTO REAL (Supabase) para el precio local ──────────────────────
+  // El precio local ya no arranca del "listaVenta" fijo del catálogo --
+  // arranca de costo_base (el costo real, actualizado corriendo
+  // pricing_todo.py). Los productos que todavía no tienen costo_base en
+  // Supabase siguen usando listaVenta como respaldo (ver getPrecios).
+  const [costoBaseMap, setCostoBaseMap] = useState({}); // sku -> costo_base
+  useEffect(() => {
+    supabase.from("productos").select("sku,costo_base").not("costo_base", "is", null)
+      .then(({ data, error }) => {
+        if (error) { console.error("No se pudo traer costo_base de Supabase:", error); return; }
+        setCostoBaseMap(Object.fromEntries((data || []).map(p => [p.sku, p.costo_base])));
+      });
+  }, []);
 
   // ── ACCESO INTERNO (PIN) ─────────────────────────────────────────
   // Dos niveles: admin (acceso total, único que puede borrar) y vendedor
@@ -884,12 +898,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
     setCotItems(prev => {
       const existe = prev.find(i => i.id === p.id);
       if (existe) return prev.map(i => i.id===p.id ? {...i, qty: i.qty+1} : i);
-      const { venta } = (() => {
-        const cfg=getCfg(p.proveedor,p.familia); const desc=getDesc(p);
-        const { pisoGanancia, pisoVenta } = pisosPara(p, cfg);
-        const {venta}=calcular(p.listaVenta,desc,cfg.iva,cfg.markup,pisoGanancia,pisoVenta);
-        return {venta};
-      })();
+      const { venta } = getPrecios(p);
       return [...prev, { ...p, qty:1, descItem:0, precioBase:venta, precioManual:null }];
     });
     setCotOpen(true);
@@ -1089,11 +1098,36 @@ Sin texto adicional, sin markdown, solo el JSON.`;
     return excluido ? { pisoGanancia: 0, pisoVenta: 0 } : { pisoGanancia: cfg.pisoGanancia, pisoVenta: cfg.pisoVenta };
   };
 
+  // En enganches/estribos, costo_base viene con el kit (acople/soporte)
+  // promediado y sumado adentro -- hay que restarlo para que el precio sea
+  // del producto individual. Los acoples/soportes en sí (excluirPrefijos/
+  // excluirCodigos) no llevan esta resta, porque ellos SON el kit.
+  const kitDeduccionPara = (p) => {
+    const cfg = KIT_DEDUCCION[key(p.proveedor, p.familia)];
+    if (!cfg) return 0;
+    const excluido = (cfg.excluirPrefijos || []).some(pref => p.id.startsWith(pref))
+                   || (cfg.excluirCodigos || []).includes(p.id);
+    return excluido ? 0 : cfg.deduccion;
+  };
+
+  // Costo de partida para el cálculo de precio: costo_base real (Supabase,
+  // se actualiza corriendo pricing_todo.py) menos el kit si corresponde.
+  // Si ese sku todavía no tiene costo_base cargado, usa el listaVenta
+  // viejo del catálogo como respaldo (comportamiento de siempre).
+  const costoParaCalcular = (p) => {
+    const costoBase = costoBaseMap[p.id];
+    if (costoBase == null) {
+      return { lista: p.listaVenta, desc: getDesc(p), iva: getCfg(p.proveedor,p.familia).iva };
+    }
+    const costoAjustado = Math.max(costoBase - kitDeduccionPara(p), 0);
+    return { lista: costoAjustado, desc: 0, iva: 0 };
+  };
+
   const getPrecios = p => {
     const cfg = getCfg(p.proveedor,p.familia);
-    const desc = getDesc(p);
+    const { lista, desc, iva } = costoParaCalcular(p);
     const { pisoGanancia, pisoVenta } = pisosPara(p, cfg);
-    const {venta} = calcular(p.listaVenta, desc, cfg.iva, cfg.markup, pisoGanancia, pisoVenta);
+    const {venta} = calcular(lista, desc, iva, cfg.markup, pisoGanancia, pisoVenta);
     const cuota = venta * cuotas.multiplicador / cuotas.cant;
     return {venta, cuota, desc};
   };

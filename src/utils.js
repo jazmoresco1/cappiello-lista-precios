@@ -1,9 +1,16 @@
 export const ARS = n => new Intl.NumberFormat("es-AR",{style:"currency",currency:"ARS",maximumFractionDigits:0}).format(n);
 
-export function calcular(lista, desc, iva, markup) {
+// pisoGanancia: ganancia mínima en pesos (si el markup% normal da menos, se
+// usa este piso en su lugar). pisoVenta: precio final mínimo (si el
+// resultado da menos, se usa este piso). Con ambos en 0 el cálculo es
+// exactamente el de siempre (markup % puro).
+export function calcular(lista, desc, iva, markup, pisoGanancia = 0, pisoVenta = 0) {
   const neto   = lista  * (1 - desc   / 100);
   const conIva = neto   * (1 + iva    / 100);
-  const venta  = conIva * (1 + markup / 100);
+  let ganancia = conIva * (markup / 100);
+  if (pisoGanancia && ganancia < pisoGanancia) ganancia = pisoGanancia;
+  let venta = conIva + ganancia;
+  if (pisoVenta && venta < pisoVenta) venta = pisoVenta;
   return { neto, conIva, venta };
 }
 

@@ -29,14 +29,14 @@ export const CONFIG_INICIAL = {
   "Bepo|Estribos":                    { descuento:0, iva:10.5, markup:30 },
   "Bepo|Barras de Trabajo":           { descuento:0, iva:10.5, markup:30 },
   "Bepo|Baúl":              { descuento:0, iva:10.5, markup:30 },
-  "Bepo|Lomos de Caja":               { descuento:0, iva:10.5, markup:30 },
+  "Bepo|Lomos de Caja":               { descuento:0, iva:10.5, markup:30, pisoVenta:120000 },
   // ── Kraken (barras) ──
   "Kraken|Barras de Trabajo":         { descuento:0, iva:0, markup:30 },
   "Kraken|Baúl":             { descuento:0, iva:0, markup:30 },
   // ── DP-20 ──
   "DP-20|Electrónica DP-20":          { descuento:0, iva:21, markup:30 },
   // ── Original Cars 4x4 ──
-  "Original Cars 4x4|Deflectores":    { descuento:0, iva:10.5, markup:30 },
+  "Original Cars 4x4|Deflectores":    { descuento:0, iva:10.5, markup:30, pisoGanancia:40000 },
   
   // ── Coversax ──
   "Coversax|Fundas de Asientos":      { descuento:0, iva:21, markup:30 },

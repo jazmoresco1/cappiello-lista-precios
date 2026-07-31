@@ -884,7 +884,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
     setCotItems(prev => {
       const existe = prev.find(i => i.id === p.id);
       if (existe) return prev.map(i => i.id===p.id ? {...i, qty: i.qty+1} : i);
-      const { venta } = (() => { const cfg=getCfg(p.proveedor,p.familia); const desc=getDesc(p); const {venta}=calcular(p.listaVenta,desc,cfg.iva,cfg.markup); return {venta}; })();
+      const { venta } = (() => { const cfg=getCfg(p.proveedor,p.familia); const desc=getDesc(p); const {venta}=calcular(p.listaVenta,desc,cfg.iva,cfg.markup,cfg.pisoGanancia,cfg.pisoVenta); return {venta}; })();
       return [...prev, { ...p, qty:1, descItem:0, precioBase:venta, precioManual:null }];
     });
     setCotOpen(true);
@@ -1078,7 +1078,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
   const getPrecios = p => {
     const cfg = getCfg(p.proveedor,p.familia);
     const desc = getDesc(p);
-    const {venta} = calcular(p.listaVenta, desc, cfg.iva, cfg.markup);
+    const {venta} = calcular(p.listaVenta, desc, cfg.iva, cfg.markup, cfg.pisoGanancia, cfg.pisoVenta);
     const cuota = venta * cuotas.multiplicador / cuotas.cant;
     return {venta, cuota, desc};
   };

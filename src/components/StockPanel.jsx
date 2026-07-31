@@ -1,4 +1,5 @@
 export default function StockPanel({
+  soloLectura,
   stockBusq, buscarProductoStock, stockBuscando, stockResultados,
   stockSel, setStockSel, setStockBusq, setStockResultados,
   stockTipo, setStockTipo, stockDelta, setStockDelta, stockNota, setStockNota,
@@ -51,29 +52,37 @@ export default function StockPanel({
               SKU {stockSel.sku} · Stock actual: <strong>{stockSel.stock}</strong> unidades
             </div>
 
-            <div className="img-section-title">Tipo de movimiento</div>
-            <select className="cot-nombre-inp" value={stockTipo} onChange={e=>setStockTipo(e.target.value)} style={{marginBottom:10}}>
-              <option value="compra_manual">Carga manual</option>
-              <option value="factura_proveedor">Factura de proveedor</option>
-              <option value="ajuste">Ajuste (ej: rotura, faltante)</option>
-            </select>
-
-            <div className="img-section-title">Cantidad (positivo suma, negativo resta)</div>
-            <input className="cot-nombre-inp" type="number" placeholder="ej: 10 o -2"
-              value={stockDelta} onChange={e=>setStockDelta(e.target.value)} style={{marginBottom:10}} />
-
-            <div className="img-section-title">Nota (opcional)</div>
-            <input className="cot-nombre-inp" placeholder="ej: Factura 0001-00023456"
-              value={stockNota} onChange={e=>setStockNota(e.target.value)} style={{marginBottom:14}} />
-
-            <button className="img-auto-btn" onClick={registrarMovimientoStock} disabled={stockGuardando || !stockDelta}>
-              {stockGuardando ? "Guardando…" : "Registrar movimiento"}
-            </button>
-
-            {stockMsg && (
-              <div style={{marginTop:10,fontSize:12,color: stockMsg.ok ? "var(--ac)" : "#e55"}}>
-                {stockMsg.texto}
+            {soloLectura ? (
+              <div className="cot-empty" style={{padding:12,fontSize:12}}>
+                Acceso de solo lectura — pedile a un administrador que cargue o ajuste el stock.
               </div>
+            ) : (
+              <>
+                <div className="img-section-title">Tipo de movimiento</div>
+                <select className="cot-nombre-inp" value={stockTipo} onChange={e=>setStockTipo(e.target.value)} style={{marginBottom:10}}>
+                  <option value="compra_manual">Carga manual</option>
+                  <option value="factura_proveedor">Factura de proveedor</option>
+                  <option value="ajuste">Ajuste (ej: rotura, faltante)</option>
+                </select>
+
+                <div className="img-section-title">Cantidad (positivo suma, negativo resta)</div>
+                <input className="cot-nombre-inp" type="number" placeholder="ej: 10 o -2"
+                  value={stockDelta} onChange={e=>setStockDelta(e.target.value)} style={{marginBottom:10}} />
+
+                <div className="img-section-title">Nota (opcional)</div>
+                <input className="cot-nombre-inp" placeholder="ej: Factura 0001-00023456"
+                  value={stockNota} onChange={e=>setStockNota(e.target.value)} style={{marginBottom:14}} />
+
+                <button className="img-auto-btn" onClick={registrarMovimientoStock} disabled={stockGuardando || !stockDelta}>
+                  {stockGuardando ? "Guardando…" : "Registrar movimiento"}
+                </button>
+
+                {stockMsg && (
+                  <div style={{marginTop:10,fontSize:12,color: stockMsg.ok ? "var(--ac)" : "#e55"}}>
+                    {stockMsg.texto}
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}

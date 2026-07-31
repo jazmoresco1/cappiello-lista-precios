@@ -7,7 +7,7 @@ export default function TopBar({
   setCotOpen, cotItems,
   abrirVendedores, abrirStock, abrirVentas, abrirSocios, abrirFacturas, abrirGastos, abrirRadar, abrirDashboard,
   abrirControlProveedor,
-  unlocked, setUnlocked, setPinOpen,
+  role, setRole, setPinOpen,
   cuotas, setCuotas,
   familias, familia, cambiarFamilia,
   subtabCfg, subtabActual, setSubtab,
@@ -67,10 +67,10 @@ export default function TopBar({
           title="Subir el informe del proveedor y controlar precios (requiere clave)">
           🔍 Control Proveedor
         </button>
-        <button className="hdr-btn" onClick={()=>unlocked?setUnlocked(false):setPinOpen(true)}
-          title={unlocked?"Bloquear acceso interno":"Acceso interno"}
-          style={{borderColor:unlocked?"var(--ok)":"#333",color:unlocked?"var(--ok)":"#aaa"}}>
-          {unlocked?"🔓 Admin":"🔒"}
+        <button className="hdr-btn" onClick={()=>role?setRole(null):setPinOpen(true)}
+          title={role?"Cerrar sesión":"Acceso interno"}
+          style={{borderColor:role?"var(--ok)":"#333",color:role?"var(--ok)":"#aaa"}}>
+          {role==="admin"?"🔓 Admin":role==="vendedor"?"🔓 Vendedor":"🔒"}
         </button>
       </div>
 

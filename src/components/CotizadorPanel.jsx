@@ -5,7 +5,7 @@ export default function CotizadorPanel({
   onClose,
   cotBusq, setCotBusq, cotBusqRes, agregarACot,
   cotItems, setCotItems, cotTotales, quitarDeCot, updCotQty, updCotDescItem,
-  cotComboAct, setCotCombo, toggleCombo,
+  updCotPrecioManual, logueado,
   cotNombre, setCotNombre,
   cotDescGlobal, setCotDG,
   cotVendedorId, setCotVendedorId, vendedores,
@@ -80,31 +80,31 @@ export default function CotizadorPanel({
                   <div className="cot-desc-wrap">
                     <span>Dto</span>
                     <input className="cot-desc-inp" type="number" min="0" max="100"
-                      value={item.descItem} onChange={e=>updCotDescItem(item.id,e.target.value)}/>
+                      value={item.descItem} onChange={e=>updCotDescItem(item.id,e.target.value)}
+                      disabled={item.precioManual!=null}/>
                     <span>%</span>
                   </div>
                   <div className="cot-item-total">{ARS(item.total)}</div>
                 </div>
+                {logueado && (
+                  <div className="cot-item-row2" style={{marginTop:4}}>
+                    <div className="cot-desc-wrap" style={{flex:1}}>
+                      <span>Precio unit.</span>
+                      <input className="cot-desc-inp" style={{width:100}} type="number" min="0"
+                        value={Math.round(item.precioFinal)}
+                        onChange={e=>updCotPrecioManual(item.id, e.target.value)}/>
+                      {item.precioManual!=null && (
+                        <button className="cot-item-del" title="Volver al precio calculado"
+                          onClick={()=>updCotPrecioManual(item.id, "")}>↺</button>
+                      )}
+                    </div>
+                    {item.bajoCosto && (
+                      <span style={{fontSize:11,color:"#e55",fontWeight:600}}>⚠️ por debajo del costo</span>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
-
-            {/* Combos detectados */}
-            {cotComboAct.length>0 && (
-              <div className="cot-combos">
-                <div className="cot-section-title" style={{marginBottom:8,color:"var(--ok)"}}>✦ Combos detectados</div>
-                {cotComboAct.map(combo=>(
-                  <div key={combo.id}
-                    className={`cot-combo-chip${combo.aplicado===false?" off":""}`}
-                    onClick={()=>toggleCombo(combo.id)}
-                    title={combo.descripcion}
-                  >
-                    <span className="cot-combo-name">{combo.nombre}</span>
-                    <span className="cot-combo-pct">−{combo.descuento}%</span>
-                    <span className="cot-combo-toggle">{combo.aplicado!==false?"✓ Aplicado":"Aplicar"}</span>
-                  </div>
-                ))}
-              </div>
-            )}
           </>
         )}
       </div>
@@ -206,16 +206,14 @@ export default function CotizadorPanel({
           <div className="cot-actions" style={{marginTop:8}}>
             <button className="cot-btn-print" onClick={()=>{
               const lineas = cotTotales.lineas.map(i=>
-                `${i.id} — ${i.nombre}\n  ${i.qty} u × ${ARS(i.precioFinal)}${i.descItem>0?` (dto ${i.descItem}%)`:""} = ${ARS(i.total)}`
+                `${i.id} — ${i.nombre}\n  ${i.qty} u × ${ARS(i.precioFinal)}${i.descItem>0&&i.precioManual==null?` (dto ${i.descItem}%)`:""} = ${ARS(i.total)}`
               ).join('\n\n');
-              const combos = cotComboAct.filter(c=>c.aplicado!==false).map(c=>`✦ ${c.nombre} −${c.descuento}%`).join('\n');
               const txt = [
                 `COTIZACIÓN — monstertrail accesorios 4×4`,
                 cotNombre ? `Cliente: ${cotNombre}` : "",
                 `Fecha: ${new Date().toLocaleDateString('es-AR')}`,
                 `─────────────────────────────`,
                 lineas,
-                combos ? `\nCOMBOS:\n${combos}` : "",
                 `─────────────────────────────`,
                 cotTotales.descTotal>0 ? `Descuento total: ${cotTotales.descTotal.toFixed(1)}%` : "",
                 `TOTAL EFECTIVO: ${ARS(cotTotales.totalEF)}`,
@@ -228,7 +226,7 @@ export default function CotizadorPanel({
               🖨 Imprimir cotización
             </button>
             <button className="cot-btn-clear" onClick={()=>{
-              if(confirm("¿Limpiar cotización?")){ setCotItems([]); setCotCombo([]); setCotDG(0); setCotNombre(""); setCotVendedorId(""); setCotFormaPago("efectivo"); }
+              if(confirm("¿Limpiar cotización?")){ setCotItems([]); setCotDG(0); setCotNombre(""); setCotVendedorId(""); setCotFormaPago("efectivo"); }
             }}>🗑</button>
           </div>
         </div>

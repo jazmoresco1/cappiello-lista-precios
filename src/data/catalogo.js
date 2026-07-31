@@ -76,62 +76,6 @@ export const FORMAS_PAGO = [
   ...CUOTAS_MP.map(c => ({ key:String(c.cant), label:c.label })),
 ];
 
-/* ═══════════════════════════════════════════════════════════════════
-   COMBOS — Reglas de descuento automatico
-   ═══════════════════════════════════════════════════════════════════ */
-export const COMBOS = [
-  {
-    id:"combo-estribo-soporte",
-    nombre:"Estribo + Soportes",
-    descuento:5,
-    descripcion:"5% off al llevar estribos con sus soportes",
-    // Se activa si el carrito tiene al menos 1 producto de CADA familia listada
-    familias:["Estribos","Estribos"],
-    // Opcionalmente podés filtrar por prefijo de código
-    prefijos:[["EIM","EOP","ESG","EBT","EBW","EIMN","EOPN","ESGN","EBWL"],["SEA"]],
-  },
-  {
-    id:"combo-enganche-acople",
-    nombre:"Enganche + Acople",
-    descuento:5,
-    descripcion:"5% off al llevar enganche con su acople",
-    familias:["Enganches Pesados","Enganches Pesados"],
-    prefijos:[["SE"],["ASE"]],
-  },
-  {
-    id:"combo-enganche-st1-acople",
-    nombre:"Enganche ST1 + Acople",
-    descuento:5,
-    descripcion:"5% off al llevar enganche ST1 con su acople",
-    familias:["Enganches Livianos","Enganches Livianos"],
-    prefijos:[["E"],["EAC"]],
-  },
-  {
-    id:"combo-barra-lanza",
-    nombre:"Barra de Trabajo + Lanza",
-    descuento:5,
-    descripcion:"5% off al llevar barra con su lanza",
-    familias:["Barras de Trabajo","Barras de Trabajo"],
-    prefijos:[["BT"],["LBT"]],
-  },
-  {
-    id:"combo-tapa-barra",
-    nombre:"Tapa Rígida + Barra Antivuelco",
-    descuento:8,
-    descripcion:"8% off al llevar tapa + barra Extreme Plus",
-    familias:["Tapas Rígidas","Barra Extreme Plus"],
-    prefijos:[["TAPTT"],["BPI","BPN"]],
-  },
-  {
-    id:"combo-tapa-cubrecarter",
-    nombre:"Tapa Rígida + Cubrecarter",
-    descuento:6,
-    descripcion:"6% off al llevar tapa + cubrecarter",
-    familias:["Tapas Rígidas","Cubrecarter"],
-    prefijos:[["TAPTT"],["ASP"]],
-  },
-];
-
 // Sub-tabs por familia (derivados del ID del producto)
 export const SUBTAB_CFG = {
   "Estribos":           { tabs:["BlackTrend","Aluminio","G3 Pulido","G3 Negro","Inyectado","Eléctrico DP-20","Soportes"],

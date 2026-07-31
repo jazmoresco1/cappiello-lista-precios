@@ -5,9 +5,9 @@ import "./App.css";
 import { PRODUCTOS } from "./data/productos.js";
 import {
   CONFIG_INICIAL, PROVEEDORES_INFO, CUOTAS_MP, CUOTAS_DEFAULT,
-  FORMAS_PAGO, COMBOS, SUBTAB_CFG,
+  FORMAS_PAGO, SUBTAB_CFG,
 } from "./data/catalogo.js";
-import { ARS, calcular, getColorBadge, detectarCombos } from "./utils.js";
+import { ARS, calcular, getColorBadge } from "./utils.js";
 import VendedoresPanel from "./components/VendedoresPanel.jsx";
 import StockPanel from "./components/StockPanel.jsx";
 import VentasPanel from "./components/VentasPanel.jsx";
@@ -32,28 +32,59 @@ export default function ListaPrecios() {
   const [editStock, setEditStk] = useState(null);
 
   // ── ACCESO INTERNO (PIN) ─────────────────────────────────────────
-  const ADMIN_PIN = "mt2026"; // cambiá este valor para cambiar la clave
-  const [unlocked, setUnlocked] = useState(false);
-  const [pinOpen,  setPinOpen]  = useState(false);
-  const [pinInput, setPinInput] = useState("");
-  const [pinError, setPinError] = useState(false);
+  // Dos niveles: admin (acceso total, único que puede borrar) y vendedor
+  // (solo cargar ventas con precio editable + ver stock, de solo lectura).
+  const ADMIN_PIN    = "mt2026";    // clave de administrador (acceso total)
+  const VENDEDOR_PIN = "venta2026"; // clave de vendedor -- cambiá este valor para cambiar la clave
+
+  // Paneles que exigen específicamente el rol admin (no alcanza con estar
+  // logueado como vendedor). Todo lo que no está acá, cualquier rol
+  // logueado lo puede abrir (hoy: solo "stock", en modo lectura para
+  // vendedor -- ver StockPanel).
+  const PANELES_SOLO_ADMIN = new Set([
+    "vendedores", "ventas", "socios", "facturas", "gastos", "radar", "dashboard", "controlProveedor",
+  ]);
+
+  const [role, setRole]         = useState(null); // null | "vendedor" | "admin"
+  const unlocked = role === "admin"; // alias: la mayoría del código ya usaba "unlocked" como "es admin"
+  const logueado = role !== null;
+
+  const [pinOpen,     setPinOpen]     = useState(false);
+  const [pinInput,    setPinInput]    = useState("");
+  const [pinError,    setPinError]    = useState(false);
+  const [pinErrorMsg, setPinErrorMsg] = useState(null);
 
   const handlePin = () => {
-    if (pinInput === ADMIN_PIN) {
-      setUnlocked(true); setPinOpen(false); setPinInput(""); setPinError(false);
-      if (pinTarget === "vendedores") { setVendPanelOpen(true); }
-      if (pinTarget === "stock") { setStockPanelOpen(true); }
-      if (pinTarget === "ventas") { setVentasPanelOpen(true); cargarVentas(); }
-      if (pinTarget === "socios") { setSociosPanelOpen(true); cargarReparto(); }
-      if (pinTarget === "facturas") { setFacturasPanelOpen(true); cargarFacturas(); }
-      if (pinTarget === "gastos") { setGastosPanelOpen(true); cargarGastos(); }
-      if (pinTarget === "radar") { setRadarPanelOpen(true); cargarRadar(); }
-      if (pinTarget === "dashboard") { setDashboardPanelOpen(true); cargarDashboard(dashDias); }
-      if (pinTarget === "controlProveedor") { setControlProveedorOpen(true); }
-      setPinTarget(null);
-    } else {
-      setPinError(true); setPinInput("");
+    let nuevoRol = null;
+    if (pinInput === ADMIN_PIN) nuevoRol = "admin";
+    else if (pinInput === VENDEDOR_PIN) nuevoRol = "vendedor";
+
+    if (!nuevoRol) {
+      setPinError(true); setPinErrorMsg(null); setPinInput("");
+      return;
     }
+
+    if (PANELES_SOLO_ADMIN.has(pinTarget) && nuevoRol !== "admin") {
+      // La clave es válida (queda logueado como vendedor) pero esta
+      // sección puntual requiere admin.
+      setRole(nuevoRol);
+      setPinError(true); setPinErrorMsg("Esta sección es solo para administradores.");
+      setPinInput("");
+      return;
+    }
+
+    setRole(nuevoRol); setPinOpen(false); setPinInput(""); setPinError(false); setPinErrorMsg(null);
+    if (pinTarget === "vendedores") { setVendPanelOpen(true); }
+    if (pinTarget === "stock") { setStockPanelOpen(true); }
+    if (pinTarget === "ventas") { setVentasPanelOpen(true); cargarVentas(); }
+    if (pinTarget === "socios") { setSociosPanelOpen(true); cargarReparto(); }
+    if (pinTarget === "facturas") { setFacturasPanelOpen(true); cargarFacturas(); }
+    if (pinTarget === "gastos") { setGastosPanelOpen(true); cargarGastos(); }
+    if (pinTarget === "radar") { setRadarPanelOpen(true); cargarRadar(); }
+    if (pinTarget === "dashboard") { setDashboardPanelOpen(true); cargarDashboard(dashDias); }
+    if (pinTarget === "controlProveedor") { setControlProveedorOpen(true); }
+    if (pinTarget === "guardarVenta") { guardarVenta(); }
+    setPinTarget(null);
   };
   const [familia, setFamilia]   = useState("Tapas Rígidas");
   const [subtab, setSubtab]     = useState(null);
@@ -64,7 +95,6 @@ export default function ListaPrecios() {
   const [cotOpen, setCotOpen]       = useState(false);
   const [cotItems, setCotItems]     = useState([]); // [{...producto, qty, descItem}]
   const [cotDescGlobal, setCotDG]   = useState(0);
-  const [cotComboAct, setCotCombo]  = useState([]); // combos activos aplicados
   const [cotBusq, setCotBusq]       = useState("");
   const [cotNombre, setCotNombre]   = useState("");
   const [cotVendedorId, setCotVendedorId] = useState("");
@@ -181,7 +211,7 @@ export default function ListaPrecios() {
   const [stockMsg, setStockMsg]       = useState(null);
 
   const abrirStock = () => {
-    if (unlocked) setStockPanelOpen(true);
+    if (logueado) setStockPanelOpen(true);
     else { setPinTarget("stock"); setPinOpen(true); }
   };
 
@@ -855,18 +885,14 @@ Sin texto adicional, sin markdown, solo el JSON.`;
       const existe = prev.find(i => i.id === p.id);
       if (existe) return prev.map(i => i.id===p.id ? {...i, qty: i.qty+1} : i);
       const { venta } = (() => { const cfg=getCfg(p.proveedor,p.familia); const desc=getDesc(p); const {venta}=calcular(p.listaVenta,desc,cfg.iva,cfg.markup); return {venta}; })();
-      return [...prev, { ...p, qty:1, descItem:0, precioBase:venta }];
+      return [...prev, { ...p, qty:1, descItem:0, precioBase:venta, precioManual:null }];
     });
-    // re-detectar combos
-    setTimeout(() => {
-      setCotItems(items => { setCotCombo(detectarCombos(items)); return items; });
-    }, 0);
     setCotOpen(true);
     setCotBusq("");
   };
 
   const quitarDeCot = (id) => {
-    setCotItems(prev => { const n=prev.filter(i=>i.id!==id); setCotCombo(detectarCombos(n)); return n; });
+    setCotItems(prev => prev.filter(i=>i.id!==id));
   };
 
   const updCotQty = (id, qty) => {
@@ -877,32 +903,51 @@ Sin texto adicional, sin markdown, solo el JSON.`;
     setCotItems(prev => prev.map(i => i.id===id ? {...i, descItem: parseFloat(v)||0} : i));
   };
 
-  const toggleCombo = (comboId) => {
-    setCotCombo(prev => prev.map(c => c.id===comboId ? {...c, aplicado:!c.aplicado} : c));
+  // Precio manual por ítem (pisa el descuento calculado para esa línea).
+  // Pasar "" o un valor inválido borra el override y vuelve al precio
+  // calculado con el descuento normal.
+  const updCotPrecioManual = (id, v) => {
+    const n = parseFloat(v);
+    setCotItems(prev => prev.map(i => i.id===id ? {...i, precioManual: (v===""||isNaN(n)) ? null : n} : i));
   };
+
+  // Costo real (costo_base) de cada producto en el carrito, para poder
+  // avisar si un precio editado a mano queda por debajo del costo.
+  const [costoPorSku, setCostoPorSku] = useState({});
+  useEffect(() => {
+    const faltantes = [...new Set(cotItems.map(i => i.id))].filter(id => !(id in costoPorSku));
+    if (faltantes.length === 0) return;
+    supabase.from("productos").select("sku,costo_base").in("sku", faltantes)
+      .then(({ data, error }) => {
+        if (error) { console.error("No se pudo traer costo_base para el cotizador:", error); return; }
+        setCostoPorSku(prev => {
+          const next = { ...prev };
+          faltantes.forEach(sku => { next[sku] = null; });
+          (data||[]).forEach(p => { next[p.sku] = p.costo_base; });
+          return next;
+        });
+      });
+  }, [cotItems, costoPorSku]);
 
   // Recalcular totales cotización
   const cotTotales = useMemo(() => {
     let subtotal = 0;
     const lineas = cotItems.map(item => {
       const base = item.precioBase;
-      const conDescItem = base * (1 - item.descItem/100);
+      const conDescItem = item.precioManual != null ? item.precioManual : base * (1 - item.descItem/100);
       const total = conDescItem * item.qty;
       subtotal += total;
-      return { ...item, precioFinal: conDescItem, total };
+      const costo = costoPorSku[item.id];
+      const bajoCosto = costo != null && conDescItem < costo;
+      return { ...item, precioFinal: conDescItem, total, bajoCosto };
     });
 
-    // descuento combos aplicados
-    const descCombos = cotComboAct
-      .filter(c => c.aplicado)
-      .reduce((acc, c) => acc + c.descuento, 0);
-
-    const descTotal = Math.min(cotDescGlobal + descCombos, 100);
+    const descTotal = Math.min(cotDescGlobal, 100);
     const totalEF = subtotal * (1 - descTotal/100);
     const cuota = totalEF * cuotas.multiplicador / cuotas.cant;
 
     return { lineas, subtotal, descTotal, totalEF, cuota };
-  }, [cotItems, cotDescGlobal, cotComboAct, cuotas]);
+  }, [cotItems, cotDescGlobal, cuotas, costoPorSku]);
 
   // Monto final de la venta segun la forma de pago elegida para ESTA cotizacion
   // (efectivo = totalEF, o el total financiado del plan de cuotas elegido)
@@ -1002,6 +1047,15 @@ Sin texto adicional, sin markdown, solo el JSON.`;
       setGuardando(false);
       setTimeout(() => setGuardadoMsg(null), 4000);
     }
+  };
+
+  // Antes se podía guardar una venta sin estar logueado con ninguna clave.
+  // Ahora hace falta estar logueado como admin O vendedor -- si no, pide la
+  // clave y, apenas la valida, guarda esta misma venta (ver handlePin,
+  // pinTarget==="guardarVenta").
+  const intentarGuardarVenta = async () => {
+    if (!logueado) { setPinTarget("guardarVenta"); setPinOpen(true); return; }
+    await guardarVenta();
   };
 
   const cotBusqRes = useMemo(() => {
@@ -1174,8 +1228,8 @@ Sin texto adicional, sin markdown, solo el JSON.`;
       {pinOpen && (
         <PinModal
           pinTarget={pinTarget} pinInput={pinInput} setPinInput={setPinInput}
-          pinError={pinError} setPinError={setPinError} handlePin={handlePin}
-          onClose={()=>{setPinOpen(false);setPinInput("");setPinError(false);setPinTarget(null);}}
+          pinError={pinError} setPinError={setPinError} pinErrorMsg={pinErrorMsg} handlePin={handlePin}
+          onClose={()=>{setPinOpen(false);setPinInput("");setPinError(false);setPinErrorMsg(null);setPinTarget(null);}}
         />
       )}
 
@@ -1186,7 +1240,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         abrirVendedores={abrirVendedores} abrirStock={abrirStock} abrirVentas={abrirVentas}
         abrirSocios={abrirSocios} abrirFacturas={abrirFacturas} abrirGastos={abrirGastos} abrirRadar={abrirRadar}
         abrirDashboard={abrirDashboard} abrirControlProveedor={abrirControlProveedor}
-        unlocked={unlocked} setUnlocked={setUnlocked} setPinOpen={setPinOpen}
+        role={role} setRole={setRole} setPinOpen={setPinOpen}
         cuotas={cuotas} setCuotas={setCuotas}
         familias={familias} familia={familia} cambiarFamilia={cambiarFamilia}
         subtabCfg={subtabCfg} subtabActual={subtabActual} setSubtab={setSubtab}
@@ -1230,14 +1284,14 @@ Sin texto adicional, sin markdown, solo el JSON.`;
           cotBusq={cotBusq} setCotBusq={setCotBusq} cotBusqRes={cotBusqRes} agregarACot={agregarACot}
           cotItems={cotItems} setCotItems={setCotItems} cotTotales={cotTotales}
           quitarDeCot={quitarDeCot} updCotQty={updCotQty} updCotDescItem={updCotDescItem}
-          cotComboAct={cotComboAct} setCotCombo={setCotCombo} toggleCombo={toggleCombo}
+          updCotPrecioManual={updCotPrecioManual} logueado={logueado}
           cotNombre={cotNombre} setCotNombre={setCotNombre}
           cotDescGlobal={cotDescGlobal} setCotDG={setCotDG}
           cotVendedorId={cotVendedorId} setCotVendedorId={setCotVendedorId} vendedores={vendedores}
           cotFormaPago={cotFormaPago} setCotFormaPago={setCotFormaPago}
           cotVendedor={cotVendedor} cotComisionPct={cotComisionPct} cotComisionMonto={cotComisionMonto}
           cuotas={cuotas} setCuotas={setCuotas}
-          guardadoMsg={guardadoMsg} guardando={guardando} guardarVenta={guardarVenta}
+          guardadoMsg={guardadoMsg} guardando={guardando} guardarVenta={intentarGuardarVenta}
         />
       )}
 
@@ -1253,9 +1307,10 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         />
       )}
 
-      {/* ── PANEL STOCK (protegido con clave) ───────────────────────── */}
-      {stockPanelOpen && unlocked && (
+      {/* ── PANEL STOCK (cualquier rol logueado; solo lectura para vendedor) ── */}
+      {stockPanelOpen && logueado && (
         <StockPanel
+          soloLectura={!unlocked}
           stockBusq={stockBusq} buscarProductoStock={buscarProductoStock}
           stockBuscando={stockBuscando} stockResultados={stockResultados}
           stockSel={stockSel} setStockSel={setStockSel}

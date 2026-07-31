@@ -5,8 +5,8 @@
 export const CONFIG_INICIAL = {
   "Steel Tiger|Tapas Rígidas":     { descuento:3, iva:10.5, markup:30 },
   "Steel Tiger|Estribos":          { descuento:7, iva:10.5, markup:30 },
-  "Steel Tiger|Enganches Pesados": { descuento:7, iva:10.5, markup:30 },
-  "Steel Tiger|Enganches Livianos":{ descuento:7, iva:10.5, markup:30 },
+  "Steel Tiger|Enganches Pesados": { descuento:7, iva:10.5, markup:40 },
+  "Steel Tiger|Enganches Livianos":{ descuento:7, iva:10.5, markup:40 },
   "Steel Tiger|Defensas Bajas":    { descuento:7, iva:10.5, markup:30 },
   "Steel Tiger|Cubrecarter":       { descuento:3, iva:10.5, markup:30 },
   "Steel Tiger|Baúl":     { descuento:3, iva:10.5, markup:30 },

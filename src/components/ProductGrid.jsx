@@ -169,7 +169,7 @@ export default function ProductGrid({
                               onClick={()=>agregarACot(p)}
                               style={{padding:"8px 10px",background:"#141414",border:"1px solid #2a2a2a",borderRadius:8,cursor:"pointer",fontSize:14,color:cotItems.find(i=>i.id===p.id)?"var(--ac)":"#aaa",transition:"all .15s",flexShrink:0}}
                             >🧾</button>
-                            {enEdit ? (
+                            {unlocked && (enEdit ? (
                               <div className="dedit">
                                 <input autoFocus type="number"
                                   defaultValue={overrides[p.id]??p.descuentoOverride??getCfg(p.proveedor,p.familia).descuento}
@@ -183,7 +183,7 @@ export default function ProductGrid({
                               <button className={`bdsc${tieneOvr?" on":""}`} onClick={()=>setEditando(p.id)} title="Editar descuento individual">
                                 ✎ {desc}%
                               </button>
-                            )}
+                            ))}
                           </div>
                         </div>
                       </div>

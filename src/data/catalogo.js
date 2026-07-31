@@ -5,13 +5,8 @@
 export const CONFIG_INICIAL = {
   "Steel Tiger|Tapas Rígidas":     { descuento:3, iva:10.5, markup:30 },
   "Steel Tiger|Estribos":          { descuento:7, iva:10.5, markup:30 },
-  // pisoVenta: precio final mínimo del enganche (no del acople -- por eso
-  // pisoVentaExcluyePrefijos deja afuera los acoples, que comparten esta
-  // misma config de familia). Calculado para que el combo enganche+acople
-  // más barato (ej. VW Amarok) se acerque al objetivo de combo (pesado
-  // $320.000 / liviano $220.000), usando el acople mediana como referencia.
-  "Steel Tiger|Enganches Pesados": { descuento:7, iva:10.5, markup:40, pisoVenta:226826, pisoVentaExcluyePrefijos:["ASE"] },
-  "Steel Tiger|Enganches Livianos":{ descuento:7, iva:10.5, markup:40, pisoVenta:170865, pisoVentaExcluyePrefijos:["EAC"] },
+  "Steel Tiger|Enganches Pesados": { descuento:7, iva:10.5, markup:30 },
+  "Steel Tiger|Enganches Livianos":{ descuento:7, iva:10.5, markup:30 },
   "Steel Tiger|Defensas Bajas":    { descuento:7, iva:10.5, markup:30 },
   "Steel Tiger|Cubrecarter":       { descuento:3, iva:10.5, markup:30 },
   "Steel Tiger|Baúl":     { descuento:3, iva:10.5, markup:30 },
@@ -34,14 +29,14 @@ export const CONFIG_INICIAL = {
   "Bepo|Estribos":                    { descuento:0, iva:10.5, markup:30 },
   "Bepo|Barras de Trabajo":           { descuento:0, iva:10.5, markup:30 },
   "Bepo|Baúl":              { descuento:0, iva:10.5, markup:30 },
-  "Bepo|Lomos de Caja":               { descuento:0, iva:10.5, markup:30, pisoVenta:120000 },
+  "Bepo|Lomos de Caja":               { descuento:0, iva:10.5, markup:30 },
   // ── Kraken (barras) ──
   "Kraken|Barras de Trabajo":         { descuento:0, iva:0, markup:30 },
   "Kraken|Baúl":             { descuento:0, iva:0, markup:30 },
   // ── DP-20 ──
   "DP-20|Electrónica DP-20":          { descuento:0, iva:21, markup:30 },
   // ── Original Cars 4x4 ──
-  "Original Cars 4x4|Deflectores":    { descuento:0, iva:10.5, markup:30, pisoGanancia:40000 },
+  "Original Cars 4x4|Deflectores":    { descuento:0, iva:10.5, markup:30 },
   
   // ── Coversax ──
   "Coversax|Fundas de Asientos":      { descuento:0, iva:21, markup:30 },

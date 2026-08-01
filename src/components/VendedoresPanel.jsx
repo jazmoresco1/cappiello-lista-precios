@@ -24,6 +24,12 @@ export default function VendedoresPanel({
             <input className="cot-nombre-inp" placeholder="Nombre del vendedor"
               value={vendForm?.nombre||""} onChange={e=>setVendForm(f=>({...f,nombre:e.target.value}))}/>
 
+            <input className="cot-nombre-inp" placeholder="Clave individual (para entrar a la app)"
+              value={vendForm?.pin||""} onChange={e=>setVendForm(f=>({...f,pin:e.target.value}))}/>
+            <div style={{fontSize:11,color:"var(--tx2)",marginTop:-8,marginBottom:14}}>
+              Con esta clave el vendedor entra directo con su nombre ya elegido en el cotizador. Dejala vacía si todavía no le vas a dar acceso.
+            </div>
+
             <div className="img-section-title" style={{marginTop:4}}>Comisión % por forma de pago</div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
               {FORMAS_PAGO.map(fp=>(
@@ -63,12 +69,14 @@ export default function VendedoresPanel({
                   <div key={v.id} className="img-prod-row" style={{cursor:"default"}}>
                     <div className="img-prod-thumb-empty">👤</div>
                     <div className="img-prod-info">
-                      <div className="img-prod-name">{v.nombre}</div>
+                      <div className="img-prod-name">
+                        {v.nombre} {v.pin ? "🔑" : <span title="Sin clave asignada todavía" style={{color:"#e55"}}>⚠️ sin clave</span>}
+                      </div>
                       <div className="img-prod-count">
                         Efectivo {v.comisiones?.efectivo ?? 0}% · 12 cuotas {v.comisiones?.["12"] ?? 0}%
                       </div>
                     </div>
-                    <button className="img-back" onClick={()=>{setVendEditId(v.id);setVendForm({nombre:v.nombre,comisiones:{...nuevoVendedorForm().comisiones,...v.comisiones}});}}>✎</button>
+                    <button className="img-back" onClick={()=>{setVendEditId(v.id);setVendForm({nombre:v.nombre,pin:v.pin||"",comisiones:{...nuevoVendedorForm().comisiones,...v.comisiones}});}}>✎</button>
                     <button className="cot-item-del" onClick={()=>borrarVendedor(v.id)}>✕</button>
                   </div>
                 ))}

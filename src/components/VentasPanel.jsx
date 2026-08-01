@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { ARS } from "../utils.js";
 
+const RANGOS = [{v:7,l:"7 días"},{v:30,l:"30 días"},{v:90,l:"90 días"},{v:0,l:"Todo"}];
+
 export default function VentasPanel({
   ventasLoading, ventasResumen, ventasLista, onClose, onBorrar,
+  ventasDias, setVentasDias,
   editandoVentaId, setEditandoVentaId, editandoVentaGuardando, onGuardarEdicion,
 }) {
   const [formEnvio, setFormEnvio] = useState("");
@@ -23,18 +26,29 @@ export default function VentasPanel({
       <div className="img-head">
         <div>
           <div className="img-head-title">📊 Ventas y ganancia real</div>
-          <div className="img-head-sub">Mercado Libre + ventas físicas, últimos 30 días</div>
+          <div className="img-head-sub">Mercado Libre + ventas físicas</div>
         </div>
         <button className="cot-x" onClick={onClose}>✕</button>
       </div>
 
       <div className="img-body">
+        <div style={{display:"flex",gap:6,marginBottom:14}}>
+          {RANGOS.map(o => (
+            <button key={o.v} className="cot-btn-clear" style={{flex:1,
+              ...(ventasDias===o.v ? {borderColor:"var(--ac)",color:"var(--ac)"} : {})}}
+              onClick={()=>setVentasDias(o.v)}>
+              {o.l}
+            </button>
+          ))}
+        </div>
+
         {ventasLoading ? (
           <div className="cot-empty" style={{padding:12}}>Cargando…</div>
         ) : !ventasResumen || ventasResumen.cantidad===0 ? (
           <div className="cot-empty">
             <div style={{fontSize:32,marginBottom:8}}>📊</div>
-            <div>Todavía no hay ventas guardadas en los últimos 30 días</div>
+            <div>Todavía no hay ventas guardadas en este rango{ventasDias>0?` (últimos ${ventasDias} días)`:""}</div>
+            {ventasDias>0 && <div style={{fontSize:11,marginTop:6}}>Probá con "Todo" para ver si hay ventas más viejas.</div>}
           </div>
         ) : (
           <>

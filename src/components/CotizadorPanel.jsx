@@ -5,7 +5,7 @@ export default function CotizadorPanel({
   onClose,
   cotBusq, setCotBusq, cotBusqRes, agregarACot,
   cotItems, setCotItems, cotTotales, quitarDeCot, updCotQty, updCotDescItem,
-  updCotPrecioManual, logueado,
+  updCotPrecioManual, logueado, esAdmin,
   cotNombre, setCotNombre,
   cotDescGlobal, setCotDG,
   cotVendedorId, setCotVendedorId, vendedores,
@@ -127,6 +127,8 @@ export default function CotizadorPanel({
             <select
               value={cotVendedorId}
               onChange={e=>setCotVendedorId(e.target.value)}
+              disabled={!esAdmin && !!cotVendedorId}
+              title={!esAdmin && cotVendedorId ? "Ya entraste con tu clave de vendedor -- solo un admin puede cambiarlo" : undefined}
               style={{flex:1,border:"1px solid var(--bd)",borderRadius:6,padding:"7px 8px",fontFamily:"'DM Sans',sans-serif",fontSize:12,background:"var(--sf2)",color:"var(--tx)",outline:"none"}}
             >
               <option value="">Sin vendedor</option>

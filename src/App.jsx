@@ -61,8 +61,11 @@ export default function ListaPrecios() {
   // ── ACCESO INTERNO (PIN) ─────────────────────────────────────────
   // Dos niveles: admin (acceso total, único que puede borrar) y vendedor
   // (solo cargar ventas con precio editable + ver stock, de solo lectura).
-  const ADMIN_PIN    = "mt2026";    // clave de administrador (acceso total)
-  const VENDEDOR_PIN = "venta2026"; // clave de vendedor -- cambiá este valor para cambiar la clave
+  // Cada vendedor tiene su propia clave individual (columna "pin" en la
+  // tabla vendedores, ver agregar_clave_individual_vendedores.sql) -- así
+  // el sistema sabe directamente cuál vendedor entró, sin tener que
+  // elegirlo del desplegable del cotizador.
+  const ADMIN_PIN = "mt2026"; // clave de administrador (acceso total)
 
   // Paneles que exigen específicamente el rol admin (no alcanza con estar
   // logueado como vendedor). Todo lo que no está acá, cualquier rol
@@ -75,6 +78,7 @@ export default function ListaPrecios() {
   const [role, setRole]         = useState(null); // null | "vendedor" | "admin"
   const unlocked = role === "admin"; // alias: la mayoría del código ya usaba "unlocked" como "es admin"
   const logueado = role !== null;
+  const [vendedorActivoId, setVendedorActivoId] = useState(null); // id del vendedor logueado (null si es admin o nadie)
 
   const [pinOpen,     setPinOpen]     = useState(false);
   const [pinInput,    setPinInput]    = useState("");
@@ -83,8 +87,14 @@ export default function ListaPrecios() {
 
   const handlePin = () => {
     let nuevoRol = null;
-    if (pinInput === ADMIN_PIN) nuevoRol = "admin";
-    else if (pinInput === VENDEDOR_PIN) nuevoRol = "vendedor";
+    let vendedorId = null;
+
+    if (pinInput === ADMIN_PIN) {
+      nuevoRol = "admin";
+    } else {
+      const vendedorMatch = vendedores.find(v => v.pin && v.pin === pinInput);
+      if (vendedorMatch) { nuevoRol = "vendedor"; vendedorId = vendedorMatch.id; }
+    }
 
     if (!nuevoRol) {
       setPinError(true); setPinErrorMsg(null); setPinInput("");
@@ -94,16 +104,20 @@ export default function ListaPrecios() {
     if (PANELES_SOLO_ADMIN.has(pinTarget) && nuevoRol !== "admin") {
       // La clave es válida (queda logueado como vendedor) pero esta
       // sección puntual requiere admin.
-      setRole(nuevoRol);
+      setRole(nuevoRol); setVendedorActivoId(vendedorId);
       setPinError(true); setPinErrorMsg("Esta sección es solo para administradores.");
       setPinInput("");
       return;
     }
 
-    setRole(nuevoRol); setPinOpen(false); setPinInput(""); setPinError(false); setPinErrorMsg(null);
+    setRole(nuevoRol); setVendedorActivoId(vendedorId);
+    setPinOpen(false); setPinInput(""); setPinError(false); setPinErrorMsg(null);
+    // Si entró un vendedor (no admin), el cotizador ya arranca con su
+    // propio nombre elegido -- no hace falta que lo busque del desplegable.
+    if (vendedorId) setCotVendedorId(vendedorId);
     if (pinTarget === "vendedores") { setVendPanelOpen(true); }
     if (pinTarget === "stock") { setStockPanelOpen(true); }
-    if (pinTarget === "ventas") { setVentasPanelOpen(true); cargarVentas(); }
+    if (pinTarget === "ventas") { setVentasPanelOpen(true); cargarVentas(ventasDias); }
     if (pinTarget === "socios") { setSociosPanelOpen(true); cargarReparto(); }
     if (pinTarget === "facturas") { setFacturasPanelOpen(true); cargarFacturas(); }
     if (pinTarget === "gastos") { setGastosPanelOpen(true); cargarGastos(); }
@@ -138,7 +152,7 @@ export default function ListaPrecios() {
     setVendLoading(true);
     const { data, error } = await supabase
       .from("vendedores")
-      .select("id, nombre, activo, vendedor_comisiones(forma_pago, porcentaje)")
+      .select("id, nombre, activo, pin, vendedor_comisiones(forma_pago, porcentaje)")
       .eq("activo", true)
       .order("nombre");
     if (error) {
@@ -147,6 +161,7 @@ export default function ListaPrecios() {
       setVend((data || []).map(v => ({
         id: v.id,
         nombre: v.nombre,
+        pin: v.pin,
         comisiones: Object.fromEntries((v.vendedor_comisiones || []).map(c => [c.forma_pago, c.porcentaje])),
       })));
     }
@@ -168,6 +183,7 @@ export default function ListaPrecios() {
 
   const nuevoVendedorForm = () => ({
     nombre: "",
+    pin: "",
     comisiones: Object.fromEntries(FORMAS_PAGO.map(f => [f.key, 0])),
   });
 
@@ -176,11 +192,12 @@ export default function ListaPrecios() {
     setVendGuardando(true);
     try {
       let vendedorId = vendEditId === "nuevo" ? null : vendEditId;
+      const pin = vendForm.pin?.trim() || null;
 
       if (!vendedorId) {
         const { data, error } = await supabase
           .from("vendedores")
-          .insert({ nombre: vendForm.nombre.trim() })
+          .insert({ nombre: vendForm.nombre.trim(), pin })
           .select("id")
           .single();
         if (error) throw error;
@@ -188,7 +205,7 @@ export default function ListaPrecios() {
       } else {
         const { error } = await supabase
           .from("vendedores")
-          .update({ nombre: vendForm.nombre.trim() })
+          .update({ nombre: vendForm.nombre.trim(), pin })
           .eq("id", vendedorId);
         if (error) throw error;
       }
@@ -207,7 +224,10 @@ export default function ListaPrecios() {
       setVendEditId(null); setVendForm(null);
     } catch (err) {
       console.error(err);
-      alert("No se pudo guardar el vendedor (revisá la conexión con Supabase).");
+      const esDuplicada = err?.code === "23505" || /vendedores_pin_unico/.test(err?.message || "");
+      alert(esDuplicada
+        ? "Esa clave ya la está usando otro vendedor -- elegí una distinta."
+        : "No se pudo guardar el vendedor (revisá la conexión con Supabase).");
     } finally {
       setVendGuardando(false);
     }
@@ -288,16 +308,23 @@ export default function ListaPrecios() {
   const [ventasLoading, setVentasLoading]     = useState(false);
   const [ventasResumen, setVentasResumen]     = useState(null);
   const [ventasLista, setVentasLista]         = useState([]);
+  const [ventasDias, setVentasDias]           = useState(30); // 7 | 30 | 90 | 0 (todo)
 
   const abrirVentas = () => {
-    if (unlocked) { setVentasPanelOpen(true); cargarVentas(); }
+    if (unlocked) { setVentasPanelOpen(true); cargarVentas(ventasDias); }
     else { setPinTarget("ventas"); setPinOpen(true); }
   };
 
-  const cargarVentas = async () => {
+  const cambiarVentasDias = (dias) => {
+    setVentasDias(dias);
+    cargarVentas(dias);
+  };
+
+  const cargarVentas = async (dias = ventasDias) => {
     setVentasLoading(true);
-    const desde = new Date(); desde.setDate(desde.getDate() - 30);
-    const desdeISO = desde.toISOString();
+    const desdeISO = dias > 0
+      ? (() => { const d = new Date(); d.setDate(d.getDate() - dias); return d.toISOString(); })()
+      : "2000-01-01T00:00:00Z";
 
     const [{ data: ml, error: errMl }, { data: fis, error: errFis }] = await Promise.all([
       supabase.from("ventas")
@@ -1349,7 +1376,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
           cotBusq={cotBusq} setCotBusq={setCotBusq} cotBusqRes={cotBusqRes} agregarACot={agregarACot}
           cotItems={cotItems} setCotItems={setCotItems} cotTotales={cotTotales}
           quitarDeCot={quitarDeCot} updCotQty={updCotQty} updCotDescItem={updCotDescItem}
-          updCotPrecioManual={updCotPrecioManual} logueado={logueado}
+          updCotPrecioManual={updCotPrecioManual} logueado={logueado} esAdmin={unlocked}
           cotNombre={cotNombre} setCotNombre={setCotNombre}
           cotDescGlobal={cotDescGlobal} setCotDG={setCotDG}
           cotVendedorId={cotVendedorId} setCotVendedorId={setCotVendedorId} vendedores={vendedores}
@@ -1393,6 +1420,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
       {ventasPanelOpen && unlocked && (
         <VentasPanel
           ventasLoading={ventasLoading} ventasResumen={ventasResumen} ventasLista={ventasLista}
+          ventasDias={ventasDias} setVentasDias={cambiarVentasDias}
           onClose={()=>setVentasPanelOpen(false)} onBorrar={borrarMovimiento}
           editandoVentaId={editandoVentaId} setEditandoVentaId={setEditandoVentaId}
           editandoVentaGuardando={editandoVentaGuardando} onGuardarEdicion={guardarEdicionVenta}

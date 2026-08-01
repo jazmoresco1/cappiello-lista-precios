@@ -1143,7 +1143,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
     const cfg = getCfg(p.proveedor,p.familia);
     const { lista, desc, iva } = costoParaCalcular(p);
     const { pisoGanancia, pisoVenta } = pisosPara(p, cfg);
-    const {venta} = calcular(lista, desc, iva, cfg.markup, pisoGanancia, pisoVenta);
+    const {venta} = calcular(lista, desc, iva, cfg.markup, pisoGanancia, pisoVenta, cfg.techoVenta);
     const cuota = venta * cuotas.multiplicador / cuotas.cant;
     return {venta, cuota, desc};
   };

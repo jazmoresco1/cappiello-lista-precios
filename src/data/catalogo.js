@@ -24,7 +24,13 @@ export const CONFIG_INICIAL = {
   // ── Flashcover ──
   "Flashcover|Lonas Flashcover":      { descuento:0, iva:0, markup:30 },
   // ── Kraken ──
-  "Kraken|Tapas Rígidas":              { descuento:0, iva:0, markup:30 },
+  // techoVenta: tope de precio en efectivo pedido para esta línea -- las
+  // Tricover ya quedan por debajo solas; a las Plegable/Retráctil las baja
+  // hasta $1.800.000 (deja ~$200-300mil de ganancia), salvo las 4 variantes
+  // más caras (F-150/Ram 1500, Silverado, Titano) donde el techo quedaría
+  // por debajo del costo real -- para esas, calcular() no deja vender a
+  // pérdida y las deja con margen mínimo en vez del techo.
+  "Kraken|Tapas Rígidas":              { descuento:0, iva:0, markup:30, techoVenta:1800000 },
   // ── Bepo ──
   "Bepo|Estribos":                    { descuento:0, iva:10.5, markup:30 },
   "Bepo|Barras de Trabajo":           { descuento:0, iva:10.5, markup:30 },

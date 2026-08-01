@@ -2,7 +2,8 @@ export default function StockPanel({
   soloLectura,
   stockBusq, buscarProductoStock, stockBuscando, stockResultados,
   stockSel, setStockSel, setStockBusq, setStockResultados,
-  stockTipo, setStockTipo, stockDelta, setStockDelta, stockNota, setStockNota,
+  stockTipo, setStockTipo, stockUbicacion, setStockUbicacion,
+  stockDelta, setStockDelta, stockNota, setStockNota,
   registrarMovimientoStock, stockGuardando, stockMsg, onClose,
 }) {
   return (
@@ -29,7 +30,7 @@ export default function StockPanel({
                 <div className="img-prod-thumb-empty">📦</div>
                 <div className="img-prod-info">
                   <div className="img-prod-name">{p.nombre}</div>
-                  <div className="img-prod-count">SKU {p.sku} · Stock actual: {p.stock}</div>
+                  <div className="img-prod-count">SKU {p.sku} · Royriff {p.stock_royriff ?? 0} · Depósito {p.stock_deposito ?? 0} · Total {p.stock}</div>
                 </div>
               </div>
             ))}
@@ -49,7 +50,7 @@ export default function StockPanel({
               <button className="img-back" onClick={()=>{setStockSel(null);setStockBusq("");}}>← Volver a buscar</button>
             </div>
             <div style={{fontSize:12,color:"var(--tx2)",marginBottom:10}}>
-              SKU {stockSel.sku} · Stock actual: <strong>{stockSel.stock}</strong> unidades
+              SKU {stockSel.sku} · Royriff <strong>{stockSel.stock_royriff ?? 0}</strong> · Depósito <strong>{stockSel.stock_deposito ?? 0}</strong> · Total <strong>{stockSel.stock}</strong> unidades
             </div>
 
             {soloLectura ? (
@@ -58,6 +59,12 @@ export default function StockPanel({
               </div>
             ) : (
               <>
+                <div className="img-section-title">Ubicación</div>
+                <select className="cot-nombre-inp" value={stockUbicacion} onChange={e=>setStockUbicacion(e.target.value)} style={{marginBottom:10}}>
+                  <option value="deposito">Depósito</option>
+                  <option value="royriff">Royriff</option>
+                </select>
+
                 <div className="img-section-title">Tipo de movimiento</div>
                 <select className="cot-nombre-inp" value={stockTipo} onChange={e=>setStockTipo(e.target.value)} style={{marginBottom:10}}>
                   <option value="compra_manual">Carga manual</option>

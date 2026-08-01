@@ -254,6 +254,7 @@ export default function ListaPrecios() {
   const [stockDelta, setStockDelta]   = useState("");
   const [stockNota, setStockNota]     = useState("");
   const [stockTipo, setStockTipo]     = useState("compra_manual"); // "compra_manual" | "factura_proveedor" | "ajuste"
+  const [stockUbicacion, setStockUbicacion] = useState("deposito"); // "deposito" | "royriff"
   const [stockGuardando, setStockGuardando] = useState(false);
   const [stockMsg, setStockMsg]       = useState(null);
 
@@ -269,7 +270,7 @@ export default function ListaPrecios() {
     setStockBuscando(true);
     const { data, error } = await supabase
       .from("productos")
-      .select("id, sku, nombre, stock")
+      .select("id, sku, nombre, stock, stock_royriff, stock_deposito")
       .or(`sku.ilike.%${q}%,nombre.ilike.%${q}%`)
       .order("nombre")
       .limit(20);
@@ -288,6 +289,7 @@ export default function ListaPrecios() {
       p_delta: cantidad,
       p_tipo: stockTipo,
       p_nota: stockNota || null,
+      p_ubicacion: stockUbicacion,
     });
     setStockGuardando(false);
     if (error) {
@@ -295,9 +297,12 @@ export default function ListaPrecios() {
       setStockMsg({ ok: false, texto: "No se pudo registrar el movimiento." });
       return;
     }
-    setStockMsg({ ok: true, texto: `Stock actualizado: ${stockSel.nombre} → ${data} unidades` });
-    setStockSel(s => s ? { ...s, stock: data } : s);
+    const etiquetaUbic = stockUbicacion === "royriff" ? "Royriff" : "Depósito";
+    const campoUbic = stockUbicacion === "royriff" ? "stock_royriff" : "stock_deposito";
+    setStockMsg({ ok: true, texto: `Stock actualizado (${etiquetaUbic}): ${stockSel.nombre} → ${data} unidades en total` });
+    setStockSel(s => s ? { ...s, stock: data, [campoUbic]: Math.max((s[campoUbic] || 0) + cantidad, 0) } : s);
     setStockDelta(""); setStockNota("");
+    await cargarStock();
   };
 
   // ── VENTAS Y GANANCIA REAL (protegido con la misma clave) ──────────
@@ -764,141 +769,18 @@ Sin texto adicional, sin markdown, solo el JSON.`;
   const [editando, setEditando] = useState(null);
   const [cfgOpen, setCfgOpen]   = useState(false);
 
-  // ── STOCK DE COMPRAS (monstertrail accesorios / Abril 2026) ─────────────────────
-  // Facturas: 5712, 5725, 5726, 5727, 5728
-  // Cotizaciones: 36202, 36203, 36204, 36205
-  // Todas las cantidades van a "deposito"
-  const STOCK_COMPRAS_ABR2026 = {
-    // ── Factura 5712 (17/04) · Fundas Coversax ──────────────────────
-    "6601923-9999": 1,  // Línea Confort Negro
-    "6603923-9999": 1,  // Línea Luxury Negro
-    "8032923-9999": 1,  // Línea Racing Negro
-    "6605923-9999": 1,  // Línea Raptor Negro
-    // ── Factura 5725 (21/04) · Defensas + Barras ────────────────────
-    "160FF":   1,  // Lona Flashcover Amarok D/C
-    "DBN101":  1,  // Defensa Baja Negra Ford Ranger 12→
-    "DBN118":  1,  // Defensa Baja Negra VW Amarok
-    "DBN115":  1,  // Defensa Baja Negra Toyota Hilux 21→
-    "DBN102":  1,  // Defensa Baja Negra Chevrolet S10
-    "DBI617":  1,  // Defensa Baja Inox Ford Ranger 23→
-    "DBI615":  1,  // Defensa Baja Inox Toyota Hilux/SW4 21→
-    "DBI602":  1,  // Defensa Baja Inox Chevrolet S10
-    "BPN610":  1,  // Barra Extreme Plus Negra Ford Ranger DC
-    "BPN601":  1,  // Barra Extreme Plus Negra VW Amarok
-    "BPN606":  1,  // Barra Extreme Plus Negra Toyota Hilux DC
-    "BPN604":  1,  // Barra Extreme Plus Negra Chevrolet S10 DC
-    "BPI510":  1,  // Barra Extreme Plus Inox Ford Ranger DC
-    "BPI506":  1,  // Barra Extreme Plus Inox Toyota Hilux DC
-    // ── Factura 5726 (21/04) · Estribos ────────────────────────────
-    "EBW000":  6,  // Estribos Blacktrend Wild (×6)
-    "EOP000":  1,  // Estribos Optimus natural
-    "ESG000":  2,  // Estribos Strong natural (×2)
-    "EIM000":  1,  // Estribos Impactus natural
-    "EBT000":  2,  // Estribos Blacktrend acero (×2)
-    "SEA159":  1,  // Soportes Blacktrend Frontier/Alaskan
-    // ── Factura 5727 (21/04) · Tapas ───────────────────────────────
-    "TAPTT1009": 1, // Tapa Top Tiger Ford Ranger 2012-2022
-    "TAPTT1006": 1, // Tapa Top Tiger Ford Ranger Limited 23→
-    "TAPTT1001": 1, // Tapa Top Tiger Ford Ranger XL/XLT/XLS/Raptor 23→
-    "TAPTT1003": 1, // Tapa Top Tiger VW Amarok D/D
-    "TAPTT1007": 1, // Tapa Top Tiger VW Amarok V6 Extreme
-    "TAPTT1004": 1, // Tapa Top Tiger Toyota Hilux 16+
-    "TAPTT1010": 1, // Tapa Top Tiger Chevrolet S10 DC
-    "TAPTT1008": 1, // Tapa Top Tiger Nissan Frontier 22→
-    "TAPTT1014": 1, // Tapa Top Tiger Fiat Titano 25→
-    "KTT12":   2,  // Tapa Tricover Ford Ranger 23+ (×2)
-    "KTT2":    1,  // Tapa Tricover Toyota Hilux
-    "KTP13":   1,  // Tapa Kraken Ford Ranger Limited 23+
-    // ── Factura 5728 (21/04) · Antirrobo + Lomos ───────────────────
-    "N.096.0": 1,  // Kit Antirrobo Ford Ranger 2012-2023
-    "L.120.0": 2,  // Kit Antirrobo Ford Ranger XL/XLS/XLT/V6 23-25 (×2)
-    "L.114.0": 1,  // Kit Antirrobo VW Amarok Comfortline/Highline
-    "C.078.0": 2,  // Kit Antirrobo VW Amarok Trendline/Comfortline (×2)
-    "B965C":   1,  // Lomo Lateral Chevrolet S10 2012+
-    "B995A":   1,  // Lomo Lateral Nissan Frontier 2022+
-    "B967B":   1,  // Lomo Portón Ford Ranger 2013+
-    "B960D":   1,  // Lomo Portón Toyota Hilux 16+
-    "B965B":   1,  // Lomo Portón Chevrolet S10 2012+
-    "B995B":   1,  // Lomo Portón Nissan Frontier 2022+
-    // ── Cotización 36202 (21/04) · Lonas + Cobertores ──────────────
-    "179FF":   1,  // Lona Flashcover Ford Ranger DC 2013+ Limited
-    "650FF":   1,  // Lona Flashcover Ford Ranger Limited 2023+
-    "646FF":   1,  // Lona Flashcover Ford Ranger 2023+
-    "203FF":   1,  // Lona Flashcover VW Amarok V6 Extreme
-    "194FF":   1,  // Lona Flashcover Toyota Hilux DC 2016+
-    "174FF":   1,  // Lona Flashcover Chevrolet S10 DC 2012+
-    "634FF":   1,  // Lona Flashcover Nissan Frontier 2022+
-    "637FF":   1,  // Lona Flashcover Fiat Titano 2025+
-    "334N":    1,  // Cobertor Proform Ford Ranger DC B/P 2023+
-    "501":     1,  // Cobertor Proform VW Amarok DC B/P
-    "120N":    1,  // Cobertor Proform Toyota Hilux DC B/P 2016+
-    "211N":    1,  // Cobertor Proform Nissan Frontier DC B/P 2022+
-    // ── Cotización 36203 (21/04) · Estribos + Soportes ─────────────
-    "EBWL001": 1,  // Estribos Blacktrend Wild Chevrolet Silverado
-    "EOPN000": 1,  // Estribos Optimus Negro
-    "ESGN000": 1,  // Estribos Strong Negro
-    "EIMN000-N": 1,// Estribos Impactus Negro
-    "SEA054":  1,  // Soporte VW Amarok 10→
-    "SEA058":  1,  // Soporte Toyota Hilux 16→
-    "SEA057":  1,  // Soporte Ford Ranger DC 23→
-    "SEA059":  1,  // Soporte Nissan Frontier/Alaskan
-    "SEA050":  1,  // Soporte Hilux DC 05-15
-    "SEA051":  1,  // Soporte Optimus Ford Ranger 00-11
-    "SEA063":  1,  // Soporte Fiat Titano CD 25→
-    "SEA056":  1,  // Soporte Ford Ranger DC 12-22
-    "SEA154":  1,  // Soporte Blacktrend VW Amarok 10→
-    "SEA158":  1,  // Soporte Blacktrend Toyota Hilux DC 16→
-    "SEA155":  1,  // Soporte Blacktrend Chevrolet S10 DC 12→
-    "SEA157":  1,  // Soporte Blacktrend Ford Ranger CD 23→
-    "SEA161":  1,  // Soporte Blacktrend RAM Rampage 24→
-    "SEA163":  1,  // Soporte Blacktrend Fiat Titano CD 25→
-    "SEA160":  1,  // Soporte Blacktrend Fiat Toro CD 16→
-    "SEA162":  1,  // Soporte Blacktrend Silverado CD 25→
-    // ── Cotización 36204 (21/04) · Tapas Kraken ────────────────────
-    "KTP12":   2,  // Tapa Kraken Ford Ranger 2023+ (×2)
-    "KTP1":    1,  // Tapa Kraken VW Amarok DC
-    "KTP7":    1,  // Tapa Kraken VW Amarok V6 Extreme
-    "KTP2":    1,  // Tapa Kraken Toyota Hilux
-    "KTP11":   1,  // Tapa Kraken Nissan Frontier 2022+
-    "KTP17":   1,  // Tapa Kraken Fiat Toro
-    "KTP15":   1,  // Tapa Kraken Dodge RAM Rampage
-    // ── Cotización 36205 (21/04) · Antirrobo + Lomos ───────────────
-    "L.116.0": 2,  // Kit Antirrobo Toyota Hilux SR/SRV/SRX/GR4 (×2)
-    "N.118.0": 1,  // Kit Antirrobo Chevrolet S10 LS/LT/LTZ
-    "N.101.0": 1,  // Kit Antirrobo Nissan Frontier
-    "N.086.0": 1,  // Kit Antirrobo Fiat Titano
-    "N.150.0": 1,  // Kit Antirrobo Ford F-150 Raptor
-    "N.111.0": 1,  // Kit Antirrobo RAM 1500 2025+
-    "B962C":   1,  // Lomo Lateral VW Amarok
-    "B960C":   1,  // Lomo Lateral Toyota Hilux 2016+
-  };
-
-  // Persistencia stock en localStorage
-  useEffect(() => {
-    try {
-      const s = localStorage.getItem("stock_v1");
-      const yaImportado = localStorage.getItem("stock_import_20260421");
-      const stockActual = s ? JSON.parse(s) : {};
-
-      if (!yaImportado) {
-        // Primera vez: sumamos el stock de las facturas/cotizaciones de abril 2026
-        const merged = { ...stockActual };
-        Object.entries(STOCK_COMPRAS_ABR2026).forEach(([id, qty]) => {
-          const curr = merged[id] || { royriff: 0, deposito: 0 };
-          merged[id] = { ...curr, deposito: curr.deposito + qty };
-        });
-        setStock(merged);
-        localStorage.setItem("stock_v1", JSON.stringify(merged));
-        localStorage.setItem("stock_import_20260421", "1");
-      } else {
-        setStock(stockActual);
-      }
-    } catch(e) {}
+  // Stock por ubicación (Royriff / Depósito): vive en Supabase
+  // (productos.stock_royriff / stock_deposito), compartido entre todos los
+  // dispositivos -- ver migrar_stock_a_supabase_por_ubicacion.sql. Antes
+  // vivía solo en localStorage (no compartido, no bajaba al vender).
+  const cargarStock = useCallback(async () => {
+    const { data, error } = await supabase.from("productos").select("sku,stock_royriff,stock_deposito");
+    if (error) { console.error("Error cargando stock:", error); return; }
+    setStock(Object.fromEntries((data || []).map(p => [p.sku, {
+      royriff: p.stock_royriff || 0, deposito: p.stock_deposito || 0,
+    }])));
   }, []);
-  const saveStock = useCallback((next) => {
-    setStock(next);
-    try { localStorage.setItem("stock_v1", JSON.stringify(next)); } catch(e){}
-  }, []);
+  useEffect(() => { cargarStock(); }, [cargarStock]);
 
   // ── LINKS INDIVIDUALES POR PRODUCTO ─────────────────────────────
   // Al abrir/cerrar modal: actualizar URL
@@ -927,9 +809,16 @@ Sin texto adicional, sin markdown, solo el JSON.`;
   }, []);
 
   const getStk = (id) => stock[id] || { royriff:0, deposito:0 };
-  const updStk = (id, loc, val) => {
-    const next = { ...stock, [id]: { ...getStk(id), [loc]: Math.max(0, parseInt(val)||0) } };
-    saveStock(next);
+  const updStk = async (id, loc, val) => {
+    const nuevoValor = Math.max(parseInt(val) || 0, 0);
+    const actual = getStk(id);
+    const delta = nuevoValor - (actual[loc] || 0);
+    if (delta === 0) return;
+    setStock(prev => ({ ...prev, [id]: { ...getStk(id), [loc]: nuevoValor } })); // optimista
+    const { error } = await supabase.rpc("registrar_movimiento_stock", {
+      p_sku: id, p_delta: delta, p_tipo: "ajuste", p_ubicacion: loc,
+    });
+    if (error) { console.error("No se pudo actualizar el stock:", error); await cargarStock(); }
   };
   const totalStk = (id) => { const s=getStk(id); return s.royriff + s.deposito; };
 
@@ -1408,6 +1297,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
           stockSel={stockSel} setStockSel={setStockSel}
           setStockBusq={setStockBusq} setStockResultados={setStockResultados}
           stockTipo={stockTipo} setStockTipo={setStockTipo}
+          stockUbicacion={stockUbicacion} setStockUbicacion={setStockUbicacion}
           stockDelta={stockDelta} setStockDelta={setStockDelta}
           stockNota={stockNota} setStockNota={setStockNota}
           registrarMovimientoStock={registrarMovimientoStock}

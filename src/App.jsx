@@ -36,12 +36,25 @@ export default function ListaPrecios() {
   // arranca de costo_base (el costo real, actualizado corriendo
   // pricing_todo.py). Los productos que todavía no tienen costo_base en
   // Supabase siguen usando listaVenta como respaldo (ver getPrecios).
-  const [costoBaseMap, setCostoBaseMap] = useState({}); // sku -> costo_base
+  //
+  // OJO: costo_base NO es el costo puro del proveedor -- ya le tiene
+  // sumado un costo de envío pensado para Mercado Libre (ej. $80.000 para
+  // tapas) más un costo operativo fijo ($2.500). Para el precio LOCAL hay
+  // que restar esos dos antes de aplicar markup + el flete local de
+  // $15.000 (si no, el envío de ML queda contado dos veces).
+  const COSTO_OPERATIVO = 2500;
+  const [costoBaseMap, setCostoBaseMap] = useState({}); // sku -> {costo_base, categoria}
+  const [envioMlMap, setEnvioMlMap]     = useState({}); // categoria -> costo_envio (de Mercado Libre)
   useEffect(() => {
-    supabase.from("productos").select("sku,costo_base").not("costo_base", "is", null)
+    supabase.from("productos").select("sku,costo_base,categoria").not("costo_base", "is", null)
       .then(({ data, error }) => {
         if (error) { console.error("No se pudo traer costo_base de Supabase:", error); return; }
-        setCostoBaseMap(Object.fromEntries((data || []).map(p => [p.sku, p.costo_base])));
+        setCostoBaseMap(Object.fromEntries((data || []).map(p => [p.sku, { costoBase: p.costo_base, categoria: p.categoria }])));
+      });
+    supabase.from("configuracion_precios").select("categoria,costo_envio")
+      .then(({ data, error }) => {
+        if (error) { console.error("No se pudo traer costo_envio de Supabase:", error); return; }
+        setEnvioMlMap(Object.fromEntries((data || []).map(c => [c.categoria, Number(c.costo_envio) || 0])));
       });
   }, []);
 
@@ -1110,16 +1123,19 @@ Sin texto adicional, sin markdown, solo el JSON.`;
     return excluido ? 0 : cfg.deduccion;
   };
 
-  // Costo de partida para el cálculo de precio: costo_base real (Supabase,
-  // se actualiza corriendo pricing_todo.py) menos el kit si corresponde.
-  // Si ese sku todavía no tiene costo_base cargado, usa el listaVenta
-  // viejo del catálogo como respaldo (comportamiento de siempre).
+  // Costo de partida para el cálculo de precio: costo_base real (Supabase)
+  // menos el envío de ML y el costo operativo (que no aplican a una venta
+  // local) y menos el kit si corresponde. Si ese sku todavía no tiene
+  // costo_base cargado, usa el listaVenta viejo del catálogo como
+  // respaldo (comportamiento de siempre).
   const costoParaCalcular = (p) => {
-    const costoBase = costoBaseMap[p.id];
-    if (costoBase == null) {
+    const entry = costoBaseMap[p.id];
+    if (entry == null) {
       return { lista: p.listaVenta, desc: getDesc(p), iva: getCfg(p.proveedor,p.familia).iva };
     }
-    const costoAjustado = Math.max(costoBase - kitDeduccionPara(p), 0);
+    const envioMl = envioMlMap[entry.categoria] ?? envioMlMap["default"] ?? 20000;
+    const precioRealPagar = Math.max(entry.costoBase - envioMl - COSTO_OPERATIVO, 0);
+    const costoAjustado = Math.max(precioRealPagar - kitDeduccionPara(p), 0);
     return { lista: costoAjustado, desc: 0, iva: 0 };
   };
 

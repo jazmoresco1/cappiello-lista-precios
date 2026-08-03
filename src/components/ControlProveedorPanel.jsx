@@ -5,6 +5,10 @@ import { supabase } from "../supabaseClient.js";
 
 const UMBRAL_ALERTA_PCT = 1;
 const COSTO_OPERATIVO_DEFAULT = 2500;
+// Factor de IVA que el sistema asume para Steel Tiger al armar costo_base
+// (ver pricing_common.py) -- se usa para volver costo_base a "neto sin IVA"
+// y comparar todo neto vs neto, no con IVA incluido.
+const FACTOR_IVA_SISTEMA = 1.105;
 
 function esDevolucion(o) {
   const comp = String(o["Comprobante"] ?? "");
@@ -31,6 +35,29 @@ function configParaCategoria(configs, categoria) {
     configs.find(c => c.categoria === "default") ||
     { costo_envio: 20000 }
   );
+}
+
+// Para "enganche" y "estribo", costo_base viene con el costo promedio del
+// kit (acople/soporte) sumado adentro -- hay que restarlo para comparar
+// el producto individual, no el combo (misma lógica que usa la app para
+// el precio local y comparar_costos_proveedor.py).
+const SOPORTES_ESTRIBOS = new Set([
+  "SEA157", "SEA161", "SEA155", "SEA160", "SEA156", "SEA159",
+  "SEA150", "SEA158", "SEA154", "SEA056", "SEA057", "SEA059",
+  "SEA050", "SEA058", "SEA054", "SEA055", "SEA053", "SEA051", "SEA066",
+]);
+
+function deduccionKit(sku, categoria) {
+  const s = sku.toUpperCase();
+  if (categoria === "enganche") {
+    if (s.startsWith("SE")) return 65238;
+    if (s.startsWith("E") && !s.startsWith("EAC")) return 35095;
+    return 0;
+  }
+  if (categoria === "estribo") {
+    return SOPORTES_ESTRIBOS.has(s) ? 0 : 93954;
+  }
+  return 0;
 }
 
 async function parseArchivoProveedor(file) {
@@ -64,6 +91,7 @@ async function parseArchivoProveedor(file) {
       comprobante: o["Comprobante"],
       cantidad: Number(o["Cantidad"]),
       precioNeto: Number(o["Prec. Neto c/Iva"]),
+      ivaPct: Number(o["IVA %"]) || 0,
       total: Number(o["Total"]),
       _fecha: fecha,
     };
@@ -147,7 +175,10 @@ export default function ControlProveedorPanel({ onClose }) {
     for (const sku of Object.keys(masReciente)) {
       const o = masReciente[sku];
       const p = productosMap[sku];
-      const real = o.precioNeto || 0;
+      // Precio con descuentos ya aplicados, pero SIN IVA -- usa el % de IVA
+      // real de esa factura (0% en Cotizacion, 21%/10.5% en eFactura según
+      // corresponda), no un valor fijo.
+      const real = o.ivaPct ? (o.precioNeto || 0) / (1 + o.ivaPct / 100) : (o.precioNeto || 0);
 
       if (!p) {
         sinMatch.push({ sku, nombre: o.nombre, real, fecha: o._fecha, cantidadCompras: conteo[sku] });
@@ -156,7 +187,9 @@ export default function ControlProveedorPanel({ onClose }) {
 
       const cfg = configParaCategoria(configCategorias, p.categoria);
       const costoEnvio = Number(cfg.costo_envio) || 0;
-      const esperado = (p.costo_base || 0) - costoEnvio - costoOperativo;
+      const kit = deduccionKit(sku, p.categoria);
+      const esperadoConIva = (p.costo_base || 0) - costoEnvio - costoOperativo - kit;
+      const esperado = esperadoConIva / FACTOR_IVA_SISTEMA; // vuelve a "neto sin IVA"
       const diferenciaPesos = real - esperado;
       const diferenciaPct = esperado ? (diferenciaPesos / esperado) * 100 : null;
 
@@ -213,7 +246,7 @@ export default function ControlProveedorPanel({ onClose }) {
                   {comparacion.filas.length} SKU comparados · {alertas.length} con diferencia mayor a {UMBRAL_ALERTA_PCT}% · {comparacion.sinMatch.length} sin match en Supabase
                 </div>
 
-                <div className="img-section-title" style={{marginTop:0}}>Diferencias de precio</div>
+                <div className="img-section-title" style={{marginTop:0}}>Diferencias de precio (neto, sin IVA)</div>
                 {comparacion.filas.length === 0 ? (
                   <div className="cot-empty" style={{padding:10,fontSize:12,marginBottom:14}}>Sin compras en el rango de fechas elegido.</div>
                 ) : (

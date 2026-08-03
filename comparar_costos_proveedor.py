@@ -55,6 +55,10 @@ import requests
 
 COSTO_OPERATIVO_DEFAULT = 2500.0
 UMBRAL_ALERTA_PCT = 1.0
+# Factor de IVA que el sistema asume para Steel Tiger al armar costo_base
+# (ver pricing_common.py) -- se usa para volver costo_base a "neto sin IVA"
+# y comparar todo neto vs neto, no con IVA incluido.
+FACTOR_IVA_SISTEMA = 1.105
 
 # Para "enganche" y "estribo", costo_base viene con el costo promedio del
 # kit (acople/soporte) sumado adentro -- hay que restarlo para comparar el
@@ -139,7 +143,7 @@ def main():
     ultimo = (
         df_fact.sort_values("Fecha")
         .groupby("Producto")
-        .last()[["Nombre Producto", "Prec. Neto c/Iva", "Fecha"]]
+        .last()[["Nombre Producto", "Prec. Neto c/Iva", "IVA %", "Fecha"]]
     )
     cantidad_facturas = df_fact.groupby("Producto").size()
 
@@ -165,7 +169,13 @@ def main():
     for sku, fila in ultimo.iterrows():
         sku = str(sku)
         p = productos.get(sku)
+        # Precio con descuentos ya aplicados, pero SIN IVA -- usa el % de
+        # IVA real de esa factura (0% en Cotizacion, 21%/10.5% en eFactura
+        # según corresponda), no un valor fijo.
+        iva_pct = float(fila["IVA %"]) if pd.notna(fila["IVA %"]) else 0
         real = float(fila["Prec. Neto c/Iva"])
+        if iva_pct:
+            real = real / (1 + iva_pct / 100)
 
         if not p:
             filas_sin_match.append({
@@ -183,7 +193,8 @@ def main():
         costo_base = float(p.get("costo_base") or 0)
         kit = deduccion_kit(sku, categoria)
 
-        esperado = costo_base - costo_envio - costo_operativo - kit
+        esperado_con_iva = costo_base - costo_envio - costo_operativo - kit
+        esperado = esperado_con_iva / FACTOR_IVA_SISTEMA  # vuelve a "neto sin IVA"
         diferencia_pesos = real - esperado
         diferencia_pct = round(diferencia_pesos / esperado * 100, 1) if esperado else None
 

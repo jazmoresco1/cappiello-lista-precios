@@ -255,7 +255,7 @@ def calcular_pricing_dataframe(df: pd.DataFrame, proveedor: str,
             "precio_local": precio_local,
             "proveedor": proveedor,
             "categoria": categoria,
-            "origen": "proveedor_local",
+            "origen": "cappiello",
             "archivo_origen": archivo,
         })
 
@@ -1237,7 +1237,7 @@ def subir_a_supabase_desde_completo(df_todo: pd.DataFrame, supabase_url: str,
         "precio_local": df_todo["precio_local"],
         "proveedor": df_todo["proveedor"],
         "categoria": df_todo["categoria"],
-        "origen": "proveedor_local",
+        "origen": "cappiello",
         "archivo_origen": df_todo["archivo_origen"],
         # Resto de las cuotas SIN promo (antes solo quedaban en el Excel;
         # hacen falta en Supabase para que n8n pueda leer el precio de

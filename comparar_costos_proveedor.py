@@ -158,7 +158,8 @@ def main():
     resp = requests.get(
         f"{supabase_url}/rest/v1/productos",
         headers={"apikey": supabase_key, "Authorization": f"Bearer {supabase_key}"},
-        params={"select": "sku,costo_base,categoria,nombre", "sku": f"in.({','.join(skus)})"},
+        params={"select": "sku,costo_base,precio_neto_proveedor,costo_kit_incluido,categoria,nombre",
+                "sku": f"in.({','.join(skus)})"},
         timeout=30,
     )
     resp.raise_for_status()
@@ -188,13 +189,25 @@ def main():
             continue
 
         categoria = p.get("categoria")
-        cfg = config_para_categoria(configs_categorias, categoria)
-        costo_envio = float(cfg.get("costo_envio", 0) or 0)
-        costo_base = float(p.get("costo_base") or 0)
-        kit = deduccion_kit(sku, categoria)
+        precio_neto_directo = p.get("precio_neto_proveedor")
 
-        esperado_con_iva = costo_base - costo_envio - costo_operativo - kit
-        esperado = esperado_con_iva / FACTOR_IVA_SISTEMA  # vuelve a "neto sin IVA"
+        if precio_neto_directo is not None:
+            # Método simple: la columna ya tiene el precio neto puro del
+            # proveedor (sin kit, sin IVA, sin envío/operativo) -- se
+            # compara directo, sin reconstruir nada.
+            esperado = float(precio_neto_directo)
+            metodo = "directo"
+        else:
+            # Respaldo (mientras no se re-corra pricing_todo.py para este
+            # producto): reconstruye el neto restando de costo_base.
+            cfg = config_para_categoria(configs_categorias, categoria)
+            costo_envio = float(cfg.get("costo_envio", 0) or 0)
+            costo_base = float(p.get("costo_base") or 0)
+            kit = float(p.get("costo_kit_incluido") or 0) or deduccion_kit(sku, categoria)
+            esperado_con_iva = costo_base - costo_envio - costo_operativo - kit
+            esperado = esperado_con_iva / FACTOR_IVA_SISTEMA
+            metodo = "reconstruido"
+
         diferencia_pesos = real - esperado
         diferencia_pct = round(diferencia_pesos / esperado * 100, 1) if esperado else None
 
@@ -202,8 +215,8 @@ def main():
             "sku": sku,
             "nombre": p.get("nombre") or fila["Nombre Producto"],
             "categoria": categoria,
-            "precio_esperado_segun_costo_base": round(esperado),
-            "kit_descontado": round(kit) if kit else "",
+            "precio_esperado_neto": round(esperado),
+            "metodo": metodo,
             "precio_real_ultima_factura": round(real),
             "diferencia_$": round(diferencia_pesos) if diferencia_pct is not None else None,
             "diferencia_%": diferencia_pct,

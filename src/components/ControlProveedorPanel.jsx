@@ -139,7 +139,7 @@ export default function ControlProveedorPanel({ onClose }) {
 
       const skus = [...new Set(c.map(x => x.sku))];
       const [{ data: productos, error: errProd }, { data: cfgs, error: errCfg }, { data: cuotas, error: errCuo }] = await Promise.all([
-        supabase.from("productos").select("sku,costo_base,categoria,nombre").in("sku", skus),
+        supabase.from("productos").select("sku,costo_base,precio_neto_proveedor,costo_kit_incluido,categoria,nombre").in("sku", skus),
         supabase.from("configuracion_precios").select("categoria,costo_envio"),
         supabase.from("config_cuotas_ml").select("clave,valor"),
       ]);
@@ -185,17 +185,27 @@ export default function ControlProveedorPanel({ onClose }) {
         continue;
       }
 
-      const cfg = configParaCategoria(configCategorias, p.categoria);
-      const costoEnvio = Number(cfg.costo_envio) || 0;
-      const kit = deduccionKit(sku, p.categoria);
-      const esperadoConIva = (p.costo_base || 0) - costoEnvio - costoOperativo - kit;
-      const esperado = esperadoConIva / FACTOR_IVA_SISTEMA; // vuelve a "neto sin IVA"
+      // Si ya está la columna directa (pricing_todo.py corrido con el
+      // fix), se compara sin reconstruir nada. Si no, respaldo restando
+      // de costo_base como antes.
+      let esperado, metodo;
+      if (p.precio_neto_proveedor != null) {
+        esperado = Number(p.precio_neto_proveedor);
+        metodo = "directo";
+      } else {
+        const cfg = configParaCategoria(configCategorias, p.categoria);
+        const costoEnvio = Number(cfg.costo_envio) || 0;
+        const kit = Number(p.costo_kit_incluido) || deduccionKit(sku, p.categoria);
+        const esperadoConIva = (p.costo_base || 0) - costoEnvio - costoOperativo - kit;
+        esperado = esperadoConIva / FACTOR_IVA_SISTEMA;
+        metodo = "reconstruido";
+      }
       const diferenciaPesos = real - esperado;
       const diferenciaPct = esperado ? (diferenciaPesos / esperado) * 100 : null;
 
       filas.push({
         sku, nombre: p.nombre || o.nombre, categoria: p.categoria,
-        esperado, real, diferenciaPesos, diferenciaPct,
+        esperado, real, diferenciaPesos, diferenciaPct, metodo,
         fecha: o._fecha, cantidadCompras: conteo[sku],
         alerta: diferenciaPct != null && Math.abs(diferenciaPct) > UMBRAL_ALERTA_PCT,
       });
@@ -259,6 +269,7 @@ export default function ControlProveedorPanel({ onClose }) {
                           <div className="img-prod-count">
                             {f.categoria} · esperado {ARS(f.esperado)} · real {ARS(f.real)}
                             {" · "}{f.fecha?.toLocaleDateString("es-AR")}
+                            {f.metodo === "reconstruido" && <span title="Todavía no se re-corrió pricing_todo.py para este producto -- el esperado se reconstruyó restando de costo_base"> · ⚙️ reconstruido</span>}
                           </div>
                         </div>
                         <div style={{fontWeight:700,whiteSpace:"nowrap",color: f.alerta ? "#e55" : "var(--ac)"}}>

@@ -333,13 +333,13 @@ export default function ListaPrecios() {
 
     const [{ data: ml, error: errMl }, { data: fis, error: errFis }] = await Promise.all([
       supabase.from("ventas")
-        .select("id,fecha,nombre,cantidad,monto_total_venta,comision_ml,costo_envio,costo_unitario_proveedor,ganancia_real,editado_manual,ajuste_monto,ajuste_descripcion")
+        .select("id,fecha,sku,nombre,cantidad,monto_total_venta,monto_neto_recibido,comision_ml,costo_envio,costo_unitario_proveedor,ganancia_real,editado_manual,ajuste_monto,ajuste_descripcion")
         .eq("canal", "mercado_libre")
         .gte("fecha", desdeISO)
         .order("fecha", { ascending: false })
         .limit(300),
       supabase.from("ventas")
-        .select("fecha,cliente,venta_items(id,nombre,cantidad,monto_total,comision_ml,costo_envio,costo_unitario,ganancia_real,editado_manual,ajuste_monto,ajuste_descripcion)")
+        .select("fecha,cliente,venta_items(id,nombre,cantidad,monto_total,monto_neto_recibido,comision_ml,costo_envio,costo_unitario,ganancia_real,editado_manual,ajuste_monto,ajuste_descripcion)")
         .eq("canal", "cotizador")
         .gte("fecha", desdeISO)
         .order("fecha", { ascending: false })
@@ -348,18 +348,41 @@ export default function ListaPrecios() {
     if (errMl) console.error("Error cargando ventas ML:", errMl);
     if (errFis) console.error("Error cargando ventas físicas:", errFis);
 
-    const filasMl = (ml || []).map(v => ({
-      id: v.id, tabla: "ventas",
-      fecha: v.fecha, canal: "Mercado Libre", nombre: v.nombre,
-      cantidad: v.cantidad, monto: v.monto_total_venta, ganancia: v.ganancia_real,
-      comisionMl: v.comision_ml, costoEnvio: v.costo_envio, costoUnitario: v.costo_unitario_proveedor,
-      editadoManual: v.editado_manual, ajusteMonto: v.ajuste_monto, ajusteDescripcion: v.ajuste_descripcion,
-    }));
+    // Para cada venta calculamos dos referencias que la pantalla usa al editar:
+    //  - envioSugerido: el flete que tenemos configurado para esa categoría
+    //    (configuracion_precios), que es el que se precarga en el formulario.
+    //  - fleteReal: lo que Mercado Libre efectivamente descontó en la
+    //    liquidación (venta - comisión - neto recibido), para que se vea si el
+    //    envío salió más caro o más barato que el configurado.
+    const filasMl = (ml || []).map(v => {
+      const prod = costoBaseMap[v.sku] || {};
+      const categoria = prod.categoria || null;
+      const envioSugerido = envioMlMap[categoria] ?? envioMlMap["default"] ?? 20000;
+      const fleteReal = (v.monto_total_venta != null && v.comision_ml != null && v.monto_neto_recibido != null)
+        ? Math.round(v.monto_total_venta - v.comision_ml - v.monto_neto_recibido)
+        : null;
+      // costo_base de la tabla productos YA trae el flete sumado adentro. Como
+      // acá el flete pasa a ser un campo propio, el costo de proveedor que se
+      // ofrece es el del producto solo, sin flete -- si no, se restaría dos veces.
+      const costoSinEnvio = prod.costoBase != null
+        ? Math.round(prod.costoBase - envioSugerido)
+        : null;
+      return {
+        id: v.id, tabla: "ventas", sku: v.sku, categoria,
+        fecha: v.fecha, canal: "Mercado Libre", nombre: v.nombre,
+        cantidad: v.cantidad, monto: v.monto_total_venta, ganancia: v.ganancia_real,
+        recibido: v.monto_neto_recibido,
+        comisionMl: v.comision_ml, costoEnvio: v.costo_envio, costoUnitario: v.costo_unitario_proveedor,
+        envioSugerido, fleteReal, costoSinEnvio,
+        editadoManual: v.editado_manual, ajusteMonto: v.ajuste_monto, ajusteDescripcion: v.ajuste_descripcion,
+      };
+    });
     const filasFis = (fis || []).flatMap(v =>
       (v.venta_items || []).map(it => ({
         id: it.id, tabla: "venta_items",
         fecha: v.fecha, canal: "Local", nombre: it.nombre,
         cantidad: it.cantidad, monto: it.monto_total, ganancia: it.ganancia_real,
+        recibido: it.monto_neto_recibido,
         comisionMl: it.comision_ml, costoEnvio: it.costo_envio, costoUnitario: it.costo_unitario,
         editadoManual: it.editado_manual, ajusteMonto: it.ajuste_monto, ajusteDescripcion: it.ajuste_descripcion,
       }))
@@ -369,12 +392,17 @@ export default function ListaPrecios() {
     const totalVentas   = todas.reduce((s, f) => s + (Number(f.monto) || 0), 0);
     const conGanancia   = todas.filter(f => f.ganancia !== null && f.ganancia !== undefined);
     const totalGanancia = conGanancia.reduce((s, f) => s + Number(f.ganancia), 0);
+    // Lo que realmente entró a la cuenta (venta - comisión - envío). Se suma
+    // solo lo que tiene el dato cargado, para no mezclar filas sin liquidar.
+    const conRecibido   = todas.filter(f => f.recibido !== null && f.recibido !== undefined);
+    const totalRecibido = conRecibido.reduce((s, f) => s + Number(f.recibido), 0);
 
     setVentasLista(todas.slice(0, 80));
     setVentasResumen({
-      totalVentas, totalGanancia,
+      totalVentas, totalGanancia, totalRecibido,
       cantidad: todas.length,
       sinGanancia: todas.length - conGanancia.length,
+      sinRecibido: todas.length - conRecibido.length,
     });
     setVentasLoading(false);
   };

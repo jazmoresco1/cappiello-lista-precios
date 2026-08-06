@@ -13,10 +13,18 @@ export default function VentasPanel({
   const [formAjuste, setFormAjuste] = useState("");
   const [formAjusteDesc, setFormAjusteDesc] = useState("");
 
+  // Al abrir la edición precargamos el flete que tenemos configurado para la
+  // categoría en vez de dejar 0. Si la venta ya tiene un flete cargado (o fue
+  // editada a mano antes) se respeta ese valor.
   const empezarEdicion = (v) => {
     setEditandoVentaId(`${v.tabla}-${v.id}`);
-    setFormEnvio(v.costoEnvio ?? 0);
-    setFormCosto(v.costoUnitario ?? 0);
+    const envioPrecargado = (v.costoEnvio != null && Number(v.costoEnvio) !== 0)
+      ? v.costoEnvio
+      : (v.envioSugerido ?? 0);
+    setFormEnvio(envioPrecargado);
+    // Si ya fue editada a mano respetamos lo que quedó guardado. Si no, se
+    // ofrece el costo del producto SIN flete (el flete va en su propio campo).
+    setFormCosto(v.editadoManual ? (v.costoUnitario ?? 0) : (v.costoSinEnvio ?? v.costoUnitario ?? 0));
     setFormAjuste(v.ajusteMonto ?? 0);
     setFormAjusteDesc(v.ajusteDescripcion ?? "");
   };
@@ -52,10 +60,20 @@ export default function VentasPanel({
           </div>
         ) : (
           <>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:6}}>
               <div style={{background:"var(--sf2)",border:"1px solid var(--bd)",borderRadius:8,padding:"10px 12px"}}>
                 <div style={{fontSize:11,color:"var(--tx2)"}}>Total vendido</div>
                 <div style={{fontSize:18,fontWeight:700}}>{ARS(ventasResumen.totalVentas)}</div>
+              </div>
+              <div style={{background:"var(--sf2)",border:"1px solid var(--bd)",borderRadius:8,padding:"10px 12px"}}>
+                <div style={{fontSize:11,color:"var(--tx2)"}}>Recibí de verdad</div>
+                <div style={{fontSize:18,fontWeight:700}}>{ARS(ventasResumen.totalRecibido)}</div>
+                {ventasResumen.totalVentas>0 && (
+                  <div style={{fontSize:10,color:"var(--tx2)",marginTop:2}}>
+                    ML se llevó {ARS(ventasResumen.totalVentas - ventasResumen.totalRecibido)}
+                    {" "}({Math.round((1 - ventasResumen.totalRecibido/ventasResumen.totalVentas)*100)}%)
+                  </div>
+                )}
               </div>
               <div style={{background:"var(--sf2)",border:"1px solid var(--bd)",borderRadius:8,padding:"10px 12px"}}>
                 <div style={{fontSize:11,color:"var(--tx2)"}}>Ganancia real</div>
@@ -65,6 +83,7 @@ export default function VentasPanel({
             <div style={{fontSize:11,color:"var(--tx2)",marginBottom:14}}>
               {ventasResumen.cantidad} {ventasResumen.cantidad===1?"venta":"ventas"}
               {ventasResumen.sinGanancia>0 && ` · ${ventasResumen.sinGanancia} sin costo cargado (ganancia no calculada)`}
+              {ventasResumen.sinRecibido>0 && ` · ${ventasResumen.sinRecibido} sin liquidación de ML todavía`}
             </div>
 
             <div className="img-prod-list">
@@ -81,7 +100,11 @@ export default function VentasPanel({
                         {v.editadoManual && <span title="Costo editado a mano — no se pisa al sincronizar Mercado Libre" style={{marginLeft:6}}>🔒</span>}
                       </div>
                       <div className="img-prod-count">
-                        {new Date(v.fecha).toLocaleDateString("es-AR")} · {v.canal} · x{v.cantidad} · {ARS(v.monto||0)}
+                        {new Date(v.fecha).toLocaleDateString("es-AR")} · {v.canal} · x{v.cantidad}
+                        {" · "}vendí {ARS(v.monto||0)}
+                        {v.recibido!=null
+                          ? <> · <b>recibí {ARS(v.recibido)}</b></>
+                          : <> · <span title="Mercado Libre todavía no liquidó esta venta">recibí —</span></>}
                         {v.ganancia!=null && <> · ganancia {ARS(v.ganancia)}</>}
                         {!!v.ajusteMonto && <> · ajuste {v.ajusteMonto>0?"+":""}{ARS(v.ajusteMonto)}{v.ajusteDescripcion && ` (${v.ajusteDescripcion})`}</>}
                       </div>
@@ -108,11 +131,25 @@ export default function VentasPanel({
                         Costo de envío
                         <input type="number" value={formEnvio} onChange={e=>setFormEnvio(e.target.value)}
                           style={{width:110}} />
+                        <span style={{fontSize:10,lineHeight:1.4}}>
+                          {v.envioSugerido!=null && <>configurado: {ARS(v.envioSugerido)}<br/></>}
+                          {v.fleteReal!=null && (
+                            <>ML cobró: <b>{ARS(v.fleteReal)}</b>{" "}
+                              <button type="button" className="cot-btn-clear"
+                                style={{padding:"0 5px",fontSize:10,lineHeight:1.6}}
+                                onClick={()=>setFormEnvio(v.fleteReal)}>usar</button>
+                            </>
+                          )}
+                        </span>
                       </label>
                       <label style={{display:"flex",flexDirection:"column",fontSize:11,color:"var(--tx2)",gap:4}}>
-                        Costo de proveedor (unitario)
+                        Costo de proveedor (unitario, sin flete)
                         <input type="number" value={formCosto} onChange={e=>setFormCosto(e.target.value)}
+                          title="Solo el producto. El flete va en el campo de al lado, no acá."
                           style={{width:110}} />
+                        <span style={{fontSize:10,lineHeight:1.4}}>
+                          {v.costoSinEnvio!=null && <>lista: {ARS(v.costoSinEnvio)}</>}
+                        </span>
                       </label>
                       <label style={{display:"flex",flexDirection:"column",fontSize:11,color:"var(--tx2)",gap:4}}>
                         Ajuste (+/-)

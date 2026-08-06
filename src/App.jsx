@@ -432,15 +432,22 @@ export default function ListaPrecios() {
     const ajusteMonto = Number(nuevoAjusteMonto) || 0;
     const ajusteDescripcion = (nuevoAjusteDescripcion || "").trim() || null;
     const costoTotalProveedor = costoUnitario * row.cantidad;
-    const montoNetoRecibido = row.monto - (row.comisionMl || 0) - costoEnvio;
-    const gananciaReal = montoNetoRecibido - costoTotalProveedor + ajusteMonto;
+    // El neto recibido es lo que Mercado Libre efectivamente deposito y NO se
+    // recalcula: es el unico numero de ML que importa. Lo que ML haya hecho
+    // con el envio de su lado no entra acá.
+    const montoNetoRecibido = row.recibido != null
+      ? Number(row.recibido)
+      : row.monto - (row.comisionMl || 0);
+    // El flete es nuestro costo presupuestado por familia (editable), y se
+    // resta aparte del costo del producto.
+    const costoEnvioTotal = costoEnvio * row.cantidad;
+    const gananciaReal = montoNetoRecibido - costoTotalProveedor - costoEnvioTotal + ajusteMonto;
 
     const cambios = row.tabla === "ventas"
       ? {
           costo_envio: costoEnvio,
           costo_unitario_proveedor: costoUnitario,
           costo_total_proveedor: costoTotalProveedor,
-          monto_neto_recibido: montoNetoRecibido,
           ganancia_real: gananciaReal,
           margen_pct: row.monto ? (gananciaReal / row.monto) * 100 : null,
           ajuste_monto: ajusteMonto,

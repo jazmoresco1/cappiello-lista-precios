@@ -132,12 +132,13 @@ export default function VentasPanel({
                         <input type="number" value={formEnvio} onChange={e=>setFormEnvio(e.target.value)}
                           style={{width:110}} />
                         <span style={{fontSize:10,lineHeight:1.4}}>
-                          {v.envioSugerido!=null && <>configurado: {ARS(v.envioSugerido)}<br/></>}
-                          {v.fleteReal!=null && (
-                            <>ML cobró: <b>{ARS(v.fleteReal)}</b>{" "}
-                              <button type="button" className="cot-btn-clear"
-                                style={{padding:"0 5px",fontSize:10,lineHeight:1.6}}
-                                onClick={()=>setFormEnvio(v.fleteReal)}>usar</button>
+                          {v.envioSugerido!=null && (
+                            <>configurado para {v.categoria || "esta familia"}: {ARS(v.envioSugerido)}{" "}
+                              {Number(formEnvio) !== Number(v.envioSugerido) && (
+                                <button type="button" className="cot-btn-clear"
+                                  style={{padding:"0 5px",fontSize:10,lineHeight:1.6}}
+                                  onClick={()=>setFormEnvio(v.envioSugerido)}>volver</button>
+                              )}
                             </>
                           )}
                         </span>

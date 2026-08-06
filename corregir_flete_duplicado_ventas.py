@@ -1,7 +1,40 @@
 # -*- coding: utf-8 -*-
 """
-corregir_flete_duplicado_ventas.py
-===================================
+corregir_flete_duplicado_ventas.py  --  NO USAR (reemplazado)
+==============================================================
+
+*** ESTE SCRIPT TIENE UN BUG Y NO DEBE CORRERSE. ***
+*** Usá `reparar_neto_recibido_ventas.py` en su lugar.        ***
+
+Calculaba el flete como `monto_total_venta - comision_ml - monto_neto_recibido`
+y, cuando eso daba <= 0, PISABA `monto_neto_recibido` con un valor
+reconstruido a partir del flete configurado.
+
+El error: ese numero negativo no era un flete mal calculado. En la
+liquidacion de Mercado Libre la linea "Envios" es POSITIVA cuando el envio
+lo paga el cliente (te lo acreditan), y ademas hay una linea de "Impuestos"
+(retenciones). Ejemplo real, venta del 5/8:
+
+    Precio del producto      1.221.176,25
+    Cargo por venta total     -331.062,78
+    Envios                      +54.450,00   <- lo pago el cliente
+    Impuestos                   -19.134,39   <- retenciones
+    -------------------------------------
+    Total recibido              925.429,08
+
+`venta - comision - neto` da -35.315,61: no es un flete, es
+(envios cobrados al cliente - retenciones) con el signo dado vuelta. El
+script lo descartaba, ponia 80.000 de flete y marcaba la venta como
+perdida de -30.886 cuando en realidad dejo +84.429.
+
+Corrio una vez y piso el neto de 7 ventas. `reparar_neto_recibido_ventas.py`
+las restauro y dejo el calculo bien planteado: el neto que deposita Mercado
+Libre es la verdad y no se reconstruye nunca.
+
+Se conserva solo como registro de que paso.
+
+--- documentacion original abajo ---
+
 Arregla el doble descuento del flete en las ventas ya cargadas en Supabase.
 
 EL PROBLEMA
@@ -58,6 +91,12 @@ def traer(url, key, tabla, select, extra=""):
 
 
 def main():
+    print(__doc__.split("--- documentacion original abajo ---")[0])
+    print("Abortado. Corré:  python reparar_neto_recibido_ventas.py")
+    sys.exit(1)
+
+
+def _main_original():
     aplicar = "--aplicar" in sys.argv
     cfg = load_supabase_config()
     url, key = cfg["SUPABASE_URL"], cfg["SUPABASE_KEY"]

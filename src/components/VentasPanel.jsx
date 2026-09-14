@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { ARS } from "../utils.js";
 
-const RANGOS = [{v:7,l:"7 días"},{v:30,l:"30 días"},{v:90,l:"90 días"},{v:0,l:"Todo"}];
+const RANGOS = [{v:7,l:"7 días"},{v:30,l:"30 días"},{v:90,l:"90 días"},{v:0,l:"Todo"},{v:"rango",l:"Fecha específica"}];
 
 export default function VentasPanel({
   ventasLoading, ventasResumen, ventasLista, onClose, onBorrar,
   ventasDias, setVentasDias,
+  ventasDesde, setVentasDesde, ventasHasta, setVentasHasta, onAplicarRango,
   editandoVentaId, setEditandoVentaId, editandoVentaGuardando, onGuardarEdicion,
 }) {
   const [formEnvio, setFormEnvio] = useState("");
@@ -40,7 +41,7 @@ export default function VentasPanel({
       </div>
 
       <div className="img-body">
-        <div style={{display:"flex",gap:6,marginBottom:14}}>
+        <div style={{display:"flex",gap:6,marginBottom: ventasDias==="rango" ? 8 : 14, flexWrap:"wrap"}}>
           {RANGOS.map(o => (
             <button key={o.v} className="cot-btn-clear" style={{flex:1,
               ...(ventasDias===o.v ? {borderColor:"var(--ac)",color:"var(--ac)"} : {})}}
@@ -49,6 +50,27 @@ export default function VentasPanel({
             </button>
           ))}
         </div>
+
+        {ventasDias==="rango" && (
+          <div style={{display:"flex",gap:8,alignItems:"flex-end",marginBottom:14,flexWrap:"wrap"}}>
+            <label style={{display:"flex",flexDirection:"column",fontSize:11,color:"var(--tx2)",gap:4}}>
+              Desde
+              <input type="date" value={ventasDesde} onChange={e=>setVentasDesde(e.target.value)}
+                style={{padding:"6px 8px"}} />
+            </label>
+            <label style={{display:"flex",flexDirection:"column",fontSize:11,color:"var(--tx2)",gap:4}}>
+              Hasta
+              <input type="date" value={ventasHasta} onChange={e=>setVentasHasta(e.target.value)}
+                style={{padding:"6px 8px"}} />
+            </label>
+            <button className="cot-btn-print" style={{flex:"none",padding:"8px 14px"}} onClick={onAplicarRango}>
+              Aplicar
+            </button>
+            {!ventasDesde && !ventasHasta && (
+              <span style={{fontSize:10,color:"var(--tx2)"}}>Sin fechas = todo el historial</span>
+            )}
+          </div>
+        )}
 
         {ventasLoading ? (
           <div className="cot-empty" style={{padding:12}}>Cargando…</div>

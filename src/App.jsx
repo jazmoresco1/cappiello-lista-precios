@@ -313,38 +313,54 @@ export default function ListaPrecios() {
   const [ventasLoading, setVentasLoading]     = useState(false);
   const [ventasResumen, setVentasResumen]     = useState(null);
   const [ventasLista, setVentasLista]         = useState([]);
-  const [ventasDias, setVentasDias]           = useState(30); // 7 | 30 | 90 | 0 (todo)
+  const [ventasDias, setVentasDias]           = useState(30); // 7 | 30 | 90 | 0 (todo) | "rango" (fecha especifica)
+  const [ventasDesde, setVentasDesde]         = useState(""); // yyyy-mm-dd, usado solo cuando ventasDias==="rango"
+  const [ventasHasta, setVentasHasta]         = useState(""); // yyyy-mm-dd
 
   const abrirVentas = () => {
     if (unlocked) { setVentasPanelOpen(true); cargarVentas(ventasDias); }
     else { setPinTarget("ventas"); setPinOpen(true); }
   };
 
+  // Los botones de rango (7/30/90/Todo) disparan la carga al toque. El modo
+  // "rango" (fecha específica) solo cambia la UI -- la carga se dispara
+  // aparte, con el botón "Aplicar", una vez que el usuario eligió las fechas.
   const cambiarVentasDias = (dias) => {
     setVentasDias(dias);
-    cargarVentas(dias);
+    if (dias !== "rango") cargarVentas(dias);
   };
 
-  const cargarVentas = async (dias = ventasDias) => {
-    setVentasLoading(true);
-    const desdeISO = dias > 0
-      ? (() => { const d = new Date(); d.setDate(d.getDate() - dias); return d.toISOString(); })()
-      : "2000-01-01T00:00:00Z";
+  const aplicarVentasRango = () => {
+    cargarVentas("rango", ventasDesde, ventasHasta);
+  };
 
-    const [{ data: ml, error: errMl }, { data: fis, error: errFis }] = await Promise.all([
-      supabase.from("ventas")
-        .select("id,fecha,sku,nombre,cantidad,monto_total_venta,monto_neto_recibido,comision_ml,costo_envio,costo_unitario_proveedor,ganancia_real,editado_manual,ajuste_monto,ajuste_descripcion")
-        .eq("canal", "mercado_libre")
-        .gte("fecha", desdeISO)
-        .order("fecha", { ascending: false })
-        .limit(300),
-      supabase.from("ventas")
-        .select("fecha,cliente,venta_items(id,nombre,cantidad,monto_total,monto_neto_recibido,comision_ml,costo_envio,costo_unitario,ganancia_real,editado_manual,ajuste_monto,ajuste_descripcion)")
-        .eq("canal", "cotizador")
-        .gte("fecha", desdeISO)
-        .order("fecha", { ascending: false })
-        .limit(200),
-    ]);
+  const cargarVentas = async (dias = ventasDias, desde = ventasDesde, hasta = ventasHasta) => {
+    setVentasLoading(true);
+    let desdeISO, hastaISO = null;
+    if (dias === "rango") {
+      desdeISO = desde ? new Date(`${desde}T00:00:00`).toISOString() : "2000-01-01T00:00:00Z";
+      hastaISO = hasta ? new Date(`${hasta}T23:59:59`).toISOString() : null;
+    } else {
+      desdeISO = dias > 0
+        ? (() => { const d = new Date(); d.setDate(d.getDate() - dias); return d.toISOString(); })()
+        : "2000-01-01T00:00:00Z";
+    }
+
+    let queryMl = supabase.from("ventas")
+      .select("id,fecha,sku,nombre,cantidad,monto_total_venta,monto_neto_recibido,comision_ml,costo_envio,costo_unitario_proveedor,ganancia_real,editado_manual,ajuste_monto,ajuste_descripcion")
+      .eq("canal", "mercado_libre")
+      .gte("fecha", desdeISO);
+    if (hastaISO) queryMl = queryMl.lte("fecha", hastaISO);
+    queryMl = queryMl.order("fecha", { ascending: false }).limit(300);
+
+    let queryFis = supabase.from("ventas")
+      .select("fecha,cliente,venta_items(id,nombre,cantidad,monto_total,monto_neto_recibido,comision_ml,costo_envio,costo_unitario,ganancia_real,editado_manual,ajuste_monto,ajuste_descripcion)")
+      .eq("canal", "cotizador")
+      .gte("fecha", desdeISO);
+    if (hastaISO) queryFis = queryFis.lte("fecha", hastaISO);
+    queryFis = queryFis.order("fecha", { ascending: false }).limit(200);
+
+    const [{ data: ml, error: errMl }, { data: fis, error: errFis }] = await Promise.all([queryMl, queryFis]);
     if (errMl) console.error("Error cargando ventas ML:", errMl);
     if (errFis) console.error("Error cargando ventas físicas:", errFis);
 
@@ -1346,6 +1362,9 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         <VentasPanel
           ventasLoading={ventasLoading} ventasResumen={ventasResumen} ventasLista={ventasLista}
           ventasDias={ventasDias} setVentasDias={cambiarVentasDias}
+          ventasDesde={ventasDesde} setVentasDesde={setVentasDesde}
+          ventasHasta={ventasHasta} setVentasHasta={setVentasHasta}
+          onAplicarRango={aplicarVentasRango}
           onClose={()=>setVentasPanelOpen(false)} onBorrar={borrarMovimiento}
           editandoVentaId={editandoVentaId} setEditandoVentaId={setEditandoVentaId}
           editandoVentaGuardando={editandoVentaGuardando} onGuardarEdicion={guardarEdicionVenta}

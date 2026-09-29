@@ -123,6 +123,7 @@ export default function VentasPanel({
                       </div>
                       <div className="img-prod-count">
                         {new Date(v.fecha).toLocaleDateString("es-AR")} · {v.canal} · x{v.cantidad}
+                        {v.comprador && <> · comprador: <b>{v.comprador}</b></>}
                         {" · "}vendí {ARS(v.monto||0)}
                         {v.recibido!=null
                           ? <> · <b>recibí {ARS(v.recibido)}</b></>

@@ -347,7 +347,7 @@ export default function ListaPrecios() {
     }
 
     let queryMl = supabase.from("ventas")
-      .select("id,fecha,sku,nombre,cantidad,monto_total_venta,monto_neto_recibido,comision_ml,costo_envio,costo_unitario_proveedor,ganancia_real,editado_manual,ajuste_monto,ajuste_descripcion")
+      .select("id,fecha,sku,nombre,cantidad,monto_total_venta,monto_neto_recibido,comision_ml,costo_envio,costo_unitario_proveedor,ganancia_real,editado_manual,ajuste_monto,ajuste_descripcion,comprador")
       .eq("canal", "mercado_libre")
       .gte("fecha", desdeISO);
     if (hastaISO) queryMl = queryMl.lte("fecha", hastaISO);
@@ -385,7 +385,7 @@ export default function ListaPrecios() {
         : null;
       return {
         id: v.id, tabla: "ventas", sku: v.sku, categoria,
-        fecha: v.fecha, canal: "Mercado Libre", nombre: v.nombre,
+        fecha: v.fecha, canal: "Mercado Libre", nombre: v.nombre, comprador: v.comprador,
         cantidad: v.cantidad, monto: v.monto_total_venta, ganancia: v.ganancia_real,
         recibido: v.monto_neto_recibido,
         comisionMl: v.comision_ml, costoEnvio: v.costo_envio, costoUnitario: v.costo_unitario_proveedor,

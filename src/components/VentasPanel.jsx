@@ -1,7 +1,33 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ARS } from "../utils.js";
 
 const RANGOS = [{v:7,l:"7 días"},{v:30,l:"30 días"},{v:90,l:"90 días"},{v:0,l:"Todo"},{v:"rango",l:"Fecha específica"}];
+
+// Traduce estado_orden / estado_envio (tal como vienen de Mercado Libre) a un
+// estado simple para filtrar: cancelado > entregado > en_curso. Las ventas
+// locales (Mercado Libre no interviene) no tienen este dato.
+const estadoDe = (v) => {
+  if (v.estadoOrden === "cancelled" || v.estadoOrden === "invalid") return "cancelado";
+  if (v.estadoEnvio === "delivered") return "entregado";
+  if (v.estadoOrden || v.estadoEnvio) return "en_curso";
+  return null;
+};
+
+const ESTADOS_FILTRO = [
+  {v:"todos", l:"Todos"},
+  {v:"en_curso", l:"En curso"},
+  {v:"entregado", l:"Entregado"},
+  {v:"cancelado", l:"Cancelado"},
+];
+
+const ESTADO_LABEL = { en_curso: "🚚 En curso", entregado: "✅ Entregado", cancelado: "❌ Cancelado" };
+
+const ORDENES = [
+  {v:"fecha", l:"Más recientes primero"},
+  {v:"ganancia_desc", l:"Ganancia: mayor a menor"},
+  {v:"ganancia_asc", l:"Ganancia: menor a mayor"},
+  {v:"sin_costo", l:"Sin costo cargado primero"},
+];
 
 export default function VentasPanel({
   ventasLoading, ventasResumen, ventasLista, onClose, onBorrar,
@@ -13,6 +39,31 @@ export default function VentasPanel({
   const [formCosto, setFormCosto] = useState("");
   const [formAjuste, setFormAjuste] = useState("");
   const [formAjusteDesc, setFormAjusteDesc] = useState("");
+  const [filtroEstado, setFiltroEstado] = useState("todos");
+  const [orden, setOrden] = useState("fecha");
+
+  const ventasListaFiltrada = useMemo(() => {
+    let lista = ventasLista;
+    if (filtroEstado !== "todos") {
+      lista = lista.filter(v => estadoDe(v) === filtroEstado);
+    }
+    if (orden === "ganancia_desc" || orden === "ganancia_asc") {
+      lista = [...lista].sort((a, b) => {
+        // Las que no tienen ganancia calculada van al final siempre.
+        if (a.ganancia == null && b.ganancia == null) return 0;
+        if (a.ganancia == null) return 1;
+        if (b.ganancia == null) return -1;
+        return orden === "ganancia_desc" ? b.ganancia - a.ganancia : a.ganancia - b.ganancia;
+      });
+    } else if (orden === "sin_costo") {
+      lista = [...lista].sort((a, b) => {
+        const aSin = a.ganancia == null ? 0 : 1;
+        const bSin = b.ganancia == null ? 0 : 1;
+        return aSin - bSin;
+      });
+    }
+    return lista;
+  }, [ventasLista, filtroEstado, orden]);
 
   // Al abrir la edición precargamos el flete que tenemos configurado para la
   // categoría en vez de dejar 0. Si la venta ya tiene un flete cargado (o fue
@@ -108,8 +159,27 @@ export default function VentasPanel({
               {ventasResumen.sinRecibido>0 && ` · ${ventasResumen.sinRecibido} sin liquidación de ML todavía`}
             </div>
 
+            <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:12,flexWrap:"wrap"}}>
+              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                {ESTADOS_FILTRO.map(o => (
+                  <button key={o.v} className="cot-btn-clear" style={{padding:"5px 10px",fontSize:11,
+                    ...(filtroEstado===o.v ? {borderColor:"var(--ac)",color:"var(--ac)"} : {})}}
+                    onClick={()=>setFiltroEstado(o.v)}>
+                    {o.l}
+                  </button>
+                ))}
+              </div>
+              <select value={orden} onChange={e=>setOrden(e.target.value)}
+                style={{marginLeft:"auto",fontSize:11,padding:"6px 8px"}}>
+                {ORDENES.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}
+              </select>
+            </div>
+            {ventasListaFiltrada.length===0 && (
+              <div className="cot-empty" style={{padding:12}}>No hay ventas con ese estado en este rango.</div>
+            )}
+
             <div className="img-prod-list">
-              {ventasLista.map((v,i)=>{
+              {ventasListaFiltrada.map((v,i)=>{
                 const claveEdicion = `${v.tabla}-${v.id}`;
                 const editando = editandoVentaId === claveEdicion;
                 return (
@@ -120,6 +190,7 @@ export default function VentasPanel({
                       <div className="img-prod-name">
                         {v.nombre || "(sin nombre)"}
                         {v.editadoManual && <span title="Costo editado a mano — no se pisa al sincronizar Mercado Libre" style={{marginLeft:6}}>🔒</span>}
+                        {estadoDe(v) && <span style={{marginLeft:8,fontSize:11,fontWeight:400,color:"var(--tx2)"}}>{ESTADO_LABEL[estadoDe(v)]}</span>}
                       </div>
                       <div className="img-prod-count">
                         {new Date(v.fecha).toLocaleDateString("es-AR")} · {v.canal} · x{v.cantidad}

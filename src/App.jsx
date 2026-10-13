@@ -347,8 +347,8 @@ export default function ListaPrecios() {
     }
 
     let queryMl = supabase.from("ventas")
-      .select("id,fecha,sku,nombre,cantidad,monto_total_venta,monto_neto_recibido,comision_ml,costo_envio,costo_unitario_proveedor,ganancia_real,editado_manual,ajuste_monto,ajuste_descripcion,comprador,estado_orden,estado_envio")
-      .eq("canal", "mercado_libre")
+      .select("id,fecha,sku,nombre,cantidad,monto_total_venta,monto_neto_recibido,comision_ml,costo_envio,costo_unitario_proveedor,ganancia_real,editado_manual,ajuste_monto,ajuste_descripcion,comprador,estado_orden,estado_envio,canal")
+      .in("canal", ["mercado_libre", "shopify"])
       .gte("fecha", desdeISO);
     if (hastaISO) queryMl = queryMl.lte("fecha", hastaISO);
     queryMl = queryMl.order("fecha", { ascending: false }).limit(300);
@@ -385,7 +385,7 @@ export default function ListaPrecios() {
         : null;
       return {
         id: v.id, tabla: "ventas", sku: v.sku, categoria,
-        fecha: v.fecha, canal: "Mercado Libre", nombre: v.nombre, comprador: v.comprador,
+        fecha: v.fecha, canal: v.canal === "shopify" ? "Shopify" : "Mercado Libre", nombre: v.nombre, comprador: v.comprador,
         estadoOrden: v.estado_orden, estadoEnvio: v.estado_envio,
         cantidad: v.cantidad, monto: v.monto_total_venta, ganancia: v.ganancia_real,
         recibido: v.monto_neto_recibido,

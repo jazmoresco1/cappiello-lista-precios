@@ -185,7 +185,7 @@ export default function VentasPanel({
                 return (
                 <div key={v.id||i} className="img-prod-row" style={{cursor:"default",flexDirection:"column",alignItems:"stretch"}}>
                   <div style={{display:"flex",alignItems:"center",width:"100%"}}>
-                    <div className="img-prod-thumb-empty">{v.canal==="Mercado Libre"?"🛒":"🏬"}</div>
+                    <div className="img-prod-thumb-empty">{v.canal==="Mercado Libre"?"🛒":v.canal==="Shopify"?"🛍️":"🏬"}</div>
                     <div className="img-prod-info">
                       <div className="img-prod-name">
                         {v.nombre || "(sin nombre)"}
@@ -198,7 +198,7 @@ export default function VentasPanel({
                         {" · "}vendí {ARS(v.monto||0)}
                         {v.recibido!=null
                           ? <> · <b>recibí {ARS(v.recibido)}</b></>
-                          : <> · <span title="Mercado Libre todavía no liquidó esta venta">recibí —</span></>}
+                          : <> · <span title="Todavía no se cruzó con el pago recibido">recibí —</span></>}
                         {v.ganancia!=null && <> · ganancia {ARS(v.ganancia)}</>}
                         {!!v.ajusteMonto && <> · ajuste {v.ajusteMonto>0?"+":""}{ARS(v.ajusteMonto)}{v.ajusteDescripcion && ` (${v.ajusteDescripcion})`}</>}
                       </div>

@@ -75,6 +75,14 @@ export default async function handler(req, res) {
     res.status(405).json({ error: "Solo GET" });
     return;
   }
+  // Diagnóstico: muestra solo los NOMBRES de las variables que faltan, nunca los valores.
+  const faltan = ["MELI_CLIENT_ID", "MELI_CLIENT_SECRET", "SUPABASE_URL", "SUPABASE_SERVICE_KEY"]
+    .filter((k) => !process.env[k]);
+  if (faltan.length) {
+    res.status(500).json({ error: "Faltan variables en Vercel: " + faltan.join(", ") });
+    return;
+  }
+
   try {
     const dias = Math.min(parseInt(req.query.dias || "30", 10), 90);
     const me = await ml("/users/me");

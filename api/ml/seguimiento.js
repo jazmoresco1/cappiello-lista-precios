@@ -22,9 +22,25 @@ export default async function handler(req, res) {
     return;
   }
 
+  // Solo se acepta desde la propia app (no desde otros sitios).
+  const origen = req.headers?.origin || "";
+  const host = req.headers?.host || "";
+  if (origen && !origen.includes(host)) {
+    res.status(403).json({ error: "Origen no permitido" });
+    return;
+  }
+
   const { orden, codigo, link } = req.body || {};
-  if (!orden) {
-    res.status(400).json({ error: "Falta el número de orden" });
+  if (!orden || !/^\d{5,20}$/.test(String(orden))) {
+    res.status(400).json({ error: "Número de orden inválido" });
+    return;
+  }
+  if (String(codigo || "").length > 60) {
+    res.status(400).json({ error: "Código demasiado largo" });
+    return;
+  }
+  if (link && (!/^https:\/\//.test(String(link)) || String(link).length > 300)) {
+    res.status(400).json({ error: "El link tiene que empezar con https:// y tener menos de 300 caracteres" });
     return;
   }
 

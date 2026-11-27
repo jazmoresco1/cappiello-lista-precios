@@ -11,6 +11,7 @@ import { ARS, calcular, getColorBadge } from "./utils.js";
 import VendedoresPanel from "./components/VendedoresPanel.jsx";
 import StockPanel from "./components/StockPanel.jsx";
 import VentasPanel from "./components/VentasPanel.jsx";
+import DespachosPanel from "./components/DespachosPanel.jsx";
 import SociosPanel from "./components/SociosPanel.jsx";
 import FacturasPanel from "./components/FacturasPanel.jsx";
 import GastosPanel from "./components/GastosPanel.jsx";
@@ -118,6 +119,7 @@ export default function ListaPrecios() {
     if (pinTarget === "vendedores") { setVendPanelOpen(true); }
     if (pinTarget === "stock") { setStockPanelOpen(true); }
     if (pinTarget === "ventas") { setVentasPanelOpen(true); cargarVentas(ventasDias); }
+    if (pinTarget === "despachos") { setDespachosOpen(true); }
     if (pinTarget === "socios") { setSociosPanelOpen(true); cargarReparto(); }
     if (pinTarget === "facturas") { setFacturasPanelOpen(true); cargarFacturas(); }
     if (pinTarget === "gastos") { setGastosPanelOpen(true); cargarGastos(); }
@@ -320,6 +322,13 @@ export default function ListaPrecios() {
   const abrirVentas = () => {
     if (unlocked) { setVentasPanelOpen(true); cargarVentas(ventasDias); }
     else { setPinTarget("ventas"); setPinOpen(true); }
+  };
+
+  // ── DESPACHOS (protegido con la misma clave) ────────────────────────
+  const [despachosOpen, setDespachosOpen] = useState(false);
+  const abrirDespachos = () => {
+    if (unlocked) setDespachosOpen(true);
+    else { setPinTarget("despachos"); setPinOpen(true); }
   };
 
   // Los botones de rango (7/30/90/Todo) disparan la carga al toque. El modo
@@ -1271,6 +1280,7 @@ Sin texto adicional, sin markdown, solo el JSON.`;
         cfgOpen={cfgOpen} setCfgOpen={setCfgOpen} setImgOpen={setImgOpen} setImgSP={setImgSP}
         setCotOpen={setCotOpen} cotItems={cotItems}
         abrirVendedores={abrirVendedores} abrirStock={abrirStock} abrirVentas={abrirVentas}
+        abrirDespachos={abrirDespachos}
         abrirSocios={abrirSocios} abrirFacturas={abrirFacturas} abrirGastos={abrirGastos} abrirRadar={abrirRadar}
         abrirDashboard={abrirDashboard} abrirControlProveedor={abrirControlProveedor}
         role={role} setRole={setRole} setPinOpen={setPinOpen}
@@ -1356,6 +1366,11 @@ Sin texto adicional, sin markdown, solo el JSON.`;
           stockGuardando={stockGuardando} stockMsg={stockMsg}
           onClose={()=>{setStockPanelOpen(false);setStockSel(null);setStockBusq("");setStockResultados([]);setStockMsg(null);}}
         />
+      )}
+
+      {/* ── PANEL DESPACHOS (protegido con clave) ───────────────────── */}
+      {despachosOpen && unlocked && (
+        <DespachosPanel onClose={()=>setDespachosOpen(false)} />
       )}
 
       {/* ── PANEL VENTAS Y GANANCIA REAL (protegido con clave) ──────── */}

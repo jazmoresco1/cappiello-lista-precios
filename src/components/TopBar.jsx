@@ -5,7 +5,7 @@ export default function TopBar({
   busqueda, setBusqueda, setBusqGlobal,
   cfgOpen, setCfgOpen, setImgOpen, setImgSP,
   setCotOpen, cotItems,
-  abrirVendedores, abrirStock, abrirVentas, abrirSocios, abrirFacturas, abrirGastos, abrirRadar, abrirDashboard,
+  abrirVendedores, abrirStock, abrirVentas, abrirDespachos, abrirSocios, abrirFacturas, abrirGastos, abrirRadar, abrirDashboard,
   abrirControlProveedor,
   role, setRole, setPinOpen,
   cuotas, setCuotas,
@@ -42,6 +42,10 @@ export default function TopBar({
         <button className="hdr-btn" onClick={abrirVentas}
           title="Ventas y ganancia real (requiere clave)">
           📊 Ventas
+        </button>
+        <button className="hdr-btn" onClick={abrirDespachos}
+          title="Remitos y despachos de Mercado Libre (requiere clave)">
+          📦 Despachos
         </button>
         <button className="hdr-btn" onClick={abrirSocios}
           title="Reparto de ganancia y gastos entre socios (requiere clave)">

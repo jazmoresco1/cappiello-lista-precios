@@ -2,3 +2,21 @@ node_modules
 dist
 .DS_Store
 *.local
+
+# Fotos bajadas de sitios de terceros y su índice - no van al repo
+fotos_productos/
+fotos_indice.json
+
+# Credenciales - nunca subir
+shopify_config.txt
+supabase_config.txt
+service_account_credentials.json
+__pycache__/
+
+meli_config.txt
+
+# Remitos con datos de compradores - no van al repo
+remitos/
+
+# Contraseña de aplicación de Gmail - nunca subir
+gmail_config.txt

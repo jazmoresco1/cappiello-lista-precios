@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "mercadolibre": {
+      "command": "python3",
+      "args": ["mercadolibre_mcp/server.py"]
+    }
+  }
+}

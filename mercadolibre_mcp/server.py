@@ -65,35 +65,72 @@ def http(method, path, params=None, form=None, auth=True, retry=True, body=None)
     except urllib.error.HTTPError as e:
         if e.code == 401 and auth and retry:
             # El token venció o fue invalidado: forzar renovación y reintentar una vez.
-            cfg = read_cfg()
-            cfg["MELI_TOKEN_EXPIRES_AT"] = "0"
-            write_cfg(cfg)
+            invalidar_token()
             return http(method, path, params=params, form=form, auth=auth, retry=False, body=body)
         raise RuntimeError(f"Mercado Libre respondió {e.code}: {e.read().decode('utf-8', 'replace')[:300]}")
 
 
+def sb_config():
+    d = {}
+    with open(os.path.join(ROOT, "supabase_config.txt"), encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if "=" in line and not line.startswith("#"):
+                k, v = line.split("=", 1)
+                d[k.strip()] = v.strip()
+    return d["SUPABASE_URL"], d["SUPABASE_KEY"]
+
+
+def sb_request(method, query, body=None):
+    url, key = sb_config()
+    headers = {"apikey": key, "Authorization": "Bearer " + key,
+               "Content-Type": "application/json", "Prefer": "return=representation"}
+    data = json.dumps(body).encode("utf-8") if body is not None else None
+    req = urllib.request.Request(url + "/rest/v1/ml_tokens" + query, data=data,
+                                 headers=headers, method=method)
+    with urllib.request.urlopen(req, timeout=30) as r:
+        txt = r.read().decode("utf-8")
+        return json.loads(txt) if txt else None
+
+
+def leer_token_sb():
+    rows = sb_request("GET", "?id=eq.1&select=*")
+    if not rows:
+        raise RuntimeError("Falta la fila de ml_tokens en Supabase")
+    return rows[0]
+
+
+def invalidar_token():
+    sb_request("PATCH", "?id=eq.1", {"expires_at": "2000-01-01T00:00:00+00:00"})
+
+
 def refresh_access_token():
-    cfg = read_cfg()
+    cfg = read_cfg()  # client id y secret siguen en meli_config.txt
+    fila = leer_token_sb()
     body = urllib.parse.urlencode({
         "grant_type": "refresh_token",
         "client_id": cfg["MELI_CLIENT_ID"],
         "client_secret": cfg["MELI_CLIENT_SECRET"],
-        "refresh_token": cfg["MELI_REFRESH_TOKEN"],
+        "refresh_token": fila["refresh_token"],
     }).encode()
     tok = http("POST", "/oauth/token", form=body, auth=False)
-    cfg["MELI_ACCESS_TOKEN"] = tok["access_token"]
-    # ML rota el refresh token en cada renovación: hay que guardar el nuevo.
-    cfg["MELI_REFRESH_TOKEN"] = tok["refresh_token"]
-    cfg["MELI_TOKEN_EXPIRES_AT"] = str(int(time.time()) + int(tok.get("expires_in", 21600)) - 300)
-    write_cfg(cfg)
-    return cfg["MELI_ACCESS_TOKEN"]
+    ahora = datetime.now(timezone.utc)
+    sb_request("PATCH", "?id=eq.1", {
+        "refresh_token": tok["refresh_token"],
+        "access_token": tok["access_token"],
+        "expires_at": (ahora + timedelta(seconds=int(tok.get("expires_in", 21600)) - 300)).isoformat(),
+        "updated_at": ahora.isoformat(),
+    })
+    return tok["access_token"]
 
 
 def access_token():
-    cfg = read_cfg()
-    exp = int(cfg.get("MELI_TOKEN_EXPIRES_AT") or 0)
-    if cfg.get("MELI_ACCESS_TOKEN") and time.time() < exp:
-        return cfg["MELI_ACCESS_TOKEN"]
+    fila = leer_token_sb()
+    exp = fila.get("expires_at")
+    if fila.get("access_token") and exp:
+        vence = datetime.fromisoformat(exp.replace("Z", "+00:00")).timestamp()
+        if time.time() < vence:
+            return fila["access_token"]
     return refresh_access_token()
 
 

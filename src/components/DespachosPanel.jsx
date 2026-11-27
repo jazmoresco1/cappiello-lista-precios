@@ -83,6 +83,31 @@ export default function DespachosPanel({ onClose }) {
       .catch(() => alert(`No se pudo guardar el seguimiento de la orden ${orden}.`));
   };
 
+  // Marca el despacho en Mercado Libre y avisa al comprador. Pide confirmación antes.
+  const avisarDespacho = (orden) => {
+    const s = seguimientos[orden] || {};
+    if (!s.codigo) {
+      alert("Cargá primero el código de seguimiento.");
+      return;
+    }
+    const ok = window.confirm(
+      `¿Avisar el despacho de la orden ${orden} al comprador con el código ${s.codigo}?\n\n` +
+      "Esto cambia la orden en Mercado Libre y el comprador recibe el aviso."
+    );
+    if (!ok) return;
+    fetch("/api/ml/despacho", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orden, codigo: s.codigo, link: s.link || "" }),
+    })
+      .then(async (r) => {
+        const d = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(d.error || `HTTP ${r.status}`);
+        alert("Despacho avisado a Mercado Libre.");
+      })
+      .catch((e) => alert("No se pudo avisar el despacho: " + e.message));
+  };
+
   const imprimir = (v) => {
     const w = window.open("", "_blank");
     if (!w) return;
@@ -126,7 +151,8 @@ export default function DespachosPanel({ onClose }) {
                   onChange={(e) => cambiarSeg(v.orden, "link", e.target.value)}
                   onBlur={() => guardarSeg(v.orden)} />
                 <button onClick={() => imprimir(v)}>Imprimir remito</button>
-                <button disabled title="Pendiente: verificar el endpoint de despacho de Mercado Libre">
+                <button onClick={() => avisarDespacho(v.orden)}
+                  title="Marca la venta como despachada en Mercado Libre y avisa al comprador">
                   Avisar despacho
                 </button>
               </div>

@@ -1,0 +1,12 @@
+-- Códigos y links de seguimiento de los despachos.
+-- Correr una vez en el SQL editor de Supabase.
+
+create table if not exists public.despachos_seguimiento (
+  orden_id text primary key,
+  codigo text,
+  link text,
+  updated_at timestamptz default now()
+);
+
+-- Solo la función del servidor (service role) puede leer o escribir.
+alter table public.despachos_seguimiento enable row level security;

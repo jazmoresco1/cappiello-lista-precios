@@ -36,6 +36,7 @@ td{border:1px solid #9E1B1F;padding:6px;font-size:12px}
 <h3 style="font-weight:400;letter-spacing:3px;margin-top:24px">DATOS DEL CLIENTE:</h3>
 <div class="campos">
   <p><span class="lbl">Nombre:</span> ${v.comprador || ""}</p>
+  <p><span class="lbl">DNI:</span> ${v.documento || ""}</p>
   <p><span class="lbl">Telefono:</span> </p>
   <p><span class="lbl">Direccion:</span> ${direccion}</p>
   <p><span class="lbl">Codigo postal:</span> ${dir?.zip_code || ""}</p>
@@ -59,12 +60,28 @@ export default function DespachosPanel({ onClose }) {
       .then((d) => {
         if (d.error) throw new Error(d.error);
         setVentas(d.ventas || []);
+        // Cargar los seguimientos ya guardados en Supabase.
+        const iniciales = {};
+        (d.ventas || []).forEach((v) => { if (v.seguimiento) iniciales[v.orden] = v.seguimiento; });
+        setSeguimientos(iniciales);
       })
       .catch((e) => setError(e.message));
   }, []);
 
   const cambiarSeg = (orden, campo, valor) =>
     setSeguimientos((s) => ({ ...s, [orden]: { ...(s[orden] || {}), [campo]: valor } }));
+
+  // Guarda código y link en Supabase (se llama al salir del campo).
+  const guardarSeg = (orden) => {
+    const s = seguimientos[orden] || {};
+    fetch("/api/ml/seguimiento", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orden, codigo: s.codigo || "", link: s.link || "" }),
+    })
+      .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); })
+      .catch(() => alert(`No se pudo guardar el seguimiento de la orden ${orden}.`));
+  };
 
   const imprimir = (v) => {
     const w = window.open("", "_blank");
@@ -95,7 +112,7 @@ export default function DespachosPanel({ onClose }) {
                 <strong>Orden {v.orden}</strong>
                 <span>{new Date(v.fecha).toLocaleString("es-AR")}</span>
               </div>
-              <div>Comprador: {v.comprador} · Transporte: {v.envio?.transporte || "A definir"} · Estado: {v.envio?.estado}</div>
+              <div>Comprador: {v.comprador}{v.documento ? ` (${v.documento})` : ""} · Transporte: {v.envio?.transporte || "A definir"} · Estado: {v.envio?.estado}</div>
               <ul style={{ margin: "6px 0" }}>
                 {(v.productos || []).map((p, i) => (
                   <li key={i}>{p.cantidad} × {p.titulo} ({p.sku || "sin SKU"})</li>
@@ -103,9 +120,11 @@ export default function DespachosPanel({ onClose }) {
               </ul>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
                 <input placeholder="Código de seguimiento" value={seg.codigo || ""}
-                  onChange={(e) => cambiarSeg(v.orden, "codigo", e.target.value)} />
+                  onChange={(e) => cambiarSeg(v.orden, "codigo", e.target.value)}
+                  onBlur={() => guardarSeg(v.orden)} />
                 <input placeholder="Link de seguimiento" value={seg.link || ""} style={{ minWidth: 260 }}
-                  onChange={(e) => cambiarSeg(v.orden, "link", e.target.value)} />
+                  onChange={(e) => cambiarSeg(v.orden, "link", e.target.value)}
+                  onBlur={() => guardarSeg(v.orden)} />
                 <button onClick={() => imprimir(v)}>Imprimir remito</button>
                 <button disabled title="Pendiente: verificar el endpoint de despacho de Mercado Libre">
                   Avisar despacho

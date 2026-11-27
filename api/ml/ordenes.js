@@ -70,6 +70,35 @@ async function ml(path, params) {
   return r.json();
 }
 
+// Nombre y documento desde billing_info (ML lo da si la app tiene permiso).
+async function datosComprador(orderId, buyer) {
+  let nombre = "";
+  let doc = "";
+  try {
+    const b = await ml(`/orders/${orderId}/billing_info`);
+    const bi = b.billing_info || b;
+    const campos = Object.fromEntries((bi.additional_info || []).map((a) => [a.type, a.value]));
+    nombre = `${campos.FIRST_NAME || ""} ${campos.LAST_NAME || ""}`.trim();
+    doc = `${campos.DOC_TYPE || ""} ${campos.DOC_NUMBER || ""}`.trim();
+  } catch (e) {
+    // Sin permiso para billing: seguimos con los datos básicos del comprador.
+  }
+  if (!nombre) {
+    nombre = `${buyer?.first_name || ""} ${buyer?.last_name || ""}`.trim() || buyer?.nickname || "";
+  }
+  return { nombre, doc };
+}
+
+// Códigos de seguimiento cargados desde el panel (tabla despachos_seguimiento).
+async function leerSeguimientos() {
+  const r = await fetch(`${process.env.SUPABASE_URL}/rest/v1/despachos_seguimiento?select=*`, {
+    headers: supabaseHeaders(),
+  });
+  if (!r.ok) return {};
+  const rows = await r.json();
+  return Object.fromEntries(rows.map((x) => [x.orden_id, { codigo: x.codigo, link: x.link }]));
+}
+
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     res.status(405).json({ error: "Solo GET" });
@@ -94,15 +123,19 @@ export default async function handler(req, res) {
       limit: 50,
     });
 
+    const seguimientos = await leerSeguimientos();
     const salida = [];
     for (const o of orders.results || []) {
       if (o.status === "cancelled" || !o.shipping?.id) continue;
       const envio = await ml(`/shipments/${o.shipping.id}`);
       if (envio.mode === "me2" || envio.logistic?.type === "fulfillment") continue;
+      const comprador = await datosComprador(o.id, o.buyer);
       salida.push({
         orden: o.id,
         fecha: o.date_created,
-        comprador: o.buyer?.nickname,
+        comprador: comprador.nombre,
+        documento: comprador.doc,
+        seguimiento: seguimientos[String(o.id)] || null,
         productos: (o.order_items || []).map((it) => ({
           titulo: it.item?.title,
           sku: it.item?.seller_sku,

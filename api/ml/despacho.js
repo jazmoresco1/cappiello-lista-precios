@@ -92,12 +92,13 @@ export default async function handler(req, res) {
     return;
   }
 
-  const { orden, codigo, link } = req.body || {};
+  const { orden, codigo, link, estado } = req.body || {};
+  const status = estado === "delivered" ? "delivered" : "shipped";
   if (!orden || !/^\d{5,20}$/.test(String(orden))) {
     res.status(400).json({ error: "Número de orden inválido" });
     return;
   }
-  if (!codigo) {
+  if (status === "shipped" && !codigo) {
     res.status(400).json({ error: "Falta el código de seguimiento" });
     return;
   }
@@ -108,8 +109,8 @@ export default async function handler(req, res) {
     if (!sid) throw new Error("La orden no tiene envío asociado");
 
     const payload = {
-      status: "shipped",
-      tracking_number: String(codigo),
+      status,
+      ...(codigo ? { tracking_number: String(codigo) } : {}),
       ...(link ? { tracking_url: String(link) } : {}),
       payload: {
         service_id: 154,

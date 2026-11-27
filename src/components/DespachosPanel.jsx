@@ -84,29 +84,30 @@ export default function DespachosPanel({ onClose }) {
   };
 
   // Marca el despacho en Mercado Libre y avisa al comprador. Pide confirmación antes.
-  const avisarDespacho = (orden) => {
+  const avisar = (orden, estado) => {
     const s = seguimientos[orden] || {};
-    if (!s.codigo) {
+    if (estado === "shipped" && !s.codigo) {
       alert("Cargá primero el código de seguimiento.");
       return;
     }
-    const ok = window.confirm(
-      `¿Avisar el despacho de la orden ${orden} al comprador con el código ${s.codigo}?\n\n` +
-      "Esto cambia la orden en Mercado Libre y el comprador recibe el aviso."
-    );
-    if (!ok) return;
+    const texto = estado === "shipped"
+      ? `¿Avisar el despacho de la orden ${orden} al comprador con el código ${s.codigo}?`
+      : `¿Avisar al comprador que la orden ${orden} fue entregada?`;
+    if (!window.confirm(texto + "\n\nEsto cambia la orden en Mercado Libre y el comprador recibe el aviso.")) return;
     fetch("/api/ml/despacho", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ orden, codigo: s.codigo, link: s.link || "" }),
+      body: JSON.stringify({ orden, estado, codigo: s.codigo || "", link: s.link || "" }),
     })
       .then(async (r) => {
         const d = await r.json().catch(() => ({}));
         if (!r.ok) throw new Error(d.error || `HTTP ${r.status}`);
-        alert("Despacho avisado a Mercado Libre.");
+        alert(estado === "shipped" ? "Despacho avisado a Mercado Libre." : "Entrega avisada a Mercado Libre.");
       })
-      .catch((e) => alert("No se pudo avisar el despacho: " + e.message));
+      .catch((e) => alert("No se pudo avisar: " + e.message));
   };
+  const avisarDespacho = (orden) => avisar(orden, "shipped");
+  const avisarEntrega = (orden) => avisar(orden, "delivered");
 
   const imprimir = (v) => {
     const w = window.open("", "_blank");
@@ -154,6 +155,10 @@ export default function DespachosPanel({ onClose }) {
                 <button onClick={() => avisarDespacho(v.orden)}
                   title="Marca la venta como despachada en Mercado Libre y avisa al comprador">
                   Avisar despacho
+                </button>
+                <button onClick={() => avisarEntrega(v.orden)}
+                  title="Avisa al comprador que el paquete fue entregado">
+                  Avisar entrega
                 </button>
               </div>
             </div>

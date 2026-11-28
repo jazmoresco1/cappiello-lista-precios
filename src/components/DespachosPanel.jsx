@@ -40,7 +40,7 @@ td{border:1px solid #9E1B1F;padding:6px;font-size:12px}
   <p><span class="lbl">Telefono:</span> </p>
   <p><span class="lbl">Direccion:</span> ${direccion}</p>
   <p><span class="lbl">Codigo postal:</span> ${dir?.zip_code || ""}</p>
-  <p><span class="lbl">Transporte:</span> ${v.envio?.transporte || "A definir"}</p>
+  <p><span class="lbl">Transporte:</span> ${seg.transporte || v.envio?.transporte || "A definir"}</p>
   <p><span class="lbl">Nro de seguimiento:</span> ${seg.codigo || ""}</p>
 </div>
 <table><thead><tr><th>CODIGO</th><th>DESCRIPCIÓN</th><th>CANT.</th><th>TOTAL</th></tr></thead>
@@ -77,7 +77,7 @@ export default function DespachosPanel({ onClose }) {
     fetch("/api/ml/seguimiento", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ orden, codigo: s.codigo || "", link: s.link || "" }),
+      body: JSON.stringify({ orden, codigo: s.codigo || "", link: s.link || "", transporte: s.transporte || "" }),
     })
       .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); })
       .catch(() => alert(`No se pudo guardar el seguimiento de la orden ${orden}.`));
@@ -129,6 +129,11 @@ export default function DespachosPanel({ onClose }) {
         {error && <p style={{ color: "#9E1B1F" }}>No se pudo cargar: {error}</p>}
         {!ventas && !error && <p>Cargando ventas...</p>}
         {ventas && ventas.length === 0 && <p>No hay ventas pendientes de despacho.</p>}
+        <datalist id="transportes-lista">
+          <option value="Andreani" />
+          <option value="Vía Cargo" />
+          <option value="Correo Argentino" />
+        </datalist>
 
         {(ventas || []).map((v) => {
           const seg = seguimientos[v.orden] || {};
@@ -138,7 +143,7 @@ export default function DespachosPanel({ onClose }) {
                 <strong>Orden {v.orden}</strong>
                 <span>{new Date(v.fecha).toLocaleString("es-AR")}</span>
               </div>
-              <div>Comprador: {v.comprador}{v.documento ? ` (${v.documento})` : ""} · Transporte: {v.envio?.transporte || "A definir"} · Estado: {v.envio?.estado}</div>
+              <div>Comprador: {v.comprador}{v.documento ? ` (${v.documento})` : ""} · Transporte: {seg.transporte || v.envio?.transporte || "A definir"} · Estado: {v.envio?.estado}</div>
               <ul style={{ margin: "6px 0" }}>
                 {(v.productos || []).map((p, i) => (
                   <li key={i}>{p.cantidad} × {p.titulo} ({p.sku || "sin SKU"})</li>
@@ -150,6 +155,10 @@ export default function DespachosPanel({ onClose }) {
                   onBlur={() => guardarSeg(v.orden)} />
                 <input placeholder="Link de seguimiento" value={seg.link || ""} style={{ minWidth: 260 }}
                   onChange={(e) => cambiarSeg(v.orden, "link", e.target.value)}
+                  onBlur={() => guardarSeg(v.orden)} />
+                <input list="transportes-lista" placeholder="Transporte (Andreani, Vía Cargo…)"
+                  value={seg.transporte || ""}
+                  onChange={(e) => cambiarSeg(v.orden, "transporte", e.target.value)}
                   onBlur={() => guardarSeg(v.orden)} />
                 <button onClick={() => imprimir(v)}>Imprimir remito</button>
                 <button onClick={() => avisarDespacho(v.orden)}

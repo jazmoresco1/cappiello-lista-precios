@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  const { orden, codigo, link } = req.body || {};
+  const { orden, codigo, link, transporte } = req.body || {};
   if (!orden || !/^\d{5,20}$/.test(String(orden))) {
     res.status(400).json({ error: "Número de orden inválido" });
     return;
@@ -51,6 +51,7 @@ export default async function handler(req, res) {
       orden_id: String(orden),
       codigo: codigo || "",
       link: link || "",
+      transporte: String(transporte || "").slice(0, 60),
       updated_at: new Date().toISOString(),
     }),
   });

@@ -10,3 +10,6 @@ create table if not exists public.despachos_seguimiento (
 
 -- Solo la función del servidor (service role) puede leer o escribir.
 alter table public.despachos_seguimiento enable row level security;
+
+-- Transporte (Andreani, Vía Cargo, etc.). Si la tabla ya existía, correr también esto:
+alter table public.despachos_seguimiento add column if not exists transporte text;

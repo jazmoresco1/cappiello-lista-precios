@@ -128,7 +128,10 @@ def access_token():
     fila = leer_token_sb()
     exp = fila.get("expires_at")
     if fila.get("access_token") and exp:
-        vence = datetime.fromisoformat(exp.replace("Z", "+00:00")).timestamp()
+        # Supabase puede devolver fracciones de segundo de 1 o 2 dígitos; Python 3.9 necesita 6.
+        import re
+        exp = re.sub(r"\.(\d+)", lambda m: "." + m.group(1).ljust(6, "0")[:6], exp.replace("Z", "+00:00"))
+        vence = datetime.fromisoformat(exp).timestamp()
         if time.time() < vence:
             return fila["access_token"]
     return refresh_access_token()

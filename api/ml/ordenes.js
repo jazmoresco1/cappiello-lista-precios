@@ -78,7 +78,8 @@ async function datosComprador(orderId, buyer) {
     const b = await ml(`/orders/${orderId}/billing_info`);
     const bi = b.billing_info || b;
     const campos = Object.fromEntries((bi.additional_info || []).map((a) => [a.type, a.value]));
-    nombre = `${campos.FIRST_NAME || ""} ${campos.LAST_NAME || ""}`.trim();
+    // Personas: nombre y apellido. Empresas: razón social (BUSINESS_NAME).
+    nombre = `${campos.FIRST_NAME || ""} ${campos.LAST_NAME || ""}`.trim() || campos.BUSINESS_NAME || "";
     doc = `${campos.DOC_TYPE || ""} ${campos.DOC_NUMBER || ""}`.trim();
   } catch (e) {
     // Sin permiso para billing: seguimos con los datos básicos del comprador.

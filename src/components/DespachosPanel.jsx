@@ -4,6 +4,13 @@ import { useEffect, useState } from "react";
 // deja imprimir el remito y cargar el código de seguimiento.
 // El botón "Avisar despacho" queda deshabilitado hasta verificar el endpoint de ML.
 
+// Links genéricos de seguimiento de cada transporte (verificados en sus sitios oficiales).
+const LINK_TRANSPORTE = {
+  "Andreani": "https://www.andreani.com/?tab=seguir-envio",
+  "Vía Cargo": "https://viacargo.com.ar/seguimiento-de-envio/",
+};
+const LINKS_GENERICOS = Object.values(LINK_TRANSPORTE);
+
 const fmt = (n) => "$ " + Number(n || 0).toLocaleString("es-AR", { maximumFractionDigits: 0 });
 
 function remitoHtml(v, seg) {
@@ -158,7 +165,15 @@ export default function DespachosPanel({ onClose }) {
                   onBlur={() => guardarSeg(v.orden)} />
                 <input list="transportes-lista" placeholder="Transporte (Andreani, Vía Cargo…)"
                   value={seg.transporte || ""}
-                  onChange={(e) => cambiarSeg(v.orden, "transporte", e.target.value)}
+                  onChange={(e) => {
+                    const t = e.target.value;
+                    cambiarSeg(v.orden, "transporte", t);
+                    // Si el link está vacío o es uno genérico, lo completa con el del transporte elegido.
+                    const linkActual = seg.link || "";
+                    if (LINK_TRANSPORTE[t] && (!linkActual || LINKS_GENERICOS.includes(linkActual))) {
+                      cambiarSeg(v.orden, "link", LINK_TRANSPORTE[t]);
+                    }
+                  }}
                   onBlur={() => guardarSeg(v.orden)} />
                 <button onClick={() => imprimir(v)}>Imprimir remito</button>
                 <button onClick={() => avisarDespacho(v.orden)}

@@ -96,7 +96,7 @@ async function leerSeguimientos() {
   });
   if (!r.ok) return {};
   const rows = await r.json();
-  return Object.fromEntries(rows.map((x) => [x.orden_id, { codigo: x.codigo, link: x.link, transporte: x.transporte }]));
+  return Object.fromEntries(rows.map((x) => [x.orden_id, { codigo: x.codigo, link: x.link, transporte: x.transporte, despachado: !!x.despachado, entregado: !!x.entregado }]));
 }
 
 export default async function handler(req, res) {

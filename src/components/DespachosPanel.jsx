@@ -109,6 +109,7 @@ export default function DespachosPanel({ onClose }) {
       .then(async (r) => {
         const d = await r.json().catch(() => ({}));
         if (!r.ok) throw new Error(d.error || `HTTP ${r.status}`);
+        cambiarSeg(orden, estado === "shipped" ? "despachado" : "entregado", true);
         alert(estado === "shipped" ? "Despacho avisado a Mercado Libre." : "Entrega avisada a Mercado Libre.");
       })
       .catch((e) => alert("No se pudo avisar: " + e.message));
@@ -176,14 +177,20 @@ export default function DespachosPanel({ onClose }) {
                   }}
                   onBlur={() => guardarSeg(v.orden)} />
                 <button onClick={() => imprimir(v)}>Imprimir remito</button>
-                <button onClick={() => avisarDespacho(v.orden)}
-                  title="Marca la venta como despachada en Mercado Libre y avisa al comprador">
-                  Avisar despacho
-                </button>
-                <button onClick={() => avisarEntrega(v.orden)}
-                  title="Avisa al comprador que el paquete fue entregado">
-                  Avisar entrega
-                </button>
+                {!seg.despachado && (
+                  <button onClick={() => avisarDespacho(v.orden)}
+                    title="Marca la venta como despachada en Mercado Libre y avisa al comprador">
+                    Avisar despacho
+                  </button>
+                )}
+                {seg.despachado && !seg.entregado && (
+                  <button onClick={() => avisarEntrega(v.orden)}
+                    title="Avisa al comprador que el paquete fue entregado">
+                    Avisar entrega
+                  </button>
+                )}
+                {seg.despachado && <span style={{ color: "#2e7d32" }}>✔ Despacho avisado</span>}
+                {seg.entregado && <span style={{ color: "#2e7d32" }}>✔ Entrega avisada</span>}
               </div>
             </div>
           );

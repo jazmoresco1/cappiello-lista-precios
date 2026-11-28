@@ -80,6 +80,15 @@ async function mlFetch(method, path, body) {
   return data;
 }
 
+// Marca en Supabase el estado logrado. Solo se llama si ML aceptó el aviso.
+async function marcarSupabase(orden, campos) {
+  await fetch(`${process.env.SUPABASE_URL}/rest/v1/despachos_seguimiento?on_conflict=orden_id`, {
+    method: "POST",
+    headers: supabaseHeaders({ Prefer: "resolution=merge-duplicates,return=minimal" }),
+    body: JSON.stringify({ orden_id: String(orden), ...campos, updated_at: new Date().toISOString() }),
+  });
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.status(405).json({ error: "Solo POST" });
@@ -119,6 +128,7 @@ export default async function handler(req, res) {
       },
     };
     const resp = await mlFetch("POST", `/shipments/${sid}/seller_notifications`, payload);
+    await marcarSupabase(orden, status === "shipped" ? { despachado: true } : { entregado: true });
     res.status(200).json({ ok: true, respuesta: resp });
   } catch (e) {
     res.status(500).json({ error: e.message });
